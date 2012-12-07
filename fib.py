@@ -11,4 +11,6 @@ def fib(n):
   for k in range(2,n+1):
     a,p=a+p,a
   return a  
+
+# aj tato zmena len skusobna
         
