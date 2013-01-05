@@ -4,11 +4,10 @@
  */
 package javaaplikaciatestgitprazdna;
 
-// Bonus zmena
 /**
  *
  * @author marek
  */
-public class DruhaTrieda {
+public class BonusTrieda {
     
 }
