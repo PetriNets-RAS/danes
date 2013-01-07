@@ -7,8 +7,7 @@ package javaaplikaciatestgitprazdna;
 /**
  *
  * @author marek
- *  Odoslane cez netbeans
  */
-public class BonusTrieda {
+public class Tretia_trieda {
     
 }
