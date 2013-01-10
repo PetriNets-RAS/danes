@@ -8,5 +8,5 @@
  * @author Atarin
  */
 public class stvrtaTrieda {
-    
+    //skuska 
 }
