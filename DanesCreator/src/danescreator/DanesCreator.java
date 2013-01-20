@@ -4,6 +4,8 @@
  */
 package danescreator;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author marek
@@ -14,6 +16,6 @@ public class DanesCreator {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        JFrame hlavneOkno = new MainFrame();
     }
 }
