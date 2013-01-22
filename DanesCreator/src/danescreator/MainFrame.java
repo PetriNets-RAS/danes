@@ -41,21 +41,92 @@ public class MainFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        sideMenu = new javax.swing.JPanel();
+        ellipseButton = new javax.swing.JToggleButton();
+        rectangleButton = new javax.swing.JToggleButton();
+        topMenu = new javax.swing.JMenuBar();
+        fileMenu = new javax.swing.JMenu();
+        newProjectItem = new javax.swing.JMenuItem();
+        saveItem = new javax.swing.JMenuItem();
+        saveAsItem = new javax.swing.JMenuItem();
+        exitItem = new javax.swing.JMenuItem();
+        editMenuItem = new javax.swing.JMenu();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        sideMenu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        ellipseButton.setText("m");
+        ellipseButton.setToolTipText("Pridat miesto");
+
+        rectangleButton.setText("p");
+        rectangleButton.setToolTipText("pridate priechod");
+
+        javax.swing.GroupLayout sideMenuLayout = new javax.swing.GroupLayout(sideMenu);
+        sideMenu.setLayout(sideMenuLayout);
+        sideMenuLayout.setHorizontalGroup(
+            sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sideMenuLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2))
+        );
+        sideMenuLayout.setVerticalGroup(
+            sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(sideMenuLayout.createSequentialGroup()
+                .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 330, Short.MAX_VALUE))
+        );
+
+        fileMenu.setText("File");
+
+        newProjectItem.setText("Nova siet");
+        fileMenu.add(newProjectItem);
+
+        saveItem.setText("Uložiť");
+        fileMenu.add(saveItem);
+
+        saveAsItem.setText("Uložiť ako ...");
+        fileMenu.add(saveAsItem);
+
+        exitItem.setText("Koniec");
+        exitItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exitItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(exitItem);
+
+        topMenu.add(fileMenu);
+
+        editMenuItem.setText("Edit");
+        topMenu.add(editMenuItem);
+
+        setJMenuBar(topMenu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 434, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 316, Short.MAX_VALUE)
+                .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 376, Short.MAX_VALUE)
+            .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exitItemActionPerformed
 
     /**
      * @param args the command line arguments
@@ -92,5 +163,15 @@ public class MainFrame extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu editMenuItem;
+    private javax.swing.JToggleButton ellipseButton;
+    private javax.swing.JMenuItem exitItem;
+    private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenuItem newProjectItem;
+    private javax.swing.JToggleButton rectangleButton;
+    private javax.swing.JMenuItem saveAsItem;
+    private javax.swing.JMenuItem saveItem;
+    private javax.swing.JPanel sideMenu;
+    private javax.swing.JMenuBar topMenu;
     // End of variables declaration//GEN-END:variables
 }
