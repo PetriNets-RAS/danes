@@ -23,6 +23,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Ulo&#x17e;i&#x165; ako ..."/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveAsItemActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exitItem">
               <Properties>

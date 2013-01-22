@@ -6,6 +6,7 @@ package danescreator;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -91,6 +92,11 @@ public class MainFrame extends javax.swing.JFrame {
         fileMenu.add(saveItem);
 
         saveAsItem.setText("Uložiť ako ...");
+        saveAsItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveAsItem);
 
         exitItem.setText("Koniec");
@@ -127,6 +133,13 @@ public class MainFrame extends javax.swing.JFrame {
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_exitItemActionPerformed
+
+    private void saveAsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsItemActionPerformed
+      JFileChooser fileChooser = new JFileChooser();
+        int showOpenDialog = fileChooser.showSaveDialog(this);
+
+        if (showOpenDialog != JFileChooser.APPROVE_OPTION) return; 
+    }//GEN-LAST:event_saveAsItemActionPerformed
 
     /**
      * @param args the command line arguments
