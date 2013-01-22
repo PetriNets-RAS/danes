@@ -4,7 +4,8 @@
  */
 package danescreator;
 
-import danescreator.diagram.DiagramSrollPane;
+import diagram.DiagramController;
+import diagram.DiagramSrollPane;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import javax.swing.JFileChooser;
@@ -17,19 +18,20 @@ public class MainFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form MainFrame
-     */
-    public MainFrame() {        
-        // Panel s grafom         
+     */    
+    
+    public MainFrame(PetrihoSiet pa_petrihoSiet) {        
+        super();  
+        // Panel s grafom            
         Container container = getContentPane();
         container.setLayout(new BorderLayout());
-        container.add(new DiagramSrollPane(), BorderLayout.CENTER);
+        container.add(new DiagramSrollPane(pa_petrihoSiet), BorderLayout.CENTER);
 
         pack();
         
         initComponents();
         setTitle("Danes Creator");
-        setSize(800, 600);
-        setVisible(true);     
+        setSize(800, 600);        
         
       
     }
@@ -172,7 +174,7 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame().setVisible(true);
+                //new MainFrame().setVisible(true);
             }
         });
     }

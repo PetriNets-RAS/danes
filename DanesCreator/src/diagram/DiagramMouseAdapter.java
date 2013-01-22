@@ -2,10 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package danescreator.diagram;
+package diagram;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -29,20 +30,21 @@ public class DiagramMouseAdapter extends MouseAdapter
       x = e.getX();
       y = e.getY();
       
-      /*
-      if (SwingUtilities.isLeftMouseButton  (e) )
-          System.out.println("lavy "+x+" "+y);
-      if (SwingUtilities.isRightMouseButton   (e) )
-          System.out.println("pravy "+x+" "+y);
-      if (SwingUtilities.isMiddleMouseButton  (e) )
-          System.out.println("stredny "+x+" "+y);
-      */
+ 
+    
+       
+      if (SwingUtilities.isLeftMouseButton  (e) ) {
+            graphTest.pridajMiesto(x, y);
+        }
+
+      if (SwingUtilities.isRightMouseButton   (e) ) {
+            graphTest.pridajHranu(x, y);
+        }
+      /*if (SwingUtilities.isMiddleMouseButton  (e) )
+          System.out.println("stredny "+x+" "+y);*/
       
-      //    kde som klikol;
-      //    cim som klikol;
       
-      // Pridaj miesto / hranu do Petriho siete
-      
+      graphTest.repaint();
     }
 /*
       @Override

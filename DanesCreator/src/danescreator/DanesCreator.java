@@ -4,6 +4,7 @@
  */
 package danescreator;
 
+import diagram.DiagramController;
 import javax.swing.JFrame;
 
 /**
@@ -16,6 +17,16 @@ public class DanesCreator {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        JFrame hlavneOkno = new MainFrame();
+        /*
+        CalcModel      model      = new CalcModel();
+        CalcView       view       = new CalcView(model);
+        CalcController controller = new CalcController(model, view);
+        */
+        
+        // MVC
+        PetrihoSiet         model       =   new PetrihoSiet("Nasa siet");
+        MainFrame           view        =   new MainFrame(model);
+        DiagramController   controller  =   new DiagramController(model,view);
+        
     }
 }

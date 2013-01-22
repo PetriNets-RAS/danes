@@ -2,10 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package danescreator.diagram;
+package diagram;
 
-import danescreator.diagram.DiagramPanel;
-import java.awt.Container;
+import danescreator.PetrihoSiet;
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
 
@@ -15,12 +14,12 @@ import javax.swing.JScrollPane;
  */
 public class DiagramSrollPane extends JScrollPane{
 
-    private DiagramPanel graphPanel;
+    //private DiagramPanel graphPanel;
     
-    public DiagramSrollPane() {
+    public DiagramSrollPane(PetrihoSiet pa_petriho_siet) {
         super();
         setPreferredSize(new Dimension(400, 400));
-        this.graphPanel=new DiagramPanel();        
+        DiagramPanel    graphPanel=new DiagramPanel(pa_petriho_siet);        
         setViewportView(graphPanel);
  /*       Container container = getContentPane();
         container.setLayout(new BorderLayout());
