@@ -8,7 +8,7 @@ import java.awt.Color;
 
 /**
  *
- * @author Atarin
+ * @author Michal Skovajsa
  */
 public class Prvok {
     
@@ -17,6 +17,10 @@ public class Prvok {
     private Color farba;
     private int velkostPisma;
     
+        
+     /**
+     * @Konstruktor triedy Prvok
+     */
     public Prvok(String paNazov){
         this.nazov=paNazov;
     }

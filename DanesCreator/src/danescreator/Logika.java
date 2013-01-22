@@ -6,14 +6,20 @@ package danescreator;
 
 /**
  *
- * @author Atarin
+ * @author Michal Skovajsa
  */
 public class Logika {
-    
+        
+     /**
+     * @Konstruktor triedy Logika
+     */
     public Logika(){
         
     }
     
+    /**
+     * @metoda, ktora skontroluje hranu, ci moze byt platna
+     */
     public boolean skontrolujHranu(Hrana paHrana){
     
         Prvok p1=paHrana.getVstupneMiesto();

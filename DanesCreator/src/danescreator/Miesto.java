@@ -4,7 +4,6 @@
  */
 package danescreator;
 
-import java.awt.Color;
 
 /**
  *
@@ -15,7 +14,10 @@ public class Miesto extends Prvok{
     private int kapacita;
     private int sirka;
     private int vyska;
-    
+        
+     /**
+     * @Konstruktor triedy Miesto
+     */
     public Miesto(String paNazov){
         super(paNazov);
         this.sirka=50;

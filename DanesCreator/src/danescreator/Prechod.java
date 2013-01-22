@@ -6,11 +6,14 @@ package danescreator;
 
 /**
  *
- * @author Atarin
+ * @author Michal Skovajsa
  */
 public class Prechod extends Prvok{
     
-    
+        
+     /**
+     * @Konstruktor triedy Prechod
+     */
     public Prechod(String paNazov){
         super(paNazov);
     }

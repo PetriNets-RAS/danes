@@ -6,13 +6,16 @@ package danescreator;
 
 /**
  *
- * @author Atarin
+ * @author Michal Skovajsa
  */
 public class Hrana extends Prvok {
 
     private Prvok vystupneMiesto;
     private Prvok vstupneMiesto;
     
+     /**
+     * @Konstruktor triedy Hrana
+     */
     public Hrana(String paNazov, Prvok paVystupneMiesto, Prvok paVstupneMiesto) {
         super(paNazov);
         this.vstupneMiesto=paVstupneMiesto;

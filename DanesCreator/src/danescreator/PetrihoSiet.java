@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 /**
  *
- * @author Atarin
+ * @author Michal Skovajsa
  */
 public class PetrihoSiet {
 
@@ -17,6 +17,9 @@ public class PetrihoSiet {
     private ArrayList<Hrana> listHran;
     private String nazov;
 
+     /**
+     * @Konstruktor triedy PetrihoSiet
+     */
     public PetrihoSiet(String paNazov) {
         this.nazov = paNazov;
         this.listMiest = new ArrayList<>();
@@ -24,6 +27,9 @@ public class PetrihoSiet {
         this.listPrechodov = new ArrayList<>();
     }
 
+    /**
+     * @Prida miesto do Petriho siete
+     */
     public boolean pridajMiesto(Miesto paMiesto) {
         for (Miesto prechMiesto : getListMiest()) {
             if (prechMiesto.getNazov().equals(paMiesto.getNazov())) {
@@ -34,6 +40,9 @@ public class PetrihoSiet {
         return true;
     }
 
+    /**
+     * @Odstrani miesto z Petriho siete
+     */
     public boolean odstranMiesto(String paNazov) {
         for (Miesto prechMiesto : getListMiest()) {
             if (prechMiesto.getNazov().equals(paNazov)) {
@@ -44,6 +53,9 @@ public class PetrihoSiet {
         return false;
     }
 
+    /**
+     * @Prida prechod do Petriho siete
+     */
     public boolean pridajPrechod(Prechod paPrechod) {
         for (Prechod prechPrechod : listPrechodov) {
             if (prechPrechod.getNazov().equals(paPrechod.getNazov())) {
@@ -54,6 +66,9 @@ public class PetrihoSiet {
         return true;
     }
 
+    /**
+     * @Odstrani prechod z Petriho siete
+     */
     public boolean odstranPrechod(String paNazov) {
         for (Prechod prechPrechod : listPrechodov) {
             if (prechPrechod.getNazov().equals(paNazov)) {
@@ -63,8 +78,12 @@ public class PetrihoSiet {
         }
         return false;
     }
-    
-        public boolean pridajHranu(Hrana paHrana) {
+
+        
+     /**
+     * @Prida hranu do Petriho siete
+     */
+    public boolean pridajHranu(Hrana paHrana) {
         for (Hrana prechHrana : listHran) {
             if (prechHrana.getNazov().equals(paHrana.getNazov())) {
                 return false;
@@ -73,7 +92,10 @@ public class PetrihoSiet {
         listHran.add(paHrana);
         return true;
     }
-
+    
+     /**
+     * @Odstrani hranu z Petriho siete
+     */
     public boolean odstranHranu(String paNazov) {
         for (Hrana prechHrana : listHran) {
             if (prechHrana.getNazov().equals(paNazov)) {
