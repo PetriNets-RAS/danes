@@ -99,7 +99,6 @@ public class DiagramPanel extends javax.swing.JPanel {
                 nakresliPrechod(x.getX(), x.getY());
             }
             
-            nakresliMiesto(2, 2);
         }
         
     }
