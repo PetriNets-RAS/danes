@@ -4,6 +4,7 @@
  */
 package danescreator;
 
+import danescreator.diagram.DiagramSrollPane;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import javax.swing.JFileChooser;
@@ -21,7 +22,7 @@ public class MainFrame extends javax.swing.JFrame {
         // Panel s grafom         
         Container container = getContentPane();
         container.setLayout(new BorderLayout());
-        container.add(new GraphPanel(), BorderLayout.CENTER);
+        container.add(new DiagramSrollPane(), BorderLayout.CENTER);
 
         pack();
         
