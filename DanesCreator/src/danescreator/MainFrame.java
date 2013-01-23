@@ -4,6 +4,8 @@
  */
 package danescreator;
 
+import diagram.DiagramController;
+import diagram.DiagramSrollPane;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import javax.swing.JFileChooser;
@@ -16,19 +18,20 @@ public class MainFrame extends javax.swing.JFrame {
 
     /**
      * Creates new form MainFrame
-     */
-    public MainFrame() {        
-        // Panel s grafom         
+     */    
+    
+    public MainFrame(PetrihoSiet pa_petrihoSiet) {        
+        super();  
+        // Panel s grafom            
         Container container = getContentPane();
         container.setLayout(new BorderLayout());
-        container.add(new GraphPanel(), BorderLayout.CENTER);
+        container.add(new DiagramSrollPane(pa_petrihoSiet), BorderLayout.CENTER);
 
         pack();
         
         initComponents();
         setTitle("Danes Creator");
-        setSize(800, 600);
-        setVisible(true);     
+        setSize(800, 600);        
         
       
     }
@@ -131,7 +134,7 @@ public class MainFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void exitItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitItemActionPerformed
-        // TODO add your handling code here:
+        System.exit(0);        // TODO add your handling code here:
     }//GEN-LAST:event_exitItemActionPerformed
 
     private void saveAsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsItemActionPerformed
@@ -171,7 +174,7 @@ public class MainFrame extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainFrame().setVisible(true);
+                //new MainFrame().setVisible(true);
             }
         });
     }
