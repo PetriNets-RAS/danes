@@ -44,9 +44,9 @@ public class PetriNet {
      * @Delete a place from Petri Net
      */
     public boolean deletePlace(String paName) {
-        for (Place prechMiesto : listOfPlaces) {
-            if (prechMiesto.getName().equals(paName)) {
-                listOfPlaces.remove(prechMiesto);
+        for (Place actPlace : listOfPlaces) {
+            if (actPlace.getName().equals(paName)) {
+                listOfPlaces.remove(actPlace);
                 return true;
             }
         }
@@ -57,8 +57,8 @@ public class PetriNet {
      * @Add a transition to the Petri net
      */
     public boolean addTransition(Transition paTransition) {
-        for (Transition prechPrechod : listOfTransitions) {
-            if (prechPrechod.getName().equals(paTransition.getName())) {
+        for (Transition actPlace : listOfTransitions) {
+            if (actPlace.getName().equals(paTransition.getName())) {
                 return false;
             }
         }
@@ -84,8 +84,8 @@ public class PetriNet {
      * @Add an arc to the Petri net
      */
     public boolean addArc(Arc paArc) {
-        for (Arc prechHrana : getListOfArcs()) {
-            if (prechHrana.getName().equals(paArc.getName())) {
+        for (Arc actArc : listOfArcs) {
+            if (actArc.getName().equals(paArc.getName())) {
                 return false;
             }
         }
