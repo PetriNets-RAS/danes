@@ -2,24 +2,42 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package danescreator;
+package Core;
+
+import Core.Element;
+
 
 /**
  *
  * @author Michal Skovajsa
  */
-public class Transition extends Element{
-    
+public class Place extends Element{
+
+    private int capacity;
     private int width;
     private int height;
         
      /**
      * @Class constructor.
      */
-    public Transition(String paNazov){
-        super(paNazov);
-        width=45;
-        height=25;
+    public Place(String paName){
+        super(paName);
+        this.width=50;
+        this.height=35;
+    }
+
+    /**
+     * @return the capacity
+     */
+    public int getCapacity() {
+        return capacity;
+    }
+
+    /**
+     * @param capacity the capacity to set
+     */
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     /**
@@ -49,5 +67,5 @@ public class Transition extends Element{
     public void setHeight(int height) {
         this.height = height;
     }
-
+    
 }

@@ -5,7 +5,7 @@
 package diagram;
 
 import danescreator.MainFrame;
-import danescreator.PetriNet;
+import Core.PetriNet;
 
 /**
  *

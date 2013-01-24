@@ -4,11 +4,11 @@
  */
 package diagram;
 
-import danescreator.Arc;
-import danescreator.Place;
-import danescreator.PetriNet;
-import danescreator.Transition;
-import danescreator.Element;
+import Core.Arc;
+import Core.Place;
+import Core.PetriNet;
+import Core.Transition;
+import Core.Element;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;

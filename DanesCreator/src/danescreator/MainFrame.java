@@ -4,6 +4,7 @@
  */
 package danescreator;
 
+import Core.PetriNet;
 import diagram.DiagramController;
 import diagram.DiagramSrollPane;
 import java.awt.BorderLayout;

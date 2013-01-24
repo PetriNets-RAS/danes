@@ -4,7 +4,7 @@
  */
 package diagram;
 
-import danescreator.Element;
+import Core.Element;
 
 /**
  *

@@ -4,7 +4,7 @@
  */
 package diagram;
 
-import danescreator.PetriNet;
+import Core.PetriNet;
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
 

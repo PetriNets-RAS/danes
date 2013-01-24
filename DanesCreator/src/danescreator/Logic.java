@@ -4,6 +4,11 @@
  */
 package danescreator;
 
+import Core.Transition;
+import Core.Place;
+import Core.Element;
+import Core.Arc;
+
 /**
  *
  * @author Michal Skovajsa

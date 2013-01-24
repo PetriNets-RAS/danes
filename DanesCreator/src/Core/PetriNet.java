@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package danescreator;
+package Core;
 
+import Core.Arc;
 import java.util.ArrayList;
 
 /**
