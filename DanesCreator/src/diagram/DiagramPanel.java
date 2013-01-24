@@ -4,11 +4,11 @@
  */
 package diagram;
 
-import danescreator.Hrana;
-import danescreator.Miesto;
-import danescreator.PetrihoSiet;
-import danescreator.Prechod;
-import danescreator.Prvok;
+import danescreator.Arc;
+import danescreator.Place;
+import danescreator.PetriNet;
+import danescreator.Transition;
+import danescreator.Element;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -26,7 +26,7 @@ public class DiagramPanel extends javax.swing.JPanel {
     private int                     rozmerPrvku;
     private DiagramMouseAdapter     mouseAdapter;    
     
-    private PetrihoSiet             petrihoSiet;
+    private PetriNet             petrihoSiet;
     private DiagramPetrihoSiet      diagramPerihosieSiet;
     
     private Graphics2D              g2d;
@@ -34,7 +34,7 @@ public class DiagramPanel extends javax.swing.JPanel {
      * Creates new form GraphPanel
      */
     
-    public DiagramPanel(PetrihoSiet pa_petrihoSiet) {                      
+    public DiagramPanel(PetriNet pa_petrihoSiet) {                      
         this.petrihoSiet=pa_petrihoSiet;
         this.diagramPerihosieSiet=new DiagramPetrihoSiet();
         // Max sirka,vyska = 1000x1000
@@ -68,13 +68,13 @@ public class DiagramPanel extends javax.swing.JPanel {
     }
    
     public void nakresliMiesto(int stlpec,int riadok){
-        // Miesto / Kruh
+        // Place / Kruh
         g2d.setColor(new Color(0, 0, 0));
         g2d.fill(new Ellipse2D.Double(stlpec*rozmerPrvku,riadok*rozmerPrvku,rozmerPrvku,rozmerPrvku));        
     }
 
     public void nakresliPrechod(int stlpec,int riadok){
-        // Prechod / Obdlznik
+        // Transition / Obdlznik
         g2d.setColor(new Color(0, 0, 0));
         g2d.fill(new Rectangle2D.Float(stlpec*rozmerPrvku+12,riadok*rozmerPrvku,25,rozmerPrvku));                
     }
@@ -90,11 +90,11 @@ public class DiagramPanel extends javax.swing.JPanel {
         //petrihoSiet.getListPrechodov();
         for (DiagramPrvok x : diagramPerihosieSiet.getDiagramPrvky() ) 
         {
-            if (x.getPrvok()instanceof Miesto)
+            if (x.getPrvok()instanceof Place)
             {
                 nakresliMiesto(x.getX(), x.getY());
             }
-            if (x.getPrvok()instanceof Prechod)
+            if (x.getPrvok()instanceof Transition)
             {
                 nakresliPrechod(x.getX(), x.getY());
             }
@@ -105,10 +105,10 @@ public class DiagramPanel extends javax.swing.JPanel {
     
     public void pridajMiesto(int x,int y)       
     {
-        this.diagramPerihosieSiet.pridajDiagramPrvok(new DiagramPrvok(new Miesto("test"), x/rozmerPrvku, y/rozmerPrvku));
+        this.diagramPerihosieSiet.pridajDiagramPrvok(new DiagramPrvok(new Place("test"), x/rozmerPrvku, y/rozmerPrvku));
     }
     public void pridajHranu (int x, int y)      
     {
-        this.diagramPerihosieSiet.pridajDiagramPrvok(new DiagramPrvok(new Prechod("test"), x/rozmerPrvku, y/rozmerPrvku));
+        this.diagramPerihosieSiet.pridajDiagramPrvok(new DiagramPrvok(new Transition("test"), x/rozmerPrvku, y/rozmerPrvku));
     }
 }

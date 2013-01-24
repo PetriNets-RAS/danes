@@ -4,7 +4,7 @@
  */
 package diagram;
 
-import danescreator.PetrihoSiet;
+import danescreator.PetriNet;
 import java.awt.Dimension;
 import javax.swing.JScrollPane;
 
@@ -16,7 +16,7 @@ public class DiagramSrollPane extends JScrollPane{
 
     //private DiagramPanel graphPanel;
     
-    public DiagramSrollPane(PetrihoSiet pa_petriho_siet) {
+    public DiagramSrollPane(PetriNet pa_petriho_siet) {
         super();
         setPreferredSize(new Dimension(400, 400));
         DiagramPanel    graphPanel=new DiagramPanel(pa_petriho_siet);        

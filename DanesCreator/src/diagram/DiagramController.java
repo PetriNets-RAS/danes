@@ -5,24 +5,24 @@
 package diagram;
 
 import danescreator.MainFrame;
-import danescreator.PetrihoSiet;
+import danescreator.PetriNet;
 
 /**
  *
  * @author marek
  */
 public class DiagramController {
-    private PetrihoSiet petrihoSiet;
+    private PetriNet petrihoSiet;
     private MainFrame   mainFrame;
 
-    public DiagramController(PetrihoSiet pa_petrihoSiet, MainFrame pa_mainFrame) {
+    public DiagramController(PetriNet pa_petrihoSiet, MainFrame pa_mainFrame) {
         this.petrihoSiet    = pa_petrihoSiet;
         this.mainFrame      = pa_mainFrame;
         
         this.mainFrame.setVisible(true);
     }
 /*
-    public PetrihoSiet getPetrihoSiet() {
+    public PetriNet getPetrihoSiet() {
         return petrihoSiet;
     }
    */

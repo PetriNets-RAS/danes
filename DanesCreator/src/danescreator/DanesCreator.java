@@ -24,7 +24,7 @@ public class DanesCreator {
         */
         
         // MVC
-        PetrihoSiet         model       =   new PetrihoSiet("Nasa siet");
+        PetriNet         model       =   new PetriNet("Nasa siet");
         MainFrame           view        =   new MainFrame(model);
         DiagramController   controller  =   new DiagramController(model,view);
         

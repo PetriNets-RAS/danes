@@ -4,24 +4,24 @@
  */
 package diagram;
 
-import danescreator.Prvok;
+import danescreator.Element;
 
 /**
  *
  * @author marek
  */
 public class DiagramPrvok {
-    private Prvok prvok;
+    private Element prvok;
     private int x;
     private int y;
 
-    public DiagramPrvok(Prvok prvok, int x, int y) {
+    public DiagramPrvok(Element prvok, int x, int y) {
         this.prvok = prvok;
         this.x = x;
         this.y = y;
     }
 
-    public Prvok getPrvok() {
+    public Element getPrvok() {
         return prvok;
     }
 

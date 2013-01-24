@@ -20,7 +20,7 @@ public class MainFrame extends javax.swing.JFrame {
      * Creates new form MainFrame
      */    
     
-    public MainFrame(PetrihoSiet pa_petrihoSiet) {        
+    public MainFrame(PetriNet pa_petrihoSiet) {        
         super();  
         // Panel s grafom            
         Container container = getContentPane();
