@@ -119,30 +119,30 @@ public class PetriNet {
             }
         }
         listOfArcs.add(paArc);
-        
-        if(paArc.getOutElement() instanceof Transition){
-            Transition tempTran=(Transition) paArc.getOutElement();
-            Place tempPla=(Place) paArc.getInElement();
-            
+
+        if (paArc.getOutElement() instanceof Transition) {
+            Transition tempTran = (Transition) paArc.getOutElement();
+            Place tempPla = (Place) paArc.getInElement();
+
             tempTran.getListOfOutArcs().add(paArc);
             tempTran.getListOfOutPlaces().add(tempPla);
-            
+
             tempPla.getListOfInArcs().add(paArc);
             tempPla.getListOfInTransitions().add(tempTran);
             return true;
         }
-        
-        if(paArc.getInElement() instanceof Transition){
-            Transition tempTran=(Transition) paArc.getInElement();
-            Place tempPla=(Place) paArc.getOutElement();
-            
+
+        if (paArc.getInElement() instanceof Transition) {
+            Transition tempTran = (Transition) paArc.getInElement();
+            Place tempPla = (Place) paArc.getOutElement();
+
             tempTran.getListOfInArcs().add(paArc);
             tempTran.getListOfInPlaces().add(tempPla);
-            
+
             tempPla.getListOfOutArcs().add(paArc);
             tempPla.getListOfOutTransitions().add(tempTran);
         }
-        
+
         return true;
     }
 
@@ -152,29 +152,27 @@ public class PetriNet {
     public boolean deleteArc(String paName) {
         for (Arc actArc : listOfArcs) {
             if (actArc.getName().equals(paName)) {
-                if(actArc.getOutElement() instanceof Transition){
-                    Transition tempTr=(Transition) actArc.getOutElement();
-                    Place tempPl=(Place) actArc.getInElement();
-                    
+                if (actArc.getOutElement() instanceof Transition) {
+                    Transition tempTr = (Transition) actArc.getOutElement();
+                    Place tempPl = (Place) actArc.getInElement();
+
                     tempTr.getListOfOutArcs().remove(actArc);
                     tempTr.getListOfOutPlaces().remove(tempPl);
-                                      
+
                     tempPl.getListOfInArcs().remove(actArc);
-                    tempPl.getListOfInTransitions().remove(tempTr);                   
-                    
+                    tempPl.getListOfInTransitions().remove(tempTr);
                 }
-                if(actArc.getInElement() instanceof Transition){
-                    Transition tempTr=(Transition) actArc.getInElement();
-                    Place tempPl=(Place) actArc.getOutElement();
-                    
+                if (actArc.getInElement() instanceof Transition) {
+                    Transition tempTr = (Transition) actArc.getInElement();
+                    Place tempPl = (Place) actArc.getOutElement();
+
                     tempTr.getListOfInArcs().remove(actArc);
                     tempTr.getListOfInPlaces().remove(tempPl);
-                    
+
                     tempPl.getListOfOutArcs().remove(actArc);
                     tempPl.getListOfOutTransitions().remove(tempTr);
-                    
                 }
-                
+
                 listOfArcs.remove(actArc);
                 return true;
             }
