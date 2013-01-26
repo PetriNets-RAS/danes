@@ -4,6 +4,7 @@
  */
 package Core;
 
+import GUI.DiagramElement;
 import java.awt.Color;
 
 /**
@@ -17,6 +18,7 @@ public class Element {
     private Color color;
     private int fontSize;
     
+    private DiagramElement diagramElement;
         
      /**
      * @Class constructor.
@@ -79,6 +81,14 @@ public class Element {
      */
     public void setFontSize(int fontSize) {
         this.fontSize = fontSize;
+    }
+
+    public DiagramElement getDiagramElement() {
+        return diagramElement;
+    }
+
+    public void setDiagramElement(DiagramElement diagramElement) {
+        this.diagramElement = diagramElement;
     }
     
 }

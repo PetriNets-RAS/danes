@@ -4,8 +4,9 @@
  */
 package danescreator;
 
+import GUI.View;
 import Core.PetriNet;
-import diagram.DiagramController;
+import GUI.Controller;
 import javax.swing.JFrame;
 
 /**
@@ -25,9 +26,10 @@ public class DanesCreator {
         */
         
         // MVC
-        PetriNet         model       =   new PetriNet("Nasa siet");
-        MainFrame           view        =   new MainFrame(model);
-        DiagramController   controller  =   new DiagramController(model,view);
+        PetriNet     model       =   new PetriNet("Empty");
+        Controller   controller  =   new Controller(model);        
+        View         view        =   new View(model,controller);
+        
         
     }
 }

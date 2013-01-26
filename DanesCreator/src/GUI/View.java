@@ -2,39 +2,45 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package danescreator;
+package GUI;
 
+import Core.Element;
 import Core.PetriNet;
-import diagram.DiagramController;
-import diagram.DiagramSrollPane;
-import java.awt.BorderLayout;
-import java.awt.Container;
+import Core.Place;
+import Core.Transition;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author marek
  */
-public class MainFrame extends javax.swing.JFrame {
+public class View extends javax.swing.JFrame {
 
-    /**
-     * Creates new form MainFrame
-     */    
+    private PetriNet        petriNet;
+    private DiagramPanel    diagramPanel;
     
-    public MainFrame(PetriNet pa_petrihoSiet) {        
+    private Controller  controller;
+    
+    public View(PetriNet pa_petriNet,Controller pa_controller) {        
         super();  
-        // Panel s grafom            
-        Container container = getContentPane();
-        container.setLayout(new BorderLayout());
-        container.add(new DiagramSrollPane(pa_petrihoSiet), BorderLayout.CENTER);
-
-        pack();
-        
+        this.petriNet       =pa_petriNet;  
+        this.controller     =pa_controller;
+        this.diagramPanel   =null;
         initComponents();
-        setTitle("Danes Creator");
-        setSize(800, 600);        
         
-      
+        // Custom init 
+        setTitle("Danes Creator");
+        setSize(800, 600); 
+        setVisible(true);
     }
 
     /**
@@ -49,6 +55,7 @@ public class MainFrame extends javax.swing.JFrame {
         sideMenu = new javax.swing.JPanel();
         ellipseButton = new javax.swing.JToggleButton();
         rectangleButton = new javax.swing.JToggleButton();
+        diagramScrollPane = new javax.swing.JScrollPane();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newProjectItem = new javax.swing.JMenuItem();
@@ -84,12 +91,19 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 330, Short.MAX_VALUE))
+                .addGap(0, 351, Short.MAX_VALUE))
         );
+
+        diagramScrollPane.setBorder(null);
 
         fileMenu.setText("File");
 
         newProjectItem.setText("Nova siet");
+        newProjectItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newProjectItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(newProjectItem);
 
         saveItem.setText("Uložiť");
@@ -123,12 +137,18 @@ public class MainFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 316, Short.MAX_VALUE)
+                .addGap(44, 44, 44)
+                .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
+                .addGap(49, 49, 49)
                 .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -145,41 +165,15 @@ public class MainFrame extends javax.swing.JFrame {
         if (showOpenDialog != JFileChooser.APPROVE_OPTION) return; 
     }//GEN-LAST:event_saveAsItemActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
+        // Create and display new panel
+        this.diagramPanel   =   new DiagramPanel(petriNet);
+        diagramScrollPane.setViewportView(this.diagramPanel);
+    }//GEN-LAST:event_newProjectItemActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                //new MainFrame().setVisible(true);
-            }
-        });
-    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenuItem;
     private javax.swing.JToggleButton ellipseButton;
     private javax.swing.JMenuItem exitItem;
@@ -191,4 +185,122 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel sideMenu;
     private javax.swing.JMenuBar topMenu;
     // End of variables declaration//GEN-END:variables
+class DiagramPanel extends javax.swing.JPanel {
+
+    private int                     elementWidth;
+    private DiagramMouseAdapter     mouseAdapter;    
+    
+    private PetriNet                petriNet;
+    
+    private Graphics2D              g2d;
+    /**
+     * Creates new form GraphPanel
+     */
+    
+    public DiagramPanel(PetriNet pa_petriNet) {                      
+        this.petriNet=pa_petriNet;
+        // Max sirka,vyska = 1000x1000
+        this.elementWidth    =   50; // 50 Px jeden prvok
+        this.mouseAdapter   =   new DiagramMouseAdapter(); 
+                
+        // Listeneri
+        addMouseListener(mouseAdapter);
+   
+        setPreferredSize(new Dimension(1000, 1000));
+        setBackground(Color.WHITE);
+    }
+    
+    @Override
+    public void paint(Graphics g) 
+    {
+        super.paint(g);
+        this.g2d = (Graphics2D) g;
+        
+        drawDiagramPetriNet();
+
+    }
+   
+    public void drawPlace(int stlpec,int riadok){
+        // Place / Ring
+        g2d.setColor(new Color(0, 0, 0));
+        g2d.fill(new Ellipse2D.Double(stlpec*elementWidth,riadok*elementWidth,elementWidth,elementWidth));        
+    }
+
+    public void drawTransition(int stlpec,int riadok){
+        // Transition / Rectangle
+        g2d.setColor(new Color(0, 0, 0));
+        g2d.fill(new Rectangle2D.Float(stlpec*elementWidth+12,riadok*elementWidth,25,elementWidth));                
+    }
+    
+    
+   
+    public void drawDiagramPetriNet()                  
+    {
+        // Draw all places
+        for(Element e:petriNet.getListOfPlaces())
+        {            
+            drawPlace(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+        }
+        
+        // Draw all transitions
+        for(Element e:petriNet.getListOfTransitions())
+        {            
+            drawTransition(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+        }        
+        
+    }
+    
+
+    public void mouseLeftClick(int x, int y) {  
+        
+        // Creating new place
+        if (ellipseButton.isSelected())
+        {        
+            int x_location=x/elementWidth;
+            int y_location=y/elementWidth;
+            controller.addPlace("Place",x_location,y_location);
+        }    
+            
+        // Creating new transition
+        if (rectangleButton.isSelected())
+        {        
+            int x_location=x/elementWidth;
+            int y_location=y/elementWidth;   
+            controller.addTransition("Transition", x_location, y_location);                   
+        }
+        
+        repaint();    
+    }
+
+}
+
+
+public class DiagramMouseAdapter extends MouseAdapter 
+{
+    private int x;
+    private int y;
+
+    public DiagramMouseAdapter()    {}
+    
+    @Override
+    public void mousePressed(MouseEvent e) 
+    {
+      // Save current
+      x = e.getX();
+      y = e.getY();
+      
+      // Check for click button
+      if (SwingUtilities.isLeftMouseButton  (e) ) {
+        diagramPanel.mouseLeftClick(x,y);
+        }
+    /*  if (SwingUtilities.isRightMouseButton   (e) ) {
+        diagramPanel.mouseRightClick(x,y);
+        
+    }
+      /*if (SwingUtilities.isMiddleMouseButton  (e) )
+          System.out.println("stredny "+x+" "+y);*/
+    }
+  }
+    
+
 }

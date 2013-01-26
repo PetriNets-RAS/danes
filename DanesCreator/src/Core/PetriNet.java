@@ -214,4 +214,22 @@ public class PetriNet {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public boolean isLocationEmpty(int x,int y)
+    {
+        for (Element e:listOfPlaces)
+        {
+            if (e.getDiagramElement().getX()==x &&
+                e.getDiagramElement().getY()==y  )
+                return false;
+        }
+        for (Element e:listOfTransitions)
+        {
+            if (e.getDiagramElement().getX()==x &&
+                e.getDiagramElement().getY()==y  )
+                return false;
+        }    
+        
+        return true;        
+    }
 }
