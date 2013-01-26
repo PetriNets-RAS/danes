@@ -17,7 +17,7 @@ public class Arc extends Element {
      /**
      * @Class constructor.
      */
-    public Arc(String paName, Element paInElement, Element paOutElement) {
+    public Arc(String paName, Element paOutElement, Element paInElement) {
         super(paName);
         this.outElement=paOutElement;
         this.inElement=paInElement;
