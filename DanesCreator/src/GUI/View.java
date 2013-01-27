@@ -55,6 +55,7 @@ public class View extends javax.swing.JFrame {
         }
         
         this.setIconImage(icon);
+        sideMenu.setVisible(false);
         // Custom init 
         setTitle("Danes Creator");
         setSize(800, 600); 
@@ -213,6 +214,7 @@ public class View extends javax.swing.JFrame {
         controller.setModel(p);
         this.diagramPanel   =   new DiagramPanel(p);
         diagramScrollPane.setViewportView(this.diagramPanel);
+        sideMenu.setVisible(true);
     }//GEN-LAST:event_newProjectItemActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
