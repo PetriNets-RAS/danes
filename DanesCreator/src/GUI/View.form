@@ -11,7 +11,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="newProjectItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Nova siet"/>
+                <Property name="text" type="java.lang.String" value="New net"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newProjectItemActionPerformed"/>
@@ -19,12 +19,12 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Ulo&#x17e;i&#x165;"/>
+                <Property name="text" type="java.lang.String" value="Save"/>
               </Properties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveAsItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Ulo&#x17e;i&#x165; ako ..."/>
+                <Property name="text" type="java.lang.String" value="Save as ..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="saveAsItemActionPerformed"/>
@@ -32,7 +32,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="exitItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Koniec"/>
+                <Property name="text" type="java.lang.String" value="Exit"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="exitItemActionPerformed"/>
@@ -42,8 +42,17 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="editMenuItem">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
+            <Property name="text" type="java.lang.String" value="Export"/>
           </Properties>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="aboutUs">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="About us"/>
+          </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="aboutUsMouseClicked"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="aboutUsActionPerformed"/>
+          </Events>
         </Menu>
       </SubComponents>
     </Menu>

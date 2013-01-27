@@ -12,10 +12,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
+import java.io.Console;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
@@ -37,6 +43,18 @@ public class View extends javax.swing.JFrame {
         this.diagramPanel   =null;
         initComponents();
         
+        
+        String IconPath="C:\\Users\\Miso\\Documents\\NetBeansProjects\\danesClone\\DanesCreator\\Images\\icon.jpg";
+        BufferedImage icon = null;
+        try{
+            File iconFile = new File(IconPath);
+            icon = ImageIO.read(iconFile);
+        } 
+        catch (IOException e){
+            System.out.print("Image was not found");
+        }
+        
+        this.setIconImage(icon);
         // Custom init 
         setTitle("Danes Creator");
         setSize(800, 600); 
@@ -63,6 +81,7 @@ public class View extends javax.swing.JFrame {
         saveAsItem = new javax.swing.JMenuItem();
         exitItem = new javax.swing.JMenuItem();
         editMenuItem = new javax.swing.JMenu();
+        aboutUs = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -98,7 +117,7 @@ public class View extends javax.swing.JFrame {
 
         fileMenu.setText("File");
 
-        newProjectItem.setText("Nova siet");
+        newProjectItem.setText("New net");
         newProjectItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newProjectItemActionPerformed(evt);
@@ -106,10 +125,10 @@ public class View extends javax.swing.JFrame {
         });
         fileMenu.add(newProjectItem);
 
-        saveItem.setText("Uložiť");
+        saveItem.setText("Save");
         fileMenu.add(saveItem);
 
-        saveAsItem.setText("Uložiť ako ...");
+        saveAsItem.setText("Save as ...");
         saveAsItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 saveAsItemActionPerformed(evt);
@@ -117,7 +136,7 @@ public class View extends javax.swing.JFrame {
         });
         fileMenu.add(saveAsItem);
 
-        exitItem.setText("Koniec");
+        exitItem.setText("Exit");
         exitItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 exitItemActionPerformed(evt);
@@ -127,8 +146,21 @@ public class View extends javax.swing.JFrame {
 
         topMenu.add(fileMenu);
 
-        editMenuItem.setText("Edit");
+        editMenuItem.setText("Export");
         topMenu.add(editMenuItem);
+
+        aboutUs.setText("About us");
+        aboutUs.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                aboutUsMouseClicked(evt);
+            }
+        });
+        aboutUs.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                aboutUsActionPerformed(evt);
+            }
+        });
+        topMenu.add(aboutUs);
 
         setJMenuBar(topMenu);
 
@@ -173,8 +205,21 @@ public class View extends javax.swing.JFrame {
         diagramScrollPane.setViewportView(this.diagramPanel);
     }//GEN-LAST:event_newProjectItemActionPerformed
 
+    private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
+      AboutUs about = new AboutUs();
+      
+      about.setVisible(true);
+    }//GEN-LAST:event_aboutUsMouseClicked
+
+    private void aboutUsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutUsActionPerformed
+      AboutUs about = new AboutUs();
+      System.out.print("skuska");
+      about.setVisible(true);
+    }//GEN-LAST:event_aboutUsActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenu aboutUs;
     private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenuItem;
     private javax.swing.JToggleButton ellipseButton;
