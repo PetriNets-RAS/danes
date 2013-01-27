@@ -78,4 +78,64 @@ public class Controller {
         }   
     }
 
+    public void moveElement(int x_old_location, int y_old_location, int x_new_location, int y_new_location) {
+        // Source location is not empty
+        if (petriNet.isLocationEmpty(x_old_location, y_old_location))
+            return;
+        // Destination location is empty
+        if (!petriNet.isLocationEmpty(x_new_location, y_new_location))
+            return;
+        
+        Element e = getLocationElement(x_old_location, y_old_location);
+        e.setDiagramElement(new DiagramElement(x_new_location, y_new_location));            
+
+    }
+
+    public Element getLocationElement(int x, int y) {
+        // Place
+        for(Element e:petriNet.getListOfPlaces())
+        {
+            if (    e.getDiagramElement().getX()==x &&
+                    e.getDiagramElement().getY()==y )
+            {
+                return e;
+            }
+        }
+        // Transition
+        for(Element e:petriNet.getListOfTransitions())
+        {
+            if (    e.getDiagramElement().getX()==x &&
+                    e.getDiagramElement().getY()==y )
+            {
+                return e;
+            }
+        }  
+        
+        // Nothing found
+        return null;
+        
+    }
+
+    public void deleteElement(int x, int y) {
+        Element element=getLocationElement(x, y);
+        if (element==null)
+        {
+            return;
+        }
+        // Place
+        if (element instanceof Place)
+        {
+            petriNet.deletePlace(((Place)element).getName());
+        }
+        // Place
+        if (element instanceof Transition)
+        {
+            petriNet.deleteTransition(((Transition)element).getName());
+        }
+    }            
+
+    public void setModel(PetriNet petriNet) {
+        this.petriNet=petriNet;
+    }
+
 }

@@ -167,7 +167,9 @@ public class View extends javax.swing.JFrame {
 
     private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
         // Create and display new panel
-        this.diagramPanel   =   new DiagramPanel(petriNet);
+        PetriNet p=new PetriNet("Empty");
+        controller.setModel(p);
+        this.diagramPanel   =   new DiagramPanel(p);
         diagramScrollPane.setViewportView(this.diagramPanel);
     }//GEN-LAST:event_newProjectItemActionPerformed
 
@@ -193,19 +195,23 @@ class DiagramPanel extends javax.swing.JPanel {
     private PetriNet                petriNet;
     
     private Graphics2D              g2d;
+    
+    private Object                  draggedObject;
     /**
      * Creates new form GraphPanel
      */
     
     public DiagramPanel(PetriNet pa_petriNet) {                      
         this.petriNet=pa_petriNet;
-        // Max sirka,vyska = 1000x1000
+        this.draggedObject=null;
         this.elementWidth    =   50; // 50 Px jeden prvok
         this.mouseAdapter   =   new DiagramMouseAdapter(); 
                 
-        // Listeneri
+        // Click listener, drag listener
         addMouseListener(mouseAdapter);
+        addMouseMotionListener(mouseAdapter);        
    
+        // Max sirka,vyska = 1000x1000
         setPreferredSize(new Dimension(1000, 1000));
         setBackground(Color.WHITE);
     }
@@ -216,7 +222,8 @@ class DiagramPanel extends javax.swing.JPanel {
         super.paint(g);
         this.g2d = (Graphics2D) g;
         
-        drawDiagramPetriNet();
+        drawPetriNet();
+        drawDraggedObject();
 
     }
    
@@ -234,7 +241,7 @@ class DiagramPanel extends javax.swing.JPanel {
     
     
    
-    public void drawDiagramPetriNet()                  
+    public void drawPetriNet()                  
     {
         // Draw all places
         for(Element e:petriNet.getListOfPlaces())
@@ -250,9 +257,54 @@ class DiagramPanel extends javax.swing.JPanel {
         
     }
     
+    private void drawDraggedObject() {
+            // Nothing to draw
+            if (draggedObject==null)
+                return;
+            
+            // Rectangle 
+            if (draggedObject instanceof Rectangle2D)
+            {
+                int x=(int) ((Rectangle2D)draggedObject).getX();
+                int y=(int) ((Rectangle2D)draggedObject).getY();    
+
+                g2d.setColor(Color.GRAY);
+                g2d.fill((Rectangle2D)draggedObject);
+            }
+
+            // Ellipse
+            if (draggedObject instanceof Ellipse2D)
+            {
+                int x=(int) ((Ellipse2D)draggedObject).getX();
+                int y=(int) ((Ellipse2D)draggedObject).getY();    
+
+                g2d.setColor(Color.GRAY);
+                g2d.fill((Ellipse2D)draggedObject);
+            }
+        }    
 
     public void mouseLeftClick(int x, int y) {  
-        
+        // Select existing     
+        Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+        // Place               
+        if (currentElement instanceof Place)
+        {   
+            this.draggedObject=new Ellipse2D.Float(x, y, elementWidth, elementWidth);
+        }
+        // Transition
+        if (currentElement instanceof Transition)
+        {
+            this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth);            
+        }
+        // None exist or not creating mode
+        if (currentElement==null            || 
+            rectangleButton.isSelected()    || 
+            ellipseButton.  isSelected()     )
+        {
+            this.draggedObject=null;
+        }           
+           
+        // Create new        
         // Creating new place
         if (ellipseButton.isSelected())
         {        
@@ -271,6 +323,49 @@ class DiagramPanel extends javax.swing.JPanel {
         
         repaint();    
     }
+    
+    public void mouseRightClick(int x, int y) {  
+        // Select existing           
+        controller.deleteElement(x/elementWidth,y/elementWidth);
+        repaint();
+    }
+
+    private void mouseLeftDragged(int x, int y) {
+        // None
+        if (draggedObject==null)
+            return;
+
+        // Rectangle
+        if (draggedObject instanceof Rectangle2D)
+            draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth);
+        
+        // Ellipse
+        if (draggedObject instanceof Ellipse2D)
+            draggedObject=new Ellipse2D.Float(x, y, elementWidth, elementWidth);        
+
+        repaint();
+    }
+      
+    public void mouseLeftMove(int x_old, int y_old, int x_new, int y_new) {
+        // No buttons for adding choosen
+        if (!ellipseButton.isSelected() && !rectangleButton.isSelected())
+        {        
+            int x_old_location=x_old/elementWidth;
+            int y_old_location=y_old/elementWidth;
+            
+            int x_new_location=x_new/elementWidth;
+            int y_new_location=y_new/elementWidth;
+            
+            controller.moveElement(x_old_location,y_old_location,x_new_location,y_new_location);
+        }   
+        
+        draggedObject=null;
+        repaint();
+    }
+
+  
+
+        
 
 }
 
@@ -293,14 +388,36 @@ public class DiagramMouseAdapter extends MouseAdapter
       if (SwingUtilities.isLeftMouseButton  (e) ) {
         diagramPanel.mouseLeftClick(x,y);
         }
-    /*  if (SwingUtilities.isRightMouseButton   (e) ) {
+      if (SwingUtilities.isRightMouseButton   (e) ) {
         diagramPanel.mouseRightClick(x,y);
         
     }
       /*if (SwingUtilities.isMiddleMouseButton  (e) )
           System.out.println("stredny "+x+" "+y);*/
     }
-  }
     
+    @Override
+    public void mouseReleased(MouseEvent e)
+    {
+      // Object try to be moved LEFT click
+      if (SwingUtilities.isLeftMouseButton  (e) )
+      {
+        if (x != e.getX() ||     y != e.getY())
+        { 
+            diagramPanel.mouseLeftMove(x,y,e.getX(),e.getY());
+        }
+      }
+    }
+    
+     
+    @Override
+    public void mouseDragged(MouseEvent e) 
+    {
+        if (SwingUtilities.isLeftMouseButton  (e) ) 
+        {
+            diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
+        }        
+    }    
+  }
 
 }
