@@ -80,9 +80,9 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-              <Component id="diagramScrollPane" min="-2" pref="215" max="-2" attributes="0"/>
-              <EmptySpace pref="36" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="diagramScrollPane" pref="275" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="sideMenu" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -135,14 +135,25 @@
       <SubComponents>
         <Component class="javax.swing.JToggleButton" name="ellipseButton">
           <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new javax.swing.ImageIcon(&quot;..\\DanesCreator\\Images\\EllipseIcon.png&quot;)" type="code"/>
+            </Property>
             <Property name="toolTipText" type="java.lang.String" value="Pridat miesto"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="ellipseButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JToggleButton" name="rectangleButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="p"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new javax.swing.ImageIcon(&quot;..\\DanesCreator\\Images\\RectangleIcon.png&quot;)" type="code"/>
+            </Property>
             <Property name="toolTipText" type="java.lang.String" value="pridate priechod"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rectangleButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

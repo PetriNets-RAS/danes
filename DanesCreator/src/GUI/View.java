@@ -87,10 +87,21 @@ public class View extends javax.swing.JFrame {
 
         sideMenu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
+        ellipseButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\EllipseIcon.png"));
         ellipseButton.setToolTipText("Pridat miesto");
+        ellipseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ellipseButtonActionPerformed(evt);
+            }
+        });
 
-        rectangleButton.setText("p");
+        rectangleButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\RectangleIcon.png"));
         rectangleButton.setToolTipText("pridate priechod");
+        rectangleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rectangleButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout sideMenuLayout = new javax.swing.GroupLayout(sideMenu);
         sideMenu.setLayout(sideMenuLayout);
@@ -168,9 +179,9 @@ public class View extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
@@ -212,6 +223,14 @@ public class View extends javax.swing.JFrame {
     private void aboutUsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutUsActionPerformed
 
     }//GEN-LAST:event_aboutUsActionPerformed
+
+    private void ellipseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ellipseButtonActionPerformed
+        rectangleButton.setSelected(false);        // TODO add your handling code here:
+    }//GEN-LAST:event_ellipseButtonActionPerformed
+
+    private void rectangleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rectangleButtonActionPerformed
+        ellipseButton.setSelected(false);// TODO add your handling code here:
+    }//GEN-LAST:event_rectangleButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
