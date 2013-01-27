@@ -4,33 +4,18 @@
  */
 package GUI;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
-
 /**
  *
  * @author Miso
  */
-public class AboutUs extends javax.swing.JFrame {
+public class AboutUs extends javax.swing.JDialog {
 
     /**
      * Creates new form AboutUs
      */
-    public AboutUs() {
+    public AboutUs(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
-        String IconPath="C:\\Users\\Miso\\Documents\\NetBeansProjects\\danesClone\\DanesCreator\\Images\\icon.jpg";
-        BufferedImage icon = null;
-        try{
-            File iconFile = new File(IconPath);
-            icon = ImageIO.read(iconFile);
-        } 
-        catch (IOException e){
-            System.out.print("Image was not found");
-        }
-        
-        this.setIconImage(icon);
     }
 
     /**
@@ -46,23 +31,21 @@ public class AboutUs extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(255, 255, 255));
-        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setFocusable(false);
-        setFocusableWindowState(false);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("About us\n");
+        setBackground(java.awt.Color.white);
         setResizable(false);
 
-        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Miso\\Documents\\NetBeansProjects\\danesClone\\DanesCreator\\Images\\logo.jpg")); // NOI18N
         jLabel1.setText("jLabel1");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jTextArea1.setForeground(new java.awt.Color(51, 51, 51));
         jTextArea1.setRows(5);
-        jTextArea1.setText("\tAbout us\n\nSupervisor: Michal Zarany\n\nTeam: Michal Skovajsa\n          Marek Fronk\n          Michal Tomka");
-        jTextArea1.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        jTextArea1.setText("\tAbout us\n\nSupervisor: Michal Zarnay\n\nTeam: Michal Skovajsa\n           Marek Fronk\n           Michal Tomka");
+        jTextArea1.setAutoscrolls(false);
         jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -70,16 +53,16 @@ public class AboutUs extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
         );
 
         pack();
@@ -111,11 +94,18 @@ public class AboutUs extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(AboutUs.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-        
-        /* Create and display the form */
+
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AboutUs().setVisible(true);
+                AboutUs dialog = new AboutUs(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }

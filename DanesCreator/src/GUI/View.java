@@ -206,15 +206,12 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_newProjectItemActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
-      AboutUs about = new AboutUs();
-      
-      about.setVisible(true);
+        AboutUs about = new AboutUs(this, rootPaneCheckingEnabled);
+        about.setVisible(true);
     }//GEN-LAST:event_aboutUsMouseClicked
 
     private void aboutUsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aboutUsActionPerformed
-      AboutUs about = new AboutUs();
-      System.out.print("skuska");
-      about.setVisible(true);
+
     }//GEN-LAST:event_aboutUsActionPerformed
 
 
