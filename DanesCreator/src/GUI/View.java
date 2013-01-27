@@ -44,7 +44,7 @@ public class View extends javax.swing.JFrame {
         initComponents();
         
         
-        String IconPath="C:\\Users\\Miso\\Documents\\NetBeansProjects\\danesClone\\DanesCreator\\Images\\icon.jpg";
+        String IconPath="..\\DanesCreator\\Images\\icon.jpg";
         BufferedImage icon = null;
         try{
             File iconFile = new File(IconPath);
@@ -87,7 +87,6 @@ public class View extends javax.swing.JFrame {
 
         sideMenu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        ellipseButton.setText("m");
         ellipseButton.setToolTipText("Pridat miesto");
 
         rectangleButton.setText("p");
@@ -99,8 +98,8 @@ public class View extends javax.swing.JFrame {
             sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sideMenuLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2))
         );
@@ -170,8 +169,8 @@ public class View extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(44, 44, 44)
-                .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 223, Short.MAX_VALUE)
-                .addGap(49, 49, 49)
+                .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(

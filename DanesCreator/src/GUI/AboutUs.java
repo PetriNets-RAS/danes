@@ -36,8 +36,7 @@ public class AboutUs extends javax.swing.JDialog {
         setBackground(java.awt.Color.white);
         setResizable(false);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\Miso\\Documents\\NetBeansProjects\\danesClone\\DanesCreator\\Images\\logo.jpg")); // NOI18N
-        jLabel1.setText("jLabel1");
+        jLabel1.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\logo.jpg"));
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
@@ -62,7 +61,7 @@ public class AboutUs extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();

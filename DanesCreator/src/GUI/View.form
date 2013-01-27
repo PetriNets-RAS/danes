@@ -81,8 +81,8 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-              <Component id="diagramScrollPane" pref="223" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
+              <Component id="diagramScrollPane" min="-2" pref="215" max="-2" attributes="0"/>
+              <EmptySpace pref="36" max="32767" attributes="0"/>
               <Component id="sideMenu" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -113,8 +113,8 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="ellipseButton" min="-2" pref="44" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="ellipseButton" min="-2" pref="57" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="rectangleButton" min="-2" pref="50" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
               </Group>
@@ -124,7 +124,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="ellipseButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
+                      <Component id="ellipseButton" alignment="0" min="-2" pref="23" max="-2" attributes="0"/>
                       <Component id="rectangleButton" alignment="3" min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="0" pref="351" max="32767" attributes="0"/>
@@ -135,7 +135,6 @@
       <SubComponents>
         <Component class="javax.swing.JToggleButton" name="ellipseButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="m"/>
             <Property name="toolTipText" type="java.lang.String" value="Pridat miesto"/>
           </Properties>
         </Component>
