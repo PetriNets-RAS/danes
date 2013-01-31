@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package avltree;
+package AVL_Tree;
 
 import java.util.LinkedList;
 import java.util.Queue;
