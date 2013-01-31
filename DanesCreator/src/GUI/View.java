@@ -4,10 +4,12 @@
  */
 package GUI;
 
+import Core.Arc;
 import Core.Element;
 import Core.PetriNet;
 import Core.Place;
 import Core.Transition;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -15,13 +17,16 @@ import java.awt.Graphics2D;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.sound.sampled.Line;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
@@ -57,8 +62,8 @@ public class View extends javax.swing.JFrame {
         this.setIconImage(icon);
         sideMenu.setVisible(false);
         // Custom init 
-        setTitle("Danes Creator");
-        setSize(800, 600); 
+        setTitle("DANES Creator");
+       /* setSize(800, 600); */
         setVisible(true);
     }
 
@@ -118,10 +123,10 @@ public class View extends javax.swing.JFrame {
         sideMenuLayout.setVerticalGroup(
             sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(sideMenuLayout.createSequentialGroup()
-                .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 351, Short.MAX_VALUE))
+                .addGap(0, 510, Short.MAX_VALUE))
         );
 
         diagramScrollPane.setBorder(null);
@@ -181,16 +186,18 @@ public class View extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 633, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 305, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(diagramScrollPane)
+                    .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -211,6 +218,18 @@ public class View extends javax.swing.JFrame {
     private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
         // Create and display new panel
         PetriNet p=new PetriNet("Empty");
+        
+        // umele pridanie siete
+        Place a=new Place("a");
+        a.setDiagramElement(new DiagramElement(4, 4));
+        Transition b= new Transition("b");
+        b.setDiagramElement(new DiagramElement(8, 4));
+        Arc c=new Arc("c", b, a);
+        p.addPlace(a);
+        p.addTransition(b);
+        p.addArc(c);        
+        // koniec umele pridanie siete
+        
         controller.setModel(p);
         this.diagramPanel   =   new DiagramPanel(p);
         diagramScrollPane.setViewportView(this.diagramPanel);
@@ -289,17 +308,52 @@ class DiagramPanel extends javax.swing.JPanel {
 
     }
    
-    public void drawPlace(int stlpec,int riadok){
+    public void drawPlace(int column,int row){
         // Place / Ring
         g2d.setColor(new Color(0, 0, 0));
-        g2d.fill(new Ellipse2D.Double(stlpec*elementWidth,riadok*elementWidth,elementWidth,elementWidth));        
+        g2d.fill(new Ellipse2D.Double(column*elementWidth+5,row*elementWidth+5,elementWidth-10,elementWidth-10));        
     }
 
-    public void drawTransition(int stlpec,int riadok){
+    public void drawTransition(int column,int row){
         // Transition / Rectangle
         g2d.setColor(new Color(0, 0, 0));
-        g2d.fill(new Rectangle2D.Float(stlpec*elementWidth+12,riadok*elementWidth,25,elementWidth));                
+        g2d.fill(new Rectangle2D.Float(column*elementWidth+12,row*elementWidth,25,elementWidth));                
     }
+
+       public void drawArrow(int x1, int y1, int x2, int y2) 
+       {
+                // Size of arrow in px
+                int ARR_SIZE=10;
+           
+                double dx = x2 - x1, dy = y2 - y1;
+                double angle = Math.atan2(dy, dx);
+                int len = (int) Math.sqrt(dx*dx + dy*dy);
+                AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
+                at.concatenate(AffineTransform.getRotateInstance(angle));
+                
+                // Save and Rotate
+                AffineTransform oldTransform = g2d.getTransform();
+                g2d.transform(at);                
+                
+ 
+                
+                // Draw horizontal arrow starting in (0, 0)
+                g2d.drawLine(0, 0, len, 0);
+                g2d.fillPolygon(new int[]   {len, len-ARR_SIZE  , len-ARR_SIZE  , len},
+                                new int[]     {0  , -ARR_SIZE     , ARR_SIZE      , 0}, 4 );
+                // Retract old
+                g2d.setTransform(oldTransform);
+            }
+
+    public void drawArc(int column1,int row1,int column2,int row2){        
+        // Arc / Arrow
+        g2d.setColor(Color.blue);
+        g2d.setStroke(new BasicStroke(3));        
+        // Draw arrow        
+        drawArrow( column1*elementWidth+elementWidth/2  ,row1*elementWidth+elementWidth/2,
+                   column2*elementWidth+elementWidth/2,  row2*elementWidth+elementWidth/2);
+
+    }    
     
     
    
@@ -315,7 +369,16 @@ class DiagramPanel extends javax.swing.JPanel {
         for(Element e:petriNet.getListOfTransitions())
         {            
             drawTransition(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-        }        
+        }   
+
+        // Draw all arcs
+        for(Element e:petriNet.getListOfArcs())
+        {     
+            DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
+            DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+            
+            drawArc(in.getX(),in.getY(),out.getX(),out.getY());
+        }          
         
     }
     
