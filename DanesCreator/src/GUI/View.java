@@ -79,6 +79,7 @@ public class View extends javax.swing.JFrame {
         sideMenu = new javax.swing.JPanel();
         ellipseButton = new javax.swing.JToggleButton();
         rectangleButton = new javax.swing.JToggleButton();
+        lineButton = new javax.swing.JToggleButton();
         diagramScrollPane = new javax.swing.JScrollPane();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -109,13 +110,24 @@ public class View extends javax.swing.JFrame {
             }
         });
 
+        lineButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\LineIcon.png"));
+        lineButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lineButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout sideMenuLayout = new javax.swing.GroupLayout(sideMenu);
         sideMenu.setLayout(sideMenuLayout);
         sideMenuLayout.setHorizontalGroup(
             sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sideMenuLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap()
+                .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lineButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(sideMenuLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(2, 2, 2))
@@ -126,7 +138,9 @@ public class View extends javax.swing.JFrame {
                 .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 510, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 480, Short.MAX_VALUE))
         );
 
         diagramScrollPane.setBorder(null);
@@ -246,12 +260,19 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_aboutUsActionPerformed
 
     private void ellipseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ellipseButtonActionPerformed
-        rectangleButton.setSelected(false);        // TODO add your handling code here:
+        rectangleButton.setSelected(false);
+        lineButton.setSelected(false);
     }//GEN-LAST:event_ellipseButtonActionPerformed
 
     private void rectangleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rectangleButtonActionPerformed
-        ellipseButton.setSelected(false);// TODO add your handling code here:
+        ellipseButton.setSelected(false);
+        lineButton.setSelected(false);
     }//GEN-LAST:event_rectangleButtonActionPerformed
+
+    private void lineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineButtonActionPerformed
+        ellipseButton.setSelected(false);
+        rectangleButton.setSelected(false);
+    }//GEN-LAST:event_lineButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -261,6 +282,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JToggleButton ellipseButton;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem newProjectItem;
     private javax.swing.JToggleButton rectangleButton;
     private javax.swing.JMenuItem saveAsItem;
