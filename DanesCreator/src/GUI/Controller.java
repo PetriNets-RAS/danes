@@ -4,14 +4,11 @@
  */
 package GUI;
 
+import Core.Arc;
 import Core.Element;
-import GUI.View;
 import Core.PetriNet;
 import Core.Place;
 import Core.Transition;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -78,6 +75,35 @@ public class Controller {
         }   
     }
 
+    public void addArc(String name, int x1, int y1, int x2, int y2) 
+    {
+        Element out     =getLocationElement(x2, y2);
+        Element in      =getLocationElement(x1, y1);
+        
+        if (in == null || out ==  null)
+            return;
+        
+        Arc arc;
+
+
+        if (name.equals("Arc"))
+        {   
+            // Generate text name until it is unique
+            do
+            {
+                arc=new Arc("Arc"+Math.random(),out,in);
+                //transition.setDiagramElement(new DiagramElement(x, y));                
+            }
+            while      
+               (!this.petriNet.addArc(arc));
+        }
+        else // Normal add
+        {
+            arc=new Arc(name,out,in);
+            //transition.setDiagramElement(new DiagramElement(x, y));             
+        }   
+        
+    }
     public void moveElement(int x_old_location, int y_old_location, int x_new_location, int y_new_location) {
         // Source location is not empty
         if (petriNet.isLocationEmpty(x_old_location, y_old_location))
@@ -134,6 +160,23 @@ public class Controller {
         }
     }            
 
+    public void deleteArc(int x1,int y1,int x2,int y2)
+    {
+        Element out     =getLocationElement(x2, y2);
+        Element in      =getLocationElement(x1, y1);
+        
+        if (out==null || in==null)
+            return;
+        for(Arc a : petriNet.getListOfArcs())
+        {
+            if (a.getInElement()==in && a.getOutElement()==out)
+            {
+                petriNet.deleteArc(a.getName());
+                break;
+            }
+        }        
+    }
+    
     public void setModel(PetriNet petriNet) {
         this.petriNet=petriNet;
     }

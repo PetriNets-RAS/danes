@@ -239,9 +239,23 @@ public class View extends javax.swing.JFrame {
         Transition b= new Transition("b");
         b.setDiagramElement(new DiagramElement(8, 4));
         Arc c=new Arc("c", b, a);
+        Place p1=new Place("p1");
+        p1.setDiagramElement(new DiagramElement(4, 2));
+        Place p2=new Place("p2");        
+        p2.setDiagramElement(new DiagramElement(4, 6));
+        
+        Transition t1= new Transition("t1");        
+        t1.setDiagramElement(new DiagramElement(8, 2));
+        Transition t2= new Transition("t2");
+        t2.setDiagramElement(new DiagramElement(8, 6));        
+        
         p.addPlace(a);
         p.addTransition(b);
         p.addArc(c);        
+        p.addPlace(p1);
+        p.addPlace(p2);
+        p.addTransition(t1);
+        p.addTransition(t2);
         // koniec umele pridanie siete
         
         controller.setModel(p);
@@ -300,6 +314,7 @@ class DiagramPanel extends javax.swing.JPanel {
     private Graphics2D              g2d;
     
     private Object                  draggedObject;
+    private Color                   draggedColor;
     /**
      * Creates new form GraphPanel
      */
@@ -339,37 +354,36 @@ class DiagramPanel extends javax.swing.JPanel {
     public void drawTransition(int column,int row){
         // Transition / Rectangle
         g2d.setColor(new Color(0, 0, 0));
-        g2d.fill(new Rectangle2D.Float(column*elementWidth+12,row*elementWidth,25,elementWidth));                
+        g2d.fill(new Rectangle2D.Float(column*elementWidth+12,row*elementWidth+5,25,elementWidth-10));                
     }
 
-       public void drawArrow(int x1, int y1, int x2, int y2) 
-       {
-                // Size of arrow in px
-                int ARR_SIZE=10;
-           
-                double dx = x2 - x1, dy = y2 - y1;
-                double angle = Math.atan2(dy, dx);
-                int len = (int) Math.sqrt(dx*dx + dy*dy);
-                AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
-                at.concatenate(AffineTransform.getRotateInstance(angle));
-                
-                // Save and Rotate
-                AffineTransform oldTransform = g2d.getTransform();
-                g2d.transform(at);                
-                
- 
-                
-                // Draw horizontal arrow starting in (0, 0)
-                g2d.drawLine(0, 0, len, 0);
-                g2d.fillPolygon(new int[]   {len, len-ARR_SIZE  , len-ARR_SIZE  , len},
-                                new int[]     {0  , -ARR_SIZE     , ARR_SIZE      , 0}, 4 );
-                // Retract old
-                g2d.setTransform(oldTransform);
-            }
+    public void drawArrow(int x1, int y1, int x2, int y2) 
+    {
+         // Size of arrow in px
+         int ARR_SIZE=10;
+
+         double dx = x2 - x1, dy = y2 - y1;
+         double angle = Math.atan2(dy, dx);
+         int len = (int) Math.sqrt(dx*dx + dy*dy);
+         AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
+         at.concatenate(AffineTransform.getRotateInstance(angle));
+
+         // Save and Rotate
+         AffineTransform oldTransform = g2d.getTransform();
+         g2d.transform(at);                
+
+
+         // Draw horizontal arrow starting in (0, 0)
+         g2d.drawLine(0, 0, len, 0);
+         g2d.fillPolygon(new int[]   {len, len-ARR_SIZE  , len-ARR_SIZE    , len},
+                         new int[]     {0  , -ARR_SIZE     , ARR_SIZE      , 0}, 4 );
+         // Retract old
+         g2d.setTransform(oldTransform);
+     }
 
     public void drawArc(int column1,int row1,int column2,int row2){        
         // Arc / Arrow
-        g2d.setColor(Color.blue);
+        g2d.setColor(new Color(27,161,226)); // Windows8Blue
         g2d.setStroke(new BasicStroke(3));        
         // Draw arrow        
         drawArrow( column1*elementWidth+elementWidth/2  ,row1*elementWidth+elementWidth/2,
@@ -409,13 +423,14 @@ class DiagramPanel extends javax.swing.JPanel {
             if (draggedObject==null)
                 return;
             
+            g2d.setColor(draggedColor);
+            
             // Rectangle 
             if (draggedObject instanceof Rectangle2D)
             {
                 int x=(int) ((Rectangle2D)draggedObject).getX();
                 int y=(int) ((Rectangle2D)draggedObject).getY();    
 
-                g2d.setColor(Color.GRAY);
                 g2d.fill((Rectangle2D)draggedObject);
             }
 
@@ -425,32 +440,53 @@ class DiagramPanel extends javax.swing.JPanel {
                 int x=(int) ((Ellipse2D)draggedObject).getX();
                 int y=(int) ((Ellipse2D)draggedObject).getY();    
 
-                g2d.setColor(Color.GRAY);
                 g2d.fill((Ellipse2D)draggedObject);
+            }
+            
+            if (draggedObject instanceof Line2D)
+            {
+                int x1=(int)((Line2D)draggedObject).getX1();
+                int y1=(int)((Line2D)draggedObject).getY1();
+                int x2=(int)((Line2D)draggedObject).getX2();
+                int y2=(int)((Line2D)draggedObject).getY2();
+                
+                drawArrow(x1, y1, x2, y2);            
             }
         }    
 
     public void mouseLeftClick(int x, int y) {  
-        // Select existing     
+        
+        // Get current selected element
         Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
         // Place               
         if (currentElement instanceof Place)
         {   
-            this.draggedObject=new Ellipse2D.Float(x, y, elementWidth, elementWidth);
+            this.draggedColor=Color.GRAY;        
+            this.draggedObject=new Ellipse2D.Float(x, y, elementWidth-10, elementWidth-10);
         }
         // Transition
         if (currentElement instanceof Transition)
         {
-            this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth);            
+            this.draggedColor=Color.GRAY;
+            this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);            
         }
+        // Arc 
+        if (currentElement!=null  &&  lineButton.isSelected()  )
+        {
+            this.draggedColor=Color.GRAY;
+            this.draggedObject=new Line2D.Float(x,y,x,y);
+        }        
+        
         // None exist or not creating mode
         if (currentElement==null            || 
             rectangleButton.isSelected()    || 
-            ellipseButton.  isSelected()     )
+            ellipseButton.  isSelected()    //||
+//            lineButton.     isSelected()                
+            )
         {
             this.draggedObject=null;
         }           
-           
+        
         // Create new        
         // Creating new place
         if (ellipseButton.isSelected())
@@ -472,8 +508,15 @@ class DiagramPanel extends javax.swing.JPanel {
     }
     
     public void mouseRightClick(int x, int y) {  
-        // Select existing           
-        controller.deleteElement(x/elementWidth,y/elementWidth);
+        // Create RED shadow line indicating deletion of arc
+        Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+        // Arc 
+        if (currentElement!=null)//  &&  lineButton.isSelected()  )
+        {
+            this.draggedColor=Color.RED;
+            this.draggedObject=new Line2D.Float(x,y,x,y);
+        }  
+        
         repaint();
     }
 
@@ -484,28 +527,65 @@ class DiagramPanel extends javax.swing.JPanel {
 
         // Rectangle
         if (draggedObject instanceof Rectangle2D)
-            draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth);
+            draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
         
         // Ellipse
         if (draggedObject instanceof Ellipse2D)
-            draggedObject=new Ellipse2D.Float(x, y, elementWidth, elementWidth);        
+            draggedObject=new Ellipse2D.Float(x, y, elementWidth-10, elementWidth-10);       
+        
+        // Line
+        if (draggedObject instanceof Line2D)
+        {
+            int x1=(int)((Line2D)draggedObject).getX1();
+            int y1=(int)((Line2D)draggedObject).getY1();                
+            draggedObject=new Line2D.Float(x1,y1,x,y);
+        }            
 
         repaint();
     }
       
-    public void mouseLeftMove(int x_old, int y_old, int x_new, int y_new) {
-        // No buttons for adding choosen
-        if (!ellipseButton.isSelected() && !rectangleButton.isSelected())
-        {        
-            int x_old_location=x_old/elementWidth;
-            int y_old_location=y_old/elementWidth;
-            
-            int x_new_location=x_new/elementWidth;
-            int y_new_location=y_new/elementWidth;
-            
+    public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
+        // Old and current positions
+        int x_old_location=x_old/elementWidth;
+        int y_old_location=y_old/elementWidth;            
+        int x_new_location=x_new/elementWidth;
+        int y_new_location=y_new/elementWidth;
+        
+        // Move place / transition
+        if (!ellipseButton.isSelected() && !rectangleButton.isSelected() && !lineButton.isSelected())
+        {                    
             controller.moveElement(x_old_location,y_old_location,x_new_location,y_new_location);
         }   
         
+        // Add arc
+        if (lineButton.isSelected() && draggedObject instanceof Line2D)
+        {
+            controller.addArc("Arc", x_old_location, y_old_location, x_new_location, y_new_location);
+        }
+        draggedObject=null;
+        repaint();
+    }
+
+    private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new)
+    {
+        // Old and current positions
+        int x_old_location=x_old/elementWidth;
+        int y_old_location=y_old/elementWidth;            
+        int x_new_location=x_new/elementWidth;
+        int y_new_location=y_new/elementWidth;
+        
+        // Select existing 
+        // Same location - delete element
+        if (x_old_location == x_new_location && y_old_location == y_new_location)
+        {
+            System.out.print(x_new_location+"   "+y_new_location);
+            controller.deleteElement(x_new_location,y_new_location);
+        }
+        
+        // Delete arc
+        {
+            controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
+        }
         draggedObject=null;
         repaint();
     }
@@ -536,9 +616,8 @@ public class DiagramMouseAdapter extends MouseAdapter
         diagramPanel.mouseLeftClick(x,y);
         }
       if (SwingUtilities.isRightMouseButton   (e) ) {
-        diagramPanel.mouseRightClick(x,y);
-        
-    }
+        diagramPanel.mouseRightClick(x,y);       
+        }
       /*if (SwingUtilities.isMiddleMouseButton  (e) )
           System.out.println("stredny "+x+" "+y);*/
     }
@@ -546,13 +625,20 @@ public class DiagramMouseAdapter extends MouseAdapter
     @Override
     public void mouseReleased(MouseEvent e)
     {
-      // Object try to be moved LEFT click
-      if (SwingUtilities.isLeftMouseButton  (e) )
+      // Old location is different from current        
+      //if (x != e.getX()   ||     y != e.getY())
+      if(true)
       {
-        if (x != e.getX() ||     y != e.getY())
-        { 
-            diagramPanel.mouseLeftMove(x,y,e.getX(),e.getY());
-        }
+            // Left
+            if (SwingUtilities.isLeftMouseButton  (e) )
+            {
+                  diagramPanel.mouseLeftReleased(x,y,e.getX(),e.getY());
+            }      
+            // Right
+            if (SwingUtilities.isRightMouseButton(e) )
+            {
+                  diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
+            }      
       }
     }
     
@@ -560,10 +646,16 @@ public class DiagramMouseAdapter extends MouseAdapter
     @Override
     public void mouseDragged(MouseEvent e) 
     {
+        // Left
         if (SwingUtilities.isLeftMouseButton  (e) ) 
         {
             diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
-        }        
+        }      
+        // Right - but left functionality
+        if (SwingUtilities.isRightMouseButton(e) ) 
+        {
+            diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
+        }                
     }    
   }
 
