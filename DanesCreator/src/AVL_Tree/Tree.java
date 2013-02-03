@@ -4,6 +4,7 @@
  */
 package AVL_Tree;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -14,17 +15,16 @@ import java.util.Queue;
 public class Tree {
 
     protected  Node root;
-    protected  int amount;
-    
+    protected  int pocet;
     public Tree(Node root) {
         this.root = root;
-        amount = 1;
-        if(root==null) amount=0;
+        pocet = 1;
+        if(root==null) pocet=0;
     }
 
     public boolean addNode(Node node) {
-        if(this.amount==0 && this.root==null){
-            amount++;
+        if(this.pocet==0 && this.root==null){
+            pocet++;
             root=node;
             root.compensate();
             return true;
@@ -35,11 +35,11 @@ public class Tree {
         }
         if (this.getRoot().setSon(node)) {
             //System.out.println("vkladam: "+node.getKey().getKey());
-            this.amount++;
+            this.pocet++;
             node.setLeftHigh(0);
             node.setRightHigh(0);
 
-            //vyvazit vsetky prvky az po koren
+            //compensateit vsetky prvky az po koren
             Node temp = node.getFather();
             Node saved = node;
             do {
@@ -58,15 +58,15 @@ public class Tree {
                 }
 
                 if (temp.getEquanimity() == 2) {
-                    //System.out.println("vyvazenost je 2, rotujem okolo"+temp.getKey().getKey());                    
+                    //System.out.println("compensateenost je 2, rotujem okolo"+temp.getKey().getKey());                    
                     this.leftRotation(temp);
                     break;
                 }
 
                 if (temp.getEquanimity() == -2) {
-                    //System.out.println("vyvazenost je -2, rotujem okolo"+temp.getKey().getKey());                   
+                    //System.out.println("compensateenost je -2, rotujem okolo"+temp.getKey().getKey());                   
                     this.rightRotation(temp);
-                    //System.out.println("vyvazenost je -2");
+                    //System.out.println("compensateenost je -2");
                     break;
                 }
                 saved = temp;
@@ -79,48 +79,48 @@ public class Tree {
 
     public Node maxLeftonRight(Node paNode) {
         //System.out.println("pouzivam LoR");
-        if (this.amount == 0) {
+        if (this.pocet == 0) {
             return null;
         }
-        Node temp;
+        Node pom;
         if (paNode == null) {
             return null;
         } else {
             paNode = paNode.getRightSon();
             do {
-                temp = paNode;
+                pom = paNode;
                 if (paNode != null) {
                     paNode = paNode.getLeftSon();
                 }
 
             } while (paNode != null);
-            return temp;
+            return pom;
         }
     }
 
     public Node maxRightonLeft(Node paNode) {
         //System.out.println("pouzivam RoL");
-        if (this.amount == 0) {
+        if (this.pocet == 0) {
             return null;
         }
-        Node temp;
+        Node pom;
         if (paNode == null) {
             return null;
         } else {
             paNode = paNode.getLeftSon();
             do {
-                temp = paNode;
+                pom = paNode;
                 if (paNode != null) {
                     paNode = paNode.getRightSon();
                 }
 
             } while (paNode != null);
-            return temp;
+            return pom;
         }
     }
 
     public boolean delete(Key paKey) {
-        if (this.amount == 0) {
+        if (this.pocet == 0) {
             return false;
         }
         Node delete = this.find(paKey);
@@ -128,11 +128,11 @@ public class Tree {
         if (delete == null) {
             return false;
         } else {
-            this.amount--;
+            this.pocet--;
             //ak mazem posledny prvok
             //System.out.println("maazem prvok: "+delete.getKey().getKey());
-            if (this.amount == 0) {
-                //this.amount--;
+            if (this.pocet == 0) {
+                //this.pocet--;
                 this.root = null;
                 return true;
             }
@@ -140,14 +140,14 @@ public class Tree {
             if (delete.getLeftSon() == null && delete.getRightSon() == null && delete.getFather() != null) {
                 //if (delete.getFather().getKey() > delete.getKey()) {
                 
-                if (delete.getFather().getKey().compareTo( delete.getKey().getKey())<0) {
+                if (delete.getFather().getKey().compareTo( delete.getKey().getKey())>0) {
                     Node father = delete.getFather();
                     delete.getFather().setLeftSon(null);
                     father.compensate();
                 }
                 //if (delete.getFather().getKey() < delete.getKey()) {
-                if (delete.getFather().getKey().compareTo( delete.getKey().getKey())>0) {
-                    //delete.getFather().setPravaVyska(0);
+                if (delete.getFather().getKey().compareTo( delete.getKey().getKey())<0) {
+                    //delete.getFather().setRightHigh(0);
                     Node father = delete.getFather();
                     delete.getFather().setRightSon(null);
                     father.compensate();
@@ -157,7 +157,7 @@ public class Tree {
                 Node temp3 = delete.getFather();
                 Node saved = temp3;
                 do {
-                    //System.out.println("vyvazujem: "+temp3.getKey());
+                    //System.out.println("compensateujem: "+temp3.getKey());
                     temp3.compensate();
                     if (temp3.getEquanimity() == 2 && temp3.getRightSon() == saved && saved.getEquanimity() == -1) {
                         //System.out.println("PL tocim okolo "+temp3.getKey());
@@ -169,12 +169,12 @@ public class Tree {
                     }
 
                     if (temp3.getEquanimity() == 2) {
-                        //System.out.println("vyvazenost je 2, rotujem okolo"+temp3.getKey());                    
+                        //System.out.println("compensateenost je 2, rotujem okolo"+temp3.getKey());                    
                         this.leftRotation(temp3);
                     }
 
                     if (temp3.getEquanimity() == -2) {
-                        //System.out.println("vyvazenost je -2, rotujem okolo"+temp3.getKey());                   
+                        //System.out.println("compensateenost je -2, rotujem okolo"+temp3.getKey());                   
                         this.rightRotation(temp3);
                     }
                     if (temp3.getFather() != null) //System.out.println("**************"+temp3.getFather().getEquanimity());
@@ -183,6 +183,7 @@ public class Tree {
                     }
                     temp3 = temp3.getFather();
                 } while (temp3 != null);
+                System.out.println("zmazal som list");
                 return true;
             }
 
@@ -280,7 +281,7 @@ public class Tree {
             if (temp2 != null) {
                 do {
                     temp2.compensate();
-                    //System.out.println("vyvazujem: "+temp2.getKey());
+                    //System.out.println("compensateujem: "+temp2.getKey());
                     if (temp2.getEquanimity() == 2 && temp2.getRightSon() == saved && saved.getEquanimity() == -1) {
                         //System.out.println("PL tocim okolo "+temp.getKey());
                         this.rightLeftRotation(temp2);
@@ -291,12 +292,12 @@ public class Tree {
                     }
 
                     if (temp2.getEquanimity() == 2) {
-                        //System.out.println("vyvazenost je*** 2, --rotujem okolo"+temp2.getKey()); 
+                        //System.out.println("compensateenost je*** 2, --rotujem okolo"+temp2.getKey()); 
                         this.leftRotation(temp2);
                     }
 
                     if (temp2.getEquanimity() == -2) {
-                        //System.out.println("vyvazenost je*** -2, --rotujem okolo"+temp2.getKey());                   
+                        //System.out.println("compensateenost je*** -2, --rotujem okolo"+temp2.getKey());                   
                         this.rightRotation(temp2);
                     }
 
@@ -318,7 +319,7 @@ public class Tree {
         if (root != null);
         q.add(root);
 
-        while (!q.isEmpty() && this.amount > 0) {
+        while (!q.isEmpty() && this.pocet > 0) {
 
             Node temp = (Node) q.remove();
             System.out.print(temp.getKey().getKey() + " ");
@@ -330,87 +331,106 @@ public class Tree {
             }
         }
     }
+    public ArrayList<Node> inOrder(){
+        return(InOrder(root));
+    }
+    
 
-    public String InOrder(Node actuall) {
-        String temp="";
-        if (actuall == null) {
-            return temp;
-        }
-        temp=temp+InOrder(actuall.getLeftSon());
-        temp=temp+actuall.toString()+"\n";
-        System.out.println(actuall.getKey().getKey());
-        temp=temp+InOrder(actuall.getRightSon());
+    public ArrayList<Node> InOrder(Node actuall) {
         
-        return temp;
+        ArrayList<Node> ret=new ArrayList<>();
+        
+        //a.addAll(b);
+        
+        String temp="";
+        StringBuilder sb=new StringBuilder(temp);
+        if (actuall == null) {
+            //temp=temp+"\n"+this.pocet;
+            //return temp;
+            return ret;
+        }
+        ret.addAll(InOrder(actuall.getLeftSon()));
+        //sb.append(InOrder(actuall.getLeftSon()));
+        //temp=temp+InOrder(actuall.getLeftSon());
+        //sb.append(actuall.toString()).append("\n");
+        ret.add(actuall);
+        //temp=temp+actuall.toString()+"\n";
+        //System.out.println(actuall.getKey().getKey());
+        sb.append(InOrder(actuall.getRightSon()));
+        ret.addAll(InOrder(actuall.getRightSon()));
+        //temp=temp+InOrder(actuall.getRightSon());
+        //temp=temp+"\n"+this.pocet;
+        return ret;
+        //return temp;
     }
 
     public Node find(Key paKey) {
-        if (this.amount == 0) {
+        if (this.pocet == 0) {
             return null;
         }
         return this.getRoot().find(paKey);
       //return null;
     }
 
-    public void leftRotation(Node nodeAround) {
-        //System.out.println("Tocim vlavo nodeAround "+nodeAround.getKey());
-        //nastavenie otca nodeAround ktoreho sa tocim 
-        if (nodeAround != this.getRoot()) {
-            //if (nodeAround.getFather().getKey() > nodeAround.getKey()) {
-            if (nodeAround.getFather().getKey().compareTo(nodeAround.getKey().getKey()) > 0) {
-                nodeAround.getFather().setLeftSon(nodeAround.getRightSon());
+    public void leftRotation(Node okolo) {
+        //System.out.println("Tocim vlavo okolo "+okolo.getKey());
+        //nastavenie otca okolo ktoreho sa tocim 
+        if (okolo != this.getRoot()) {
+            //if (okolo.getFather().getKey() > okolo.getKey()) {
+            if (okolo.getFather().getKey().compareTo(okolo.getKey().getKey()) > 0) {
+                okolo.getFather().setLeftSon(okolo.getRightSon());
             } else {
-                nodeAround.getFather().setRightSon(nodeAround.getRightSon());
+                okolo.getFather().setRightSon(okolo.getRightSon());
             }
             //nastavenie novemu otca
-            nodeAround.getRightSon().setFather(nodeAround.getFather());
+            okolo.getRightSon().setFather(okolo.getFather());
         } else {
-            this.root = nodeAround.getRightSon();
-            nodeAround.getRightSon().setFather(null);
+            this.root = okolo.getRightSon();
+            okolo.getRightSon().setFather(null);
         }
         //nastavenie staremu otca na noveho
-        nodeAround.setFather(nodeAround.getRightSon());
+        okolo.setFather(okolo.getRightSon());
         //nastavenie staremu praveho syna
-        nodeAround.setRightSon(nodeAround.getRightSon().getLeftSon());
+        okolo.setRightSon(okolo.getRightSon().getLeftSon());
         //nastavenie novemu laveho syna
-        if (nodeAround.getFather().getLeftSon() != null) {
-            nodeAround.getFather().getLeftSon().setFather(nodeAround);
+        if (okolo.getFather().getLeftSon() != null) {
+            okolo.getFather().getLeftSon().setFather(okolo);
         }
-        nodeAround.getFather().setLeftSon(nodeAround);
+        okolo.getFather().setLeftSon(okolo);
 
-        nodeAround.compensate();
-        nodeAround.getFather().compensate();
+        okolo.compensate();
+        okolo.getFather().compensate();
     }
 
-    public void rightRotation(Node nodeAround) {
-        //System.out.println("Tocim vpravo nodeAround "+nodeAround.getKey());
-        //nastavenie otca nodeAround ktoreho sa tocim 
-        //System.out.println("prava otocka nodeAround "+nodeAround.getKey());
-        if (nodeAround != this.getRoot()) {
-            if (nodeAround.getFather().getKey().compareTo(nodeAround.getKey().getKey()) > 0) {
-                nodeAround.getFather().setLeftSon(nodeAround.getLeftSon());
+    public void rightRotation(Node okolo) {
+        //System.out.println("Tocim vpravo okolo "+okolo.getKey());
+        //nastavenie otca okolo ktoreho sa tocim 
+        //System.out.println("prava otocka okolo "+okolo.getKey());
+        if (okolo != this.getRoot()) {
+            if (okolo.getFather().getKey().compareTo(okolo.getKey().getKey()) > 0) {
+                okolo.getFather().setLeftSon(okolo.getLeftSon());
             } else {
-                nodeAround.getFather().setRightSon(nodeAround.getLeftSon());
+                okolo.getFather().setRightSon(okolo.getLeftSon());
             }
             //nastavenie novemu otca
-            nodeAround.getLeftSon().setFather(nodeAround.getFather());
+            okolo.getLeftSon().setFather(okolo.getFather());
         } else {
-            this.root = nodeAround.getLeftSon();
-            nodeAround.getLeftSon().setFather(null);
+            this.root = okolo.getLeftSon();
+            okolo.getLeftSon().setFather(null);
         }
         //nastavenie staremu otca na noveho
-        nodeAround.setFather(nodeAround.getLeftSon());
+        okolo.setFather(okolo.getLeftSon());
         //nastavenie staremu praveho syna
-        nodeAround.setLeftSon(nodeAround.getLeftSon().getRightSon());
+        okolo.setLeftSon(okolo.getLeftSon().getRightSon());
         //nastavenie novemu laveho syna
-        if (nodeAround.getFather().getRightSon() != null) {
-            nodeAround.getFather().getRightSon().setFather(nodeAround);
+        if (okolo.getFather().getRightSon() != null) {
+            okolo.getFather().getRightSon().setFather(okolo);
         }
-        nodeAround.getFather().setRightSon(nodeAround);
+        okolo.getFather().setRightSon(okolo);
 
-        //treba este vyvazit
-        nodeAround.compensate();
-        nodeAround.getFather().compensate();
+        //treba este compensateit
+        okolo.compensate();
+        okolo.getFather().compensate();
     }
 
     public void rightLeftRotation(Node temp) {
@@ -431,13 +451,38 @@ public class Tree {
     }
 
     /**
-     * @return the amount
+     * @return the pocet
      */
    
     public int getPocet() {
-        return amount;
+        return pocet;
     }
 
+    public void addTree(Tree tr){
+        Queue q = new LinkedList();
+        if (tr.getRoot() != null)
+        q.add(tr.getRoot());
+
+        while (!q.isEmpty() && tr.getPocet() > 0) {
+
+            Node temp = (Node) q.remove();
+            
+            System.out.print(temp.getKey().getKey() + " ");
+            
+            if (temp.getLeftSon() != null) {
+                q.add(temp.getLeftSon());
+            }
+            if (temp.getRightSon() != null) {
+                q.add(temp.getRightSon());
+            }
+            temp.setLeftSon(null);
+            temp.setRightSon(null);
+            temp.setFather(null);
+            this.addNode(temp);
+            
+        }
+        
+    }
  
 
 }

@@ -15,7 +15,6 @@ public class PrecedenceGraph {
     private String name;
     private ArrayList<Node> listOfNodes;
     private ArrayList<Arc> listOfArcs;
-    private Logic log;
     
     /**
      * @Class constructor
@@ -24,7 +23,6 @@ public class PrecedenceGraph {
         this.name = paName;
         this.listOfArcs = new ArrayList<>();
         this.listOfNodes = new ArrayList<>();
-        log=new Logic();
     }
 
     /**

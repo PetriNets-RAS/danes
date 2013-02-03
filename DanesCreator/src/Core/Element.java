@@ -4,6 +4,7 @@
  */
 package Core;
 
+import AVL_Tree.StringKey;
 import GUI.DiagramElement;
 import java.awt.Color;
 
@@ -11,12 +12,13 @@ import java.awt.Color;
  *
  * @author Michal Skovajsa
  */
-public class Element {
+public class Element extends AVL_Tree.Node{
     
     private String name;
     private String note;
     private Color color;
     private int fontSize;
+    private StringKey kk;
     
     private DiagramElement diagramElement;
         
@@ -24,6 +26,8 @@ public class Element {
      * @Class constructor.
      */
     public Element(String paName){
+        super(new AVL_Tree.StringKey(paName));
+        kk=new StringKey(paName);
         this.name=paName;
     }
 
@@ -89,6 +93,47 @@ public class Element {
 
     public void setDiagramElement(DiagramElement diagramElement) {
         this.diagramElement = diagramElement;
+    }
+    
+    
+    //-----------
+    
+    @Override
+    public Element getLeftSon() {
+        return (Element) this.leftSon;
+    }
+
+    @Override
+    public Element getRightSon() {
+        return (Element) this.rightSon;
+    }
+    @Override
+    public Element getFather() {
+        return (Element) this.father;
+    }
+
+    //@Override
+     public int compareTo(Element temp){
+        //System.out.println("hhhhhh "+this.getKey().getKey().compareTo(temp.getKey().getKey()));
+         
+        if(this.getKey().getKey().compareTo(temp.getKey().getKey())==0) return 0;
+        if(this.getKey().getKey().compareTo(temp.getKey().getKey())>0) return 1;
+        if(this.getKey().getKey().compareTo(temp.getKey().getKey())<0) return -1;
+        return -1;
+                }
+    @Override
+    public StringKey getKey(){
+        return kk;
+        //return this.getKey();
+    }
+
+    
+    @Override
+     public String toString(){
+        String ret="";       
+        ret=this.getKey().getKey()+" ";
+        
+        return ret;
     }
     
 }

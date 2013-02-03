@@ -19,6 +19,7 @@ public class Arc extends Element {
      */
     public Arc(String paName, Element paOutElement, Element paInElement) {
         super(paName);
+        //this.setName(paName);
         this.outElement=paOutElement;
         this.inElement=paInElement;
     }
