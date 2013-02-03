@@ -79,6 +79,7 @@ public class Controller {
     {
         Element out     =getLocationElement(x2, y2);
         Element in      =getLocationElement(x1, y1);
+        Core.Logic log=new Core.Logic();
         
         if (in == null || out ==  null)
             return;
@@ -92,6 +93,9 @@ public class Controller {
             do
             {
                 arc=new Arc("Arc"+Math.random(),out,in);
+                if(!log.checkArc(arc)) {
+                    break;
+                }
                 //transition.setDiagramElement(new DiagramElement(x, y));                
             }
             while      

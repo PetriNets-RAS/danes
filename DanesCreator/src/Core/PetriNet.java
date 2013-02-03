@@ -16,6 +16,7 @@ public class PetriNet {
     private ArrayList<Transition> listOfTransitions;
     private ArrayList<Arc> listOfArcs;
     private String name;
+    private Logic log;
 
     /**
      * @Class constructor.
@@ -25,6 +26,7 @@ public class PetriNet {
         this.listOfPlaces = new ArrayList<>();
         this.listOfArcs = new ArrayList<>();
         this.listOfTransitions = new ArrayList<>();
+        log=new Logic();
     }
 
     /**
@@ -113,6 +115,11 @@ public class PetriNet {
      * @Add an arc to the Petri net
      */
     public boolean addArc(Arc paArc) {
+        if(!log.checkArc(paArc)) {
+            return false;
+        }
+        
+        
         for (Arc actArc : listOfArcs) {
             if (actArc.getName().equals(paArc.getName())) {
                 return false;
