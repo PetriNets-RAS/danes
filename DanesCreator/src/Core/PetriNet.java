@@ -62,9 +62,9 @@ public class PetriNet {
         //for (Place actPlace : listOfPlaces) {
         //    if (actPlace.getName().equals(paName)) {
         Place actPlace=(Place) treeOfPlaces.find(new StringKey(paName));
-        System.out.println("mazem: "+paName);
+        //System.out.println("mazem: "+paName);
         if(actPlace==null) {
-            System.out.println("aaa");
+            //System.out.println("aaa");
             return false;
         }
                 for (Arc actArc : actPlace.getListOfInArcs()) {
@@ -179,7 +179,7 @@ public class PetriNet {
 //            if (actArc.getName().equals(paName)) {
         Arc actArc=(Arc) treeOfArcs.find(new StringKey(paName));
         if(actArc==null) {
-            System.out.println("aaa");
+            //System.out.println("aaa");
             return false;
         }
                 if (actArc.getOutElement() instanceof Transition) {
