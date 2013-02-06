@@ -47,7 +47,7 @@ public class View extends javax.swing.JFrame {
         initComponents();
         
         about = new AboutUs(this, rootPaneCheckingEnabled);
-        String IconPath="..\\DanesCreator\\Images\\icon.jpg";
+        String IconPath="..\\DanesCreator\\Images\\icon.png";
         BufferedImage icon = null;
         try{
             File iconFile = new File(IconPath);
@@ -82,7 +82,10 @@ public class View extends javax.swing.JFrame {
         lineButton = new javax.swing.JToggleButton();
         propertiesMenu = new javax.swing.JPanel();
         specificPropertiesMenu = new javax.swing.JPanel();
-        propertiesParentMenu2 = new GUI.PropertiesParentMenu();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        propertiesParentMenu1 = new GUI.PropertiesParentMenu();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         diagramScrollPane = new javax.swing.JScrollPane();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -95,7 +98,8 @@ public class View extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        sideMenu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        sideMenu.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        sideMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         ellipseButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\EllipseIcon.png"));
         ellipseButton.setToolTipText("Pridat miesto");
@@ -104,6 +108,7 @@ public class View extends javax.swing.JFrame {
                 ellipseButtonActionPerformed(evt);
             }
         });
+        sideMenu.add(ellipseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 37, 82, 23));
 
         rectangleButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\RectangleIcon.png"));
         rectangleButton.setToolTipText("pridate priechod");
@@ -112,6 +117,7 @@ public class View extends javax.swing.JFrame {
                 rectangleButtonActionPerformed(evt);
             }
         });
+        sideMenu.add(rectangleButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 71, 82, 23));
 
         lineButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\LineIcon.png"));
         lineButton.addActionListener(new java.awt.event.ActionListener() {
@@ -119,69 +125,51 @@ public class View extends javax.swing.JFrame {
                 lineButtonActionPerformed(evt);
             }
         });
+        sideMenu.add(lineButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 2, 82, 24));
 
         javax.swing.GroupLayout specificPropertiesMenuLayout = new javax.swing.GroupLayout(specificPropertiesMenu);
         specificPropertiesMenu.setLayout(specificPropertiesMenuLayout);
         specificPropertiesMenuLayout.setHorizontalGroup(
             specificPropertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 340, Short.MAX_VALUE)
         );
         specificPropertiesMenuLayout.setVerticalGroup(
             specificPropertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 319, Short.MAX_VALUE)
+            .addGap(0, 340, Short.MAX_VALUE)
         );
+
+        jTabbedPane1.setBackground(new java.awt.Color(204, 204, 204));
+        jTabbedPane1.addTab("Properties", propertiesParentMenu1);
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jTabbedPane1.addTab("Notes", jScrollPane1);
 
         javax.swing.GroupLayout propertiesMenuLayout = new javax.swing.GroupLayout(propertiesMenu);
         propertiesMenu.setLayout(propertiesMenuLayout);
         propertiesMenuLayout.setHorizontalGroup(
             propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(specificPropertiesMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(propertiesMenuLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(propertiesParentMenu2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGroup(propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(specificPropertiesMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         propertiesMenuLayout.setVerticalGroup(
             propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(propertiesMenuLayout.createSequentialGroup()
-                .addComponent(propertiesParentMenu2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17)
                 .addComponent(specificPropertiesMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        javax.swing.GroupLayout sideMenuLayout = new javax.swing.GroupLayout(sideMenu);
-        sideMenu.setLayout(sideMenuLayout);
-        sideMenuLayout.setHorizontalGroup(
-            sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sideMenuLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ellipseButton, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
-                    .addComponent(lineButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(rectangleButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sideMenuLayout.createSequentialGroup()
-                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(propertiesMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
-        );
-        sideMenuLayout.setVerticalGroup(
-            sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(sideMenuLayout.createSequentialGroup()
-                .addComponent(lineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(658, Short.MAX_VALUE))
-            .addGroup(sideMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, sideMenuLayout.createSequentialGroup()
-                    .addContainerGap(134, Short.MAX_VALUE)
-                    .addComponent(propertiesMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
-        );
+        jTabbedPane1.getAccessibleContext().setAccessibleName("Properties");
+
+        sideMenu.add(propertiesMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 105, 240, -1));
 
         diagramScrollPane.setBorder(null);
         diagramScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -235,9 +223,9 @@ public class View extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 613, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 317, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,7 +233,7 @@ public class View extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(diagramScrollPane)
-                    .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)))
         );
 
         pack();
@@ -294,7 +282,10 @@ public class View extends javax.swing.JFrame {
         controller.setModel(p);
         this.diagramPanel   =   new DiagramPanel(p);
         diagramScrollPane.setViewportView(this.diagramPanel);
+        
         sideMenu.setVisible(true);
+        // hide side menu
+        propertiesMenu.setVisible(false);
     }//GEN-LAST:event_newProjectItemActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
@@ -325,10 +316,13 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JToggleButton ellipseButton;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem newProjectItem;
     private javax.swing.JPanel propertiesMenu;
-    private GUI.PropertiesParentMenu propertiesParentMenu2;
+    private GUI.PropertiesParentMenu propertiesParentMenu1;
     private javax.swing.JToggleButton rectangleButton;
     private javax.swing.JMenuItem saveAsItem;
     private javax.swing.JMenuItem saveItem;
@@ -523,7 +517,12 @@ class DiagramPanel extends javax.swing.JPanel {
         {
             this.draggedColor=Color.GRAY;
             this.draggedObject=new Line2D.Float(x,y,x,y);
-        }        
+        }
+        
+        if (currentElement == null)
+        {
+            propertiesMenu.setVisible(false);
+        }
         
         // None exist or not creating mode
         if (currentElement==null            || 
