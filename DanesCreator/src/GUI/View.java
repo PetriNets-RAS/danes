@@ -14,7 +14,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -22,11 +21,9 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import javax.sound.sampled.Line;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 
@@ -40,6 +37,7 @@ public class View extends javax.swing.JFrame {
     private DiagramPanel    diagramPanel;
     
     private Controller  controller;
+    private AboutUs about;
     
     public View(PetriNet pa_petriNet,Controller pa_controller) {        
         super();  
@@ -48,7 +46,7 @@ public class View extends javax.swing.JFrame {
         this.diagramPanel   =null;
         initComponents();
         
-        
+        about = new AboutUs(this, rootPaneCheckingEnabled);
         String IconPath="..\\DanesCreator\\Images\\icon.jpg";
         BufferedImage icon = null;
         try{
@@ -300,7 +298,7 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_newProjectItemActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
-        AboutUs about = new AboutUs(this, rootPaneCheckingEnabled);
+        //AboutUs about = new AboutUs(this, rootPaneCheckingEnabled);
         about.setVisible(true);
     }//GEN-LAST:event_aboutUsMouseClicked
 
@@ -391,12 +389,13 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.fill(new Rectangle2D.Float(column*elementWidth+12,row*elementWidth+5,25,elementWidth-10));                
     }
 
-    public void drawArrow(int x1, int y1, int x2, int y2) 
+    public void drawArrow(int x1, int y1, int x2, int y2, String type) 
     {
          // Size of arrow in px
-         int ARR_SIZE=10;
+         int ARR_SIZE=8;
 
-         double dx = x2 - x1, dy = y2 - y1;
+         double dx = x2 - x1;
+         double dy = y2 - y1;
          double angle = Math.atan2(dy, dx);
          int len = (int) Math.sqrt(dx*dx + dy*dy);
          AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
@@ -408,7 +407,11 @@ class DiagramPanel extends javax.swing.JPanel {
 
 
          // Draw horizontal arrow starting in (0, 0)
-         g2d.drawLine(0, 0, len, 0);
+         // Length decrease by X pixels if type of arrow is short
+         if (type=="short")
+            len=len-20;
+         
+         g2d.drawLine(0, 0, len-5, 0);
          g2d.fillPolygon(new int[]   {len, len-ARR_SIZE  , len-ARR_SIZE    , len},
                          new int[]     {0  , -ARR_SIZE     , ARR_SIZE      , 0}, 4 );
          // Retract old
@@ -421,7 +424,7 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.setStroke(new BasicStroke(3));        
         // Draw arrow        
         drawArrow( column1*elementWidth+elementWidth/2  ,row1*elementWidth+elementWidth/2,
-                   column2*elementWidth+elementWidth/2,  row2*elementWidth+elementWidth/2);
+                   column2*elementWidth+elementWidth/2,  row2*elementWidth+elementWidth/2,"short");
 
     }    
     
@@ -429,6 +432,15 @@ class DiagramPanel extends javax.swing.JPanel {
    
     public void drawPetriNet()                  
     {
+        // Draw all arcs
+        for(Element e:petriNet.getListOfArcs())
+        {     
+            DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
+            DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+            
+            drawArc(in.getX(),in.getY(),out.getX(),out.getY());
+        }  
+        
         // Draw all places
         for(Element e:petriNet.getListOfPlaces())
         {            
@@ -439,17 +451,8 @@ class DiagramPanel extends javax.swing.JPanel {
         for(Element e:petriNet.getListOfTransitions())
         {            
             drawTransition(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-        }   
-
-        // Draw all arcs
-        for(Element e:petriNet.getListOfArcs())
-        {     
-            DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
-            DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
-            
-            drawArc(in.getX(),in.getY(),out.getX(),out.getY());
-        }          
-        
+        }           
+       
     }
     
     private void drawDraggedObject() {
@@ -484,7 +487,7 @@ class DiagramPanel extends javax.swing.JPanel {
                 int x2=(int)((Line2D)draggedObject).getX2();
                 int y2=(int)((Line2D)draggedObject).getY2();
                 
-                drawArrow(x1, y1, x2, y2);            
+                drawArrow(x1, y1, x2, y2,"long");            
             }
         }    
 
@@ -492,6 +495,15 @@ class DiagramPanel extends javax.swing.JPanel {
         
         // Get current selected element
         Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+                
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!! DOPLNIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // Parameter place trans - instance of
+        // if (currentElement!=null)
+        // Dakypanel dakyPanel = new DakyPanel(controller.getLocationElement(x, y));        
+        // dakyPanel.setVisible(true);
+
+        
         // Place               
         if (currentElement instanceof Place)
         {   
@@ -553,7 +565,8 @@ class DiagramPanel extends javax.swing.JPanel {
             this.draggedObject=new Line2D.Float(x,y,x,y);
         }  
         
-        repaint();
+        // Not reapinting ! Deleting single item
+        //repaint();
     }
 
     private void mouseLeftDragged(int x, int y) {
@@ -580,6 +593,17 @@ class DiagramPanel extends javax.swing.JPanel {
         repaint();
     }
       
+    private void mouseRightDragged(int x, int y) {
+        // Line
+        if (draggedObject instanceof Line2D)
+        {
+            int x1=(int)((Line2D)draggedObject).getX1();
+            int y1=(int)((Line2D)draggedObject).getY1();                
+            draggedObject=new Line2D.Float(x1,y1,x,y);
+        }  
+        repaint();        
+    }    
+    
     public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
         // Old and current positions
         int x_old_location=x_old/elementWidth;
@@ -614,7 +638,6 @@ class DiagramPanel extends javax.swing.JPanel {
         // Same location - delete element
         if (x_old_location == x_new_location && y_old_location == y_new_location)
         {
-            System.out.print(x_new_location+"   "+y_new_location);
             controller.deleteElement(x_new_location,y_new_location);
         }
         
@@ -690,7 +713,8 @@ public class DiagramMouseAdapter extends MouseAdapter
         // Right - but left functionality
         if (SwingUtilities.isRightMouseButton(e) ) 
         {
-            diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
+            //diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
+            diagramPanel.mouseRightDragged(e.getX(),e.getY());    
         }                
     }    
   }

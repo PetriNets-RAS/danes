@@ -43,6 +43,7 @@ public class Element extends AVL_Tree.Node{
      */
     public void setName(String name) {
         this.name = name;
+        kk.setKey(name);
     }
 
     /**

@@ -216,4 +216,26 @@ public class PrecedenceGraph {
         return ret;
     }
     
+        public Arc getArc(String name) {
+        return (Arc) treeOfArcs.find(new StringKey(name));
+    }
+        
+    public Node getPlace(String name) {
+        return (Node) treeOfNodes.find(new StringKey(name));
+    }
+
+    public void changeNameOfPlace(String oldName, String newName) {
+        Node temp = (Node) treeOfNodes.find(new StringKey(oldName));
+        treeOfNodes.delete(temp.getKey());
+        temp.setName(newName);
+        treeOfNodes.addNode(temp);
+    }
+
+    public void changeNameOfArc(String oldName, String newName) {
+        Arc temp = (Arc) treeOfArcs.find(new StringKey(oldName));
+        treeOfArcs.delete(temp.getKey());
+        temp.setName(newName);
+        treeOfArcs.addNode(temp);
+    }
+    
 }
