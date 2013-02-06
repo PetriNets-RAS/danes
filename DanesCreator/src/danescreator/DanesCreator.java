@@ -41,11 +41,6 @@ public class DanesCreator {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         
-        /*
-        CalcModel      model      = new CalcModel();
-        CalcView       view       = new CalcView(model);
-        CalcController controller = new CalcController(model, view);
-        */
         
         // MVC
         PetriNet     model       =   new PetriNet("Empty");
