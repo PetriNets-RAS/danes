@@ -40,6 +40,7 @@ public class View extends javax.swing.JFrame {
     private DiagramPanel    diagramPanel;
     
     private Controller  controller;
+    private AboutUs about;
     
     public View(PetriNet pa_petriNet,Controller pa_controller) {        
         super();  
@@ -48,7 +49,7 @@ public class View extends javax.swing.JFrame {
         this.diagramPanel   =null;
         initComponents();
         
-        
+        about = new AboutUs(this, rootPaneCheckingEnabled);
         String IconPath="..\\DanesCreator\\Images\\icon.jpg";
         BufferedImage icon = null;
         try{
@@ -265,7 +266,7 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_newProjectItemActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
-        AboutUs about = new AboutUs(this, rootPaneCheckingEnabled);
+        //AboutUs about = new AboutUs(this, rootPaneCheckingEnabled);
         about.setVisible(true);
     }//GEN-LAST:event_aboutUsMouseClicked
 
