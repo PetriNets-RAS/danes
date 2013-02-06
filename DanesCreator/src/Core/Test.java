@@ -69,12 +69,17 @@ public class Test {
         //pn.deleteTransition("T2");
         //3 2 5
         //pn.deletePlace("P3");
-        //pn.deletePlace("P2");
+        pn.deletePlace("P2");
         //pn.deletePlace("P3");
         //pn.deletePlace("P5");
         
         ArrayList<Place> ar=pn.getListOfPlaces();
         for(Place ap:ar){
+            System.out.println(ap.getName()+" !!");
+        }
+        
+        ArrayList<Arc> aa=pn.getListOfArcs();
+        for(Arc ap:aa){
             System.out.println(ap.getName()+" !!");
         }
         

@@ -71,14 +71,16 @@ public class PetriNet {
                     Transition temp = (Transition) actArc.getOutElement();
                     temp.getListOfOutArcs().remove(actArc);
                     temp.getListOfOutPlaces().remove(actPlace);
-                    treeOfPlaces.delete(actArc.getKey());
+                    System.out.println("Mazem hranu "+actArc.getKey().getKey());
+                    treeOfArcs.delete(actArc.getKey());
                 }
 
                 for (Arc actArc : actPlace.getListOfOutArcs()) {
                     Transition temp = (Transition) actArc.getInElement();
                     temp.getListOfInArcs().remove(actArc);
                     temp.getListOfInPlaces().remove(actPlace);
-                    treeOfPlaces.delete(actArc.getKey());
+                    System.out.println("Mazem hranu "+actArc.getKey().getKey());
+                    treeOfArcs.delete(actArc.getKey());
                 }
 
                 treeOfPlaces.delete(actPlace.getKey());
