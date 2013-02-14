@@ -17,6 +17,9 @@ public class Place extends Element{
     private int capacity;
     private int width;
     private int height;
+    private boolean start;
+    private boolean end;
+    private int tokens;
     private ArrayList<Transition> listOfInTransitions;
     private ArrayList<Transition> listOfOutTransitions;
     private ArrayList<Arc> listOfInArcs;
@@ -32,6 +35,9 @@ public class Place extends Element{
         listOfOutTransitions=new ArrayList<>();
         this.width=50;
         this.height=35;
+        start=false;
+        end=false;
+        tokens=0;
     }
 
     /**
@@ -119,6 +125,48 @@ public class Place extends Element{
                 temp.getListOfInArcs().remove(actArc);           
         }
         
+    }
+
+    /**
+     * @return the start
+     */
+    public boolean isStart() {
+        return start;
+    }
+
+    /**
+     * @param start the start to set
+     */
+    public void setStart(boolean start) {
+        this.start = start;
+    }
+
+    /**
+     * @return the tokens
+     */
+    public int getTokens() {
+        return tokens;
+    }
+
+    /**
+     * @param tokens the tokens to set
+     */
+    public void setTokens(int tokens) {
+        this.tokens = tokens;
+    }
+
+    /**
+     * @return the end
+     */
+    public boolean isEnd() {
+        return end;
+    }
+
+    /**
+     * @param end the end to set
+     */
+    public void setEnd(boolean end) {
+        this.end = end;
     }
     
 }
