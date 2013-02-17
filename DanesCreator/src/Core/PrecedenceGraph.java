@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Michal Skovajsa
  */
-public class PrecedenceGraph {
+public class PrecedenceGraph extends Graph{
 
     private String name;
     private Tree treeOfNodes;
