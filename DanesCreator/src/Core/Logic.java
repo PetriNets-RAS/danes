@@ -37,7 +37,7 @@ public class Logic {
         }
         // Precedence Graph - Node / Node
         if (graph instanceof PrecedenceGraph)
-        if( (p1 instanceof Node)&&(p2 instanceof Node))  
+        if(((p1 instanceof Node)&&(p2 instanceof Node))&& !p1.equals(p2))
         {
             return true;            
         }    
