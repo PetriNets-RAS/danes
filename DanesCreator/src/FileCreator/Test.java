@@ -7,7 +7,9 @@ package FileCreator;
 import Core.Arc;
 import Core.PetriNet;
 import Core.Place;
+import Core.Resource;
 import Core.Transition;
+import java.util.ArrayList;
 
 /**
  *
@@ -27,6 +29,8 @@ public class Test {
         Place p5 = new Place("P5");
         Place p6 = new Place("P6");
         Place p7 = new Place("P7");
+        Resource r1=new Resource("R1");
+        Resource r2=new Resource("R2");
 
         Transition t1 = new Transition("T1");
         Transition t2 = new Transition("T2");
@@ -43,6 +47,10 @@ public class Test {
         Arc a9 = new Arc("A9", p5, t3);
         Arc a10 = new Arc("A10", p6, t3);
         Arc a11 = new Arc("A11", p7, t3);
+        Arc a12 = new Arc("A12", r1, t2);
+        Arc a13 = new Arc("A13", t3, r1);
+        Arc a14 = new Arc("A14", r2, t1);
+        Arc a15 = new Arc("A15", t3, r2);
 
         pn.addPlace(p1);
         pn.addPlace(p2);
@@ -52,6 +60,9 @@ public class Test {
         pn.addPlace(p6);
         pn.addPlace(p7);
 
+        pn.addResource(r2);
+        pn.addResource(r1);
+        
         pn.addTransition(t1);
         pn.addTransition(t2);
         pn.addTransition(t3);
@@ -66,6 +77,13 @@ public class Test {
         pn.addArc(a9);
         pn.addArc(a10);
         pn.addArc(a11);
+        pn.addArc(a13);
+        pn.addArc(a12);
+        
+                ArrayList<Place> ar=pn.getListOfPlaces();
+        for(Place ap:ar){
+            System.out.println(ap.getName()+" !!");
+        }
         
         XMLFileCreator xml=new XMLFileCreator();
         

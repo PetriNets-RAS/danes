@@ -22,6 +22,7 @@ public class PetriNet {
     private AVL_Tree.Tree treeOfPlaces;
     private AVL_Tree.Tree treeOfTransitions;
     private AVL_Tree.Tree treeOfArcs;
+    private AVL_Tree.Tree treeOfResources;
     private String name;
 
     /**
@@ -36,14 +37,15 @@ public class PetriNet {
         this.treeOfPlaces = new Tree(null);
         this.treeOfArcs = new Tree(null);
         this.treeOfTransitions = new Tree(null);
+        this.treeOfResources = new Tree(null);
     }
 
     /**
      * @Add a place to the Petri Net
      */
     public boolean addPlace(Place paPlace) {
-//        for (Place actPlace : listOfPlaces) {
-//            if (actPlace.getName().equals(paPlace.getName())) {
+//        for (Place actResource : listOfPlaces) {
+//            if (actResource.getName().equals(paPlace.getName())) {
 //                return false;
 //            }
 //        }
@@ -57,8 +59,8 @@ public class PetriNet {
      * @Delete a place from Petri Net
      */
     public boolean deletePlace(String paName) {
-        //for (Place actPlace : listOfPlaces) {
-        //    if (actPlace.getName().equals(paName)) {
+        //for (Place actResource : listOfPlaces) {
+        //    if (actResource.getName().equals(paName)) {
         Place actPlace = (Place) treeOfPlaces.find(new StringKey(paName));
         //System.out.println("mazem: "+paName);
         if (actPlace == null) {
@@ -88,12 +90,67 @@ public class PetriNet {
         //return false;
     }
 
+    
+    
+    
+        /**
+     * @Add a place to the Petri Net
+     */
+    public boolean addResource(Resource paResource) {
+//        for (Place actResource : listOfPlaces) {
+//            if (actResource.getName().equals(paPlace.getName())) {
+//                return false;
+//            }
+//        }
+        //listOfPlaces.add(paPlace);
+        //return true;
+        boolean temp = treeOfResources.addNode(paResource);
+        return temp;
+    }
+
+    /**
+     * @Delete a place from Petri Net
+     */
+    public boolean deleteResource(String paName) {
+        //for (Place actResource : listOfPlaces) {
+        //    if (actResource.getName().equals(paName)) {
+        Resource actResource = (Resource) treeOfResources.find(new StringKey(paName));
+        //System.out.println("mazem: "+paName);
+        if (actResource == null) {
+            //System.out.println("aaa");
+            return false;
+        }
+        for (Arc actArc : actResource.getListOfInArcs()) {
+            Transition temp = (Transition) actArc.getOutElement();
+            temp.getListOfOutArcs().remove(actArc);
+            temp.getListOfOutPlaces().remove(actResource);
+            System.out.println("Mazem hranu " + actArc.getKey().getKey());
+            treeOfArcs.delete(actArc.getKey());
+        }
+
+        for (Arc actArc : actResource.getListOfOutArcs()) {
+            Transition temp = (Transition) actArc.getInElement();
+            temp.getListOfInArcs().remove(actArc);
+            temp.getListOfInPlaces().remove(actResource);
+            System.out.println("Mazem hranu " + actArc.getKey().getKey());
+            treeOfArcs.delete(actArc.getKey());
+        }
+
+        treeOfPlaces.delete(actResource.getKey());
+        return true;
+        //    }
+        //}
+        //return false;
+    }
+    
+    
+    
     /**
      * @Add a transition to the Petri net
      */
     public boolean addTransition(Transition paTransition) {
-//        for (Transition actPlace : listOfTransitions) {
-//            if (actPlace.getName().equals(paTransition.getName())) {
+//        for (Transition actResource : listOfTransitions) {
+//            if (actResource.getName().equals(paTransition.getName())) {
 //                return false;
 //            }
 //        }
@@ -151,19 +208,18 @@ public class PetriNet {
         }
         if (paArc.getOutElement() instanceof Transition) {
             Transition tempTran = (Transition) paArc.getOutElement();
-            Place tempPla = (Place) paArc.getInElement();
+            AbsPlace tempPla = (AbsPlace) paArc.getInElement();
 
+            
             tempTran.getListOfOutArcs().add(paArc);
             tempTran.getListOfOutPlaces().add(tempPla);
 
             tempPla.getListOfInArcs().add(paArc);
             tempPla.getListOfInTransitions().add(tempTran);
             return true;
-        }
-
-        if (paArc.getInElement() instanceof Transition) {
+        }else{
             Transition tempTran = (Transition) paArc.getInElement();
-            Place tempPla = (Place) paArc.getOutElement();
+            AbsPlace tempPla = (AbsPlace) paArc.getOutElement();
 
             tempTran.getListOfInArcs().add(paArc);
             tempTran.getListOfInPlaces().add(tempPla);
@@ -188,17 +244,16 @@ public class PetriNet {
         }
         if (actArc.getOutElement() instanceof Transition) {
             Transition tempTr = (Transition) actArc.getOutElement();
-            Place tempPl = (Place) actArc.getInElement();
+            AbsPlace tempPl = (Place) actArc.getInElement();
 
             tempTr.getListOfOutArcs().remove(actArc);
             tempTr.getListOfOutPlaces().remove(tempPl);
 
             tempPl.getListOfInArcs().remove(actArc);
             tempPl.getListOfInTransitions().remove(tempTr);
-        }
-        if (actArc.getInElement() instanceof Transition) {
+        }else{
             Transition tempTr = (Transition) actArc.getInElement();
-            Place tempPl = (Place) actArc.getOutElement();
+            AbsPlace tempPl = (Place) actArc.getOutElement();
 
             tempTr.getListOfInArcs().remove(actArc);
             tempTr.getListOfInPlaces().remove(tempPl);
@@ -223,6 +278,19 @@ public class PetriNet {
 
         for (AVL_Tree.Node n : treeOfPlaces.inOrder()) {
             Place tempPlace = (Place) n;
+            ret.add(tempPlace);
+        }
+
+        return ret;
+    }
+    
+    
+        public ArrayList<Resource> getListOfResources() {
+
+        ArrayList<Resource> ret = new ArrayList<>();
+
+        for (AVL_Tree.Node n : treeOfResources.inOrder()) {
+            Resource tempPlace = (Resource) n;
             ret.add(tempPlace);
         }
 
@@ -327,6 +395,13 @@ public class PetriNet {
         treeOfPlaces.delete(temp.getKey());
         temp.setName(newName);
         treeOfPlaces.addNode(temp);
+    }
+    
+        public void changeNameOfResource(String oldName, String newName) {
+        Resource temp = (Resource) treeOfResources.find(new StringKey(oldName));
+        treeOfResources.delete(temp.getKey());
+        temp.setName(newName);
+        treeOfResources.addNode(temp);
     }
 
     public void changeNameOfTransition(String oldName, String newName) {

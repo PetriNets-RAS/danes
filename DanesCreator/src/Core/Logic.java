@@ -29,7 +29,7 @@ public class Logic {
     
         Element p1=paArc.getOutElement();
         Element p2=paArc.getInElement();
-        if( ((p1 instanceof Place)&&(p2 instanceof Transition)) | ((p2 instanceof Place)&&(p1 instanceof Transition)) ) {
+        if( ((p1 instanceof AbsPlace)&&(p2 instanceof Transition)) | ((p2 instanceof AbsPlace)&&(p1 instanceof Transition)) ) {
             return true;
         }    
         return false;

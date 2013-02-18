@@ -7,6 +7,7 @@ package FileCreator;
 import Core.Arc;
 import Core.PetriNet;
 import Core.Place;
+import Core.Resource;
 import Core.Transition;
 import java.io.File;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class XMLFileCreator {
 
     public boolean createPetriXML(PetriNet pn) {
         try {
-            Document doc = (Document) docBuilder.newDocument();
+            doc = (Document) docBuilder.newDocument();
             Element rootElement = doc.createElement("process");
             doc.appendChild(rootElement);
 
@@ -56,7 +57,7 @@ public class XMLFileCreator {
             title.appendChild(doc.createTextNode(pn.getName()));
             rootElement.appendChild(title);
 
-            Element resources = this.getResourcesElement(doc);
+            Element resources = this.getResourcesElement(doc,pn.getListOfResources());
             rootElement.appendChild(resources);
 
             Element places = this.getPlacesElement(pn.getListOfPlaces(), doc);
@@ -89,10 +90,17 @@ public class XMLFileCreator {
             Element edge = doc.createElement("edge");
 
             String type = "";
+            String resourceType="";
             if (a.getOutElement() instanceof Transition) {
                 type = "TP";
+                if(a.getInElement() instanceof Resource){
+                    resourceType="P_"+a.getInElement().getName();
+                }
             } else {
                 type = "PT";
+                if(a.getOutElement() instanceof Resource){
+                    resourceType="P_"+a.getOutElement().getName();
+                }
             }
 
             Attr edgeType = doc.createAttribute("type");
@@ -121,12 +129,12 @@ public class XMLFileCreator {
 
             Attr power = doc.createAttribute("power");
             //?????????????
-            power.setValue("1");
+            power.setValue(a.getCapacity()+"");
             edge.setAttributeNode(power);
 
             Attr resourceProfession = doc.createAttribute("ResourceProfession");
             //?????????????
-            resourceProfession.setValue("");
+            resourceProfession.setValue(resourceType);
             edge.setAttributeNode(resourceProfession);
 
             edges.appendChild(edge);
@@ -155,17 +163,24 @@ public class XMLFileCreator {
             place.setAttributeNode(Y);
 
             Attr tokens = doc.createAttribute("tokens");
-            tokens.setValue(" - ");
+            tokens.setValue(p.getTokens()+"");
             place.setAttributeNode(tokens);
 
             Attr start = doc.createAttribute("start");
-            //?????????????
-            start.setValue("no");
+            if(p.isStart()){
+                start.setValue("yes");
+            }
+            else{
+                start.setValue("no");
+            }
             place.setAttributeNode(start);
 
             Attr end = doc.createAttribute("end");
-            //?????????????
-            end.setValue("no");
+            if(p.isEnd()){
+                end.setValue("true");
+            }else{
+                end.setValue("no");
+            }
             place.setAttributeNode(end);
 
             places.appendChild(place);
@@ -198,28 +213,31 @@ public class XMLFileCreator {
         return transitions;
     }
 
-    private Element getResourcesElement(Document doc) {
+    private Element getResourcesElement(Document doc,ArrayList<Resource> listOfResources ) {
         Element resources = doc.createElement("resources");
 
+        for(Resource r : listOfResources){
         Element resource = doc.createElement("resource");
 
         Attr resName = doc.createAttribute("name");
-        resName.setValue("1");
+        resName.setValue(r.getName());
         resource.setAttributeNode(resName);
 
         Attr quantity = doc.createAttribute("quantity");
-        quantity.setValue("1");
+        quantity.setValue(r.getQuantity()+"");
         resource.setAttributeNode(quantity);
 
         Attr resX = doc.createAttribute("x");
-        resX.setValue("1");
+        //X.setValue(r.getDiagramElement().getX()+"");
+        resX.setValue("");
         resource.setAttributeNode(resX);
 
         Attr resY = doc.createAttribute("y");
-        resY.setValue("1");
+        //Y.setValue(r.getDiagramElement().getY()+"");
+        resY.setValue("");
         resource.setAttributeNode(resY);
         resources.appendChild(resource);
-        
+        }
         return resources;
     }
 }

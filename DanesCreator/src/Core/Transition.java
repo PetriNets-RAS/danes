@@ -14,8 +14,8 @@ public class Transition extends Element {
 
     private int width;
     private int height;
-    private ArrayList<Place> listOfInPlaces;
-    private ArrayList<Place> listOfOutPlaces;
+    private ArrayList<AbsPlace> listOfInPlaces;
+    private ArrayList<AbsPlace> listOfOutPlaces;
     private ArrayList<Arc> listOfInArcs;
     private ArrayList<Arc> listOfOutArcs;
 
@@ -63,14 +63,14 @@ public class Transition extends Element {
     /**
      * @return the listOfInPlaces
      */
-    public ArrayList<Place> getListOfInPlaces() {
+    public ArrayList<AbsPlace> getListOfInPlaces() {
         return listOfInPlaces;
     }
 
     /**
      * @return the listOfOutPlaces
      */
-    public ArrayList<Place> getListOfOutPlaces() {
+    public ArrayList<AbsPlace> getListOfOutPlaces() {
         return listOfOutPlaces;
     }
 
