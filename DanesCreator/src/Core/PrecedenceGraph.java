@@ -12,14 +12,14 @@ import java.util.ArrayList;
  *
  * @author Michal Skovajsa
  */
-public class PrecedenceGraph extends Graph{
+public class PrecedenceGraph extends Graph {
 
     private String name;
     private Tree treeOfNodes;
     private Tree treeOfArcs;
+    private ArrayList<Node> listOfNodes;
+    private ArrayList<Arc> listOfArcs;
 
-//    private ArrayList<Node> treeOfNodes;
-//    private ArrayList<Arc> treeOfArcs;
     /**
      * @Class constructor
      */
@@ -28,8 +28,8 @@ public class PrecedenceGraph extends Graph{
         this.treeOfArcs = new Tree(null);
         this.treeOfNodes = new Tree(null);
 
-//        this.treeOfArcs = new ArrayList<>();
-//        this.treeOfNodes = new ArrayList<>();
+        this.listOfArcs = new ArrayList<>();
+        this.listOfNodes = new ArrayList<>();
     }
 
     /**
@@ -37,16 +37,16 @@ public class PrecedenceGraph extends Graph{
      */
     public boolean addNode(Node paNode) {
 
-        boolean temp = getTreeOfNodes().addNode(paNode);
-        return temp;
+//        boolean temp = getTreeOfNodes().addNode(paNode);
+//        return temp;
 
-//        for (Node actNode : treeOfNodes) {
-//            if (actNode.getName().equals(paNode.getName())) {
-//                return false;
-//            }
-//        }
-//        treeOfNodes.add(paNode);
-//        return true;
+        for (Node actNode : listOfNodes) {
+            if (actNode.getName().equals(paNode.getName())) {
+                return false;
+            }
+        }
+        listOfNodes.add(paNode);
+        return true;
     }
 
     /**
@@ -54,35 +54,35 @@ public class PrecedenceGraph extends Graph{
      */
     public boolean deleteNode(String paName) {
 
-        Node actNode = (Node) getTreeOfNodes().find(new StringKey(paName));
-        if (actNode == null) {
-            return false;
-        }
-//        for (Node actNode : treeOfNodes) {
-//            if (actNode.getName().equals(paName)) {
+//        Node actNode = (Node) getTreeOfNodes().find(new StringKey(paName));
+//        if (actNode == null) {
+//            return false;
+//        }
+        for (Node actNode : listOfNodes) {
+            if (actNode.getName().equals(paName)) {
 
         for (Arc actArc : actNode.getListOfInArcs()) {
             Node temp = (Node) actArc.getOutElement();
             temp.getListOfOutArcs().remove(actArc);
             temp.getListOfOutNodes().remove(actNode);
-            getTreeOfArcs().delete(actArc.getKey());
-            //listOfArcs.remove(actArc);
+            //getTreeOfArcs().delete(actArc.getKey());
+            listOfArcs.remove(actArc);
         }
 
         for (Arc actArc : actNode.getListOfOutArcs()) {
             Node temp = (Node) actArc.getInElement();
             temp.getListOfInArcs().remove(actArc);
             temp.getListOfInNodes().remove(actNode);
-            getTreeOfArcs().delete(actArc.getKey());
-            //listOfArcs.remove(actArc);
+            //getTreeOfArcs().delete(actArc.getKey());
+            listOfArcs.remove(actArc);
         }
 
-        getTreeOfNodes().delete(actNode.getKey());
-        //listOfNodes.remove(actNode);
+        //getTreeOfNodes().delete(actNode.getKey());
+        listOfNodes.remove(actNode);
         return true;
-//            }
-//        }
-//        return false;
+            }
+        }
+        return false;
     }
 
     /**
@@ -90,17 +90,17 @@ public class PrecedenceGraph extends Graph{
      */
     public boolean addArc(Arc paArc) {
 
-        boolean temp = getTreeOfArcs().addNode(paArc);
-        if (temp == false) {
-            return false;
-        }
-
-//        for (Arc actArc : getListOfArcs()) {
-//            if (actArc.getName().equals(paArc.getName())) {
-//                return false;
-//            }
+//        boolean temp = getTreeOfArcs().addNode(paArc);
+//        if (temp == false) {
+//            return false;
 //        }
-//        getListOfArcs().add(paArc);
+
+        for (Arc actArc : listOfArcs) {
+            if (actArc.getName().equals(paArc.getName())) {
+                return false;
+            }
+        }
+        listOfArcs.add(paArc);
 
         Node outNode = (Node) paArc.getOutElement();
         Node inNode = (Node) paArc.getInElement();
@@ -118,31 +118,31 @@ public class PrecedenceGraph extends Graph{
      * @Delete an arc from Precedence Graph
      */
     public boolean deleteArc(String paName) {
-//        for (Arc actArc : getListOfArcs()) {
-//            if (actArc.getName().equals(paName)) {
+        for (Arc actArc : listOfArcs) {
+            if (actArc.getName().equals(paName)) {
 
-        Arc actArc = (Arc) getTreeOfArcs().find(new StringKey(paName));
-        if (actArc == null) {
-            //System.out.println("aaa");
-            return false;
+//        Arc actArc = (Arc) getTreeOfArcs().find(new StringKey(paName));
+//        if (actArc == null) {
+//            //System.out.println("aaa");
+//            return false;
+//        }
+
+
+                Node outNode = (Node) actArc.getOutElement();
+                Node inNode = (Node) actArc.getInElement();
+
+                outNode.getListOfOutArcs().remove(actArc);
+                outNode.getListOfOutNodes().remove(inNode);
+
+                inNode.getListOfInArcs().remove(actArc);
+                inNode.getListOfInNodes().remove(outNode);
+
+                //getTreeOfArcs().delete(actArc.getKey());
+                listOfArcs.remove(actArc);
+                return true;
+            }
         }
-
-
-        Node outNode = (Node) actArc.getOutElement();
-        Node inNode = (Node) actArc.getInElement();
-
-        outNode.getListOfOutArcs().remove(actArc);
-        outNode.getListOfOutNodes().remove(inNode);
-
-        inNode.getListOfInArcs().remove(actArc);
-        inNode.getListOfInNodes().remove(outNode);
-
-        getTreeOfArcs().delete(actArc.getKey());
-        //getListOfArcs().remove(actArc);
-        return true;
-//    }
-//}
-//return false;
+        return false;
     }
 
     /**
@@ -172,54 +172,54 @@ public class PrecedenceGraph extends Graph{
 //    public ArrayList<Arc> getListOfArcs() {
 //        return treeOfArcs;
 //    }
-
-    /**
-     * @return the treeOfNodes
-     */
-    public Tree getTreeOfNodes() {
-        return treeOfNodes;
-    }
-
-    /**
-     * @return the treeOfArcs
-     */
-    public Tree getTreeOfArcs() {
-        return treeOfArcs;
-    }
-    
+//    /**
+//     * @return the treeOfNodes
+//     */
+//    public Tree getTreeOfNodes() {
+//        return treeOfNodes;
+//    }
+//
+//    /**
+//     * @return the treeOfArcs
+//     */
+//    public Tree getTreeOfArcs() {
+//        return treeOfArcs;
+//    }
     /**
      * @return the listOfArcs
      */
     public ArrayList<Arc> getListOfArcs() {
-        ArrayList<Arc> ret=new ArrayList<>() ;
-        
-        for(AVL_Tree.Node n : treeOfArcs.inOrder() ){
-            Arc tempArc=(Arc) n;
-            ret.add(tempArc);
-        }
-        
-        return ret;
+//        ArrayList<Arc> ret = new ArrayList<>();
+//
+//        for (AVL_Tree.Node n : treeOfArcs.inOrder()) {
+//            Arc tempArc = (Arc) n;
+//            ret.add(tempArc);
+//        }
+//
+//        return ret;
+        return listOfArcs;
     }
-    
+
     /**
      * @return the listOfPlaces
      */
     public ArrayList<Core.Node> getListOfNodes() {
-        
-        ArrayList<Core.Node> ret=new ArrayList<>() ;
-        
-        for(AVL_Tree.Node n : treeOfNodes.inOrder() ){
-            Core.Node tempNode=(Core.Node) n;
-            ret.add(tempNode);
-        }
-        
-        return ret;
+//
+//        ArrayList<Core.Node> ret = new ArrayList<>();
+//
+//        for (AVL_Tree.Node n : treeOfNodes.inOrder()) {
+//            Core.Node tempNode = (Core.Node) n;
+//            ret.add(tempNode);
+//        }
+//
+//        return ret;
+        return listOfNodes;
     }
-    
-        public Arc getArc(String name) {
+
+    public Arc getArc(String name) {
         return (Arc) treeOfArcs.find(new StringKey(name));
     }
-        
+
     public Node getPlace(String name) {
         return (Node) treeOfNodes.find(new StringKey(name));
     }
@@ -237,5 +237,4 @@ public class PrecedenceGraph extends Graph{
         temp.setName(newName);
         treeOfArcs.addNode(temp);
     }
-    
 }

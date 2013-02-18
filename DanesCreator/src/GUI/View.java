@@ -254,10 +254,11 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_saveAsItemActionPerformed
 
     private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
-        // Create and display new panel
-        // Petri Net ukazka ************************************************
-        /*PetriNet p=new PetriNet("Empty");        
-        // umele pridanie siete
+       /*
+        //Create and display new panel
+         //Petri Net ukazka ************************************************
+        PetriNet p=new PetriNet("Empty");        
+         //umele pridanie siete
         Place a=new Place("a");
         a.setDiagramElement(new DiagramElement(4, 4));
         Transition b= new Transition("b");
