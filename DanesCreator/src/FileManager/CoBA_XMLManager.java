@@ -45,10 +45,10 @@ public class CoBA_XMLManager {
 
     public CoBA_XMLManager() {
 
-        try {           
+        try {
             docFactory = DocumentBuilderFactory.newInstance();
             docBuilder = docFactory.newDocumentBuilder();
-            
+
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -100,11 +100,11 @@ public class CoBA_XMLManager {
             String petriNetName = titleList.item(0).getTextContent();
             PetriNet pn = new PetriNet(petriNetName);
 
-            this.getResourcesFromXML(doc,pn);
-            this.getPlacesFromXML(doc,pn);
-            this.getTransitionsFromXML(doc,pn);
+            this.getResourcesFromXML(doc, pn);
+            this.getPlacesFromXML(doc, pn);
+            this.getTransitionsFromXML(doc, pn);
             this.getArcsFromXML(doc, pn);
-           
+
             return pn;
         } catch (SAXException | IOException | ParserConfigurationException ex) {
             Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -112,7 +112,7 @@ public class CoBA_XMLManager {
         }
     }
 
-    private void getResourcesFromXML(Document doc,PetriNet pn) {
+    private void getResourcesFromXML(Document doc, PetriNet pn) {
 
         NodeList resourcesList = doc.getElementsByTagName("resource");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -132,7 +132,7 @@ public class CoBA_XMLManager {
     }
 
     private void getArcsFromXML(Document doc, PetriNet pn) {
-        
+
         NodeList resourcesList = doc.getElementsByTagName("edge");
         for (int i = 0; i < resourcesList.getLength(); i++) {
             Node nNode = resourcesList.item(i);
@@ -143,7 +143,7 @@ public class CoBA_XMLManager {
                 Place p;
                 Resource r;
                 Arc a;
-                
+
                 int x1 = Integer.parseInt(eElement.getAttribute("x1"));
                 int y1 = Integer.parseInt(eElement.getAttribute("y1"));
                 int x2 = Integer.parseInt(eElement.getAttribute("x2"));
@@ -151,31 +151,47 @@ public class CoBA_XMLManager {
                 int power = Integer.parseInt(eElement.getAttribute("power"));
                 String type = eElement.getAttribute("type");
                 String resourceProfession = eElement.getAttribute("ResourceProfession");
+
+
                 if ("TP".equals(type)) {
-                    Transition t = pn.getTransition(x1, y1);
+                    Transition t = pn.getTransition(x2, y2);
+                    System.out.println(t.getName());
                     if ("".equals(resourceProfession)) {
-                        p=pn.getPlace(x2,y2);
-                        a=new Arc("ARC"+i,t,p);
+                        p = pn.getPlace(x1, y1);
+                        a = new Arc("ARC" + i, t, p);
+                        System.out.println(t.getName());
+                        System.out.println(p.getName());
+
                     } else {
-                        r=pn.getResource(x2, y2);
-                        a=new Arc("ARC"+i,t,r);
+                        r = pn.getResource(x1, y1);
+                        a = new Arc("ARC" + i, t, r);
+                        System.out.println(r.getName());
+                        System.out.println(t.getName());
                     }
-                }else{
+                } else {
                     Transition t = pn.getTransition(x2, y2);
                     if ("".equals(resourceProfession)) {
-                        p=pn.getPlace(x1,y1);
-                        a=new Arc("ARC"+i,p,t);
+                        p = pn.getPlace(x1, y1);
+                        a = new Arc("ARC" + i, p, t);
+                        System.out.println(p.getName());
+                        System.out.println(t.getName());
                     } else {
-                        r=pn.getResource(x1, y1);
-                        a=new Arc("ARC"+i,r,t);
+                        r = pn.getResource(x1, y1);
+                        a = new Arc("ARC" + i, r, t);
+                        System.out.println(r.getName());
+                        System.out.println(t.getName());
                     }
                 }
+                System.out.println("-------------------------");
+                System.out.println(a.getName());
+                System.out.println(a.getOutElement().getName());
+                System.out.println(a.getInElement().getName());
                 pn.addArc(a);
             }
         }
     }
 
-    private void getPlacesFromXML(Document doc,PetriNet pn) {
+    private void getPlacesFromXML(Document doc, PetriNet pn) {
 
         NodeList resourcesList = doc.getElementsByTagName("place");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -207,7 +223,7 @@ public class CoBA_XMLManager {
         }
     }
 
-    private void getTransitionsFromXML(Document doc,PetriNet pn) {
+    private void getTransitionsFromXML(Document doc, PetriNet pn) {
 
         NodeList resourcesList = doc.getElementsByTagName("transition");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -232,41 +248,60 @@ public class CoBA_XMLManager {
 
             String type = "";
             String resourceType = "";
+
+            Attr edgeType = doc.createAttribute("type");
+
+
+            Attr X1 = doc.createAttribute("x1");
+            Attr Y1 = doc.createAttribute("y1");
+            Attr X2 = doc.createAttribute("x2");
+            Attr Y2 = doc.createAttribute("y2");
+
             if (a.getOutElement() instanceof Transition) {
                 type = "TP";
                 if (a.getInElement() instanceof Resource) {
                     resourceType = "P_" + a.getInElement().getName();
                 }
+                X1.setValue(a.getInElement().getDiagramElement().getX() + "");
+                Y1.setValue(a.getInElement().getDiagramElement().getY() + "");
+                X2.setValue(a.getOutElement().getDiagramElement().getX() + "");
+                Y2.setValue(a.getOutElement().getDiagramElement().getY() + "");
             } else {
                 type = "PT";
                 if (a.getOutElement() instanceof Resource) {
                     resourceType = "P_" + a.getOutElement().getName();
                 }
-            }
+                X1.setValue(a.getOutElement().getDiagramElement().getX() + "");
+                Y1.setValue(a.getOutElement().getDiagramElement().getY() + "");
+                X2.setValue(a.getInElement().getDiagramElement().getX() + "");
+                Y2.setValue(a.getInElement().getDiagramElement().getY() + "");
 
-            Attr edgeType = doc.createAttribute("type");
+            }
             edgeType.setValue(type);
             edge.setAttributeNode(edgeType);
-
-            Attr X1 = doc.createAttribute("x1");
-            X1.setValue(a.getOutElement().getDiagramElement().getX() + "");
-            //X1.setValue("");
             edge.setAttributeNode(X1);
-
-            Attr Y1 = doc.createAttribute("y1");
-            Y1.setValue(a.getOutElement().getDiagramElement().getY() + "");
-            //Y1.setValue("");
             edge.setAttributeNode(Y1);
-
-            Attr X2 = doc.createAttribute("x2");
-            X2.setValue(a.getInElement().getDiagramElement().getX() + "");
-            //X2.setValue("");
             edge.setAttributeNode(X2);
-
-            Attr Y2 = doc.createAttribute("y2");
-            Y2.setValue(a.getInElement().getDiagramElement().getY() + "");
-            //Y2.setValue("");
             edge.setAttributeNode(Y2);
+
+
+
+//            
+//            //X1.setValue("");
+//            edge.setAttributeNode(X1);
+//
+//            
+//            
+//            //Y1.setValue("");
+//            edge.setAttributeNode(Y1);
+//
+//            
+//            //X2.setValue("");
+//            edge.setAttributeNode(X2);
+//
+//            
+//            //Y2.setValue("");
+//            edge.setAttributeNode(Y2);
 
             Attr power = doc.createAttribute("power");
             //?????????????
