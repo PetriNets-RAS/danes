@@ -37,20 +37,20 @@ import org.xml.sax.SAXException;
  *
  * @author Atarin
  */
-public class XMLFileManager {
+public class CoBA_XMLManager {
 
     DocumentBuilderFactory docFactory;
     DocumentBuilder docBuilder;
     Document doc;
 
-    public XMLFileManager() {
+    public CoBA_XMLManager() {
 
-        try {
+        try {           
             docFactory = DocumentBuilderFactory.newInstance();
             docBuilder = docFactory.newDocumentBuilder();
-
+            
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(XMLFileManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -74,7 +74,6 @@ public class XMLFileManager {
             rootElement.appendChild(transitions);
             rootElement.appendChild(edges);
 
-
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
             transformer.setOutputProperty("encoding", "WINDOWS-1256");
@@ -85,7 +84,7 @@ public class XMLFileManager {
 
             return true;
         } catch (TransformerException ex) {
-            Logger.getLogger(XMLFileManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
@@ -101,25 +100,19 @@ public class XMLFileManager {
             String petriNetName = titleList.item(0).getTextContent();
             PetriNet pn = new PetriNet(petriNetName);
 
-            ArrayList<Resource> resourcesList=this.getResourcesFromXML(doc);
-            ArrayList<Place> placesList=this.getPlacesFromXML(doc);
-            ArrayList<Transition> transitionsList=getTransitionsFromXML(doc);
-            
-            for(Place p:placesList){
-                System.out.println(p.getName());
-            }
-            
-
+            this.getResourcesFromXML(doc,pn);
+            this.getPlacesFromXML(doc,pn);
+            this.getTransitionsFromXML(doc,pn);
+            this.getArcsFromXML(doc, pn);
+           
             return pn;
         } catch (SAXException | IOException | ParserConfigurationException ex) {
-            Logger.getLogger(XMLFileManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-
     }
 
-    private ArrayList<Resource> getResourcesFromXML(Document doc) {
-        ArrayList<Resource> list = new ArrayList<>();
+    private void getResourcesFromXML(Document doc,PetriNet pn) {
 
         NodeList resourcesList = doc.getElementsByTagName("resource");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -133,14 +126,56 @@ public class XMLFileManager {
                 int quantity = Integer.parseInt(eElement.getAttribute("quantity"));
                 res.setQuantity(quantity);
                 res.setDiagramElement(new DiagramElement(x, y));
-                list.add(res);
+                pn.addResource(res);
             }
         }
-        return list;
     }
 
-    private ArrayList<Place> getPlacesFromXML(Document doc) {
-        ArrayList<Place> list = new ArrayList<>();
+    private void getArcsFromXML(Document doc, PetriNet pn) {
+        
+        NodeList resourcesList = doc.getElementsByTagName("edge");
+        for (int i = 0; i < resourcesList.getLength(); i++) {
+            Node nNode = resourcesList.item(i);
+
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element eElement = (Element) nNode;
+
+                Place p;
+                Resource r;
+                Arc a;
+                
+                int x1 = Integer.parseInt(eElement.getAttribute("x1"));
+                int y1 = Integer.parseInt(eElement.getAttribute("y1"));
+                int x2 = Integer.parseInt(eElement.getAttribute("x2"));
+                int y2 = Integer.parseInt(eElement.getAttribute("y2"));
+                int power = Integer.parseInt(eElement.getAttribute("power"));
+                String type = eElement.getAttribute("type");
+                String resourceProfession = eElement.getAttribute("ResourceProfession");
+                if ("TP".equals(type)) {
+                    Transition t = pn.getTransition(x1, y1);
+                    if ("".equals(resourceProfession)) {
+                        p=pn.getPlace(x2,y2);
+                        a=new Arc("ARC"+i,t,p);
+                    } else {
+                        r=pn.getResource(x2, y2);
+                        a=new Arc("ARC"+i,t,r);
+                    }
+                }else{
+                    Transition t = pn.getTransition(x2, y2);
+                    if ("".equals(resourceProfession)) {
+                        p=pn.getPlace(x1,y1);
+                        a=new Arc("ARC"+i,p,t);
+                    } else {
+                        r=pn.getResource(x1, y1);
+                        a=new Arc("ARC"+i,r,t);
+                    }
+                }
+                pn.addArc(a);
+            }
+        }
+    }
+
+    private void getPlacesFromXML(Document doc,PetriNet pn) {
 
         NodeList resourcesList = doc.getElementsByTagName("place");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -152,29 +187,27 @@ public class XMLFileManager {
                 int tokens = Integer.parseInt(eElement.getAttribute("tokens"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-                
-                if("yes".equals(eElement.getAttribute("start"))){
+
+                if ("yes".equals(eElement.getAttribute("start"))) {
                     pl.setStart(true);
-                }else{
+                } else {
                     pl.setStart(false);
                 }
-                
-                if("yes".equals(eElement.getAttribute("end"))){
+
+                if ("yes".equals(eElement.getAttribute("end"))) {
                     pl.setEnd(true);
-                }else{
+                } else {
                     pl.setEnd(false);
                 }
-                
+
                 pl.setQuantity(tokens);
                 pl.setDiagramElement(new DiagramElement(x, y));
-                list.add(pl);
+                pn.addPlace(pl);
             }
         }
-        return list;
     }
 
-    private ArrayList<Transition> getTransitionsFromXML(Document doc) {
-        ArrayList<Transition> list = new ArrayList<>();
+    private void getTransitionsFromXML(Document doc,PetriNet pn) {
 
         NodeList resourcesList = doc.getElementsByTagName("transition");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -186,10 +219,9 @@ public class XMLFileManager {
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
                 tr.setDiagramElement(new DiagramElement(x, y));
-                list.add(tr);
+                pn.addTransition(tr);
             }
         }
-        return list;
     }
 
     private Element getEdgesElement(ArrayList<Arc> listOfArcs, Document doc) {

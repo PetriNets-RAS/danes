@@ -86,7 +86,7 @@ public class Test {
             System.out.println(ap.getName()+" !!");
         }
         
-        XMLFileManager xml=new XMLFileManager();
+        CoBA_XMLManager xml=new CoBA_XMLManager();
         
         System.out.println(xml.createPetriXML(pn,new File("C:\\file.xml")));
         

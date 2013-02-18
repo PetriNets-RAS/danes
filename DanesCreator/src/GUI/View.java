@@ -12,7 +12,7 @@ import Core.PetriNet;
 import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Transition;
-import FileManager.XMLFileManager;
+import FileManager.CoBA_XMLManager;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -347,15 +347,23 @@ public class View extends javax.swing.JFrame {
     private void loadItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadItemActionPerformed
         // TODO add your handling code here:
         File inputFile=new File("C:\\file.xml");
-        FileManager.XMLFileManager x = new XMLFileManager();
-        x.getPetriNetFromXML(inputFile);
-        PetriNet pn=new PetriNet(null);
+        FileManager.CoBA_XMLManager x = new CoBA_XMLManager();
+        
+        p=x.getPetriNetFromXML(inputFile);
+        
+        controller.setModel(p);
+        this.diagramPanel   =   new DiagramPanel(p);
+        diagramScrollPane.setViewportView(this.diagramPanel);
+        
+        sideMenu.setVisible(true);
+        // hide side menu
+        propertiesMenu.setVisible(false);
         ///
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
         // TODO add your handling code here:
-        FileManager.XMLFileManager newXML=new XMLFileManager();
+        FileManager.CoBA_XMLManager newXML=new CoBA_XMLManager();
         newXML.createPetriXML(p,new File("C:\\file.xml"));       
     }//GEN-LAST:event_saveItemActionPerformed
 

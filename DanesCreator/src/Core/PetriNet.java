@@ -248,29 +248,29 @@ public class PetriNet extends Graph {
 //        if (actArc == null) {
 //            return false;
 //        }
-        if (actArc.getOutElement() instanceof Transition) {
-            Transition tempTr = (Transition) actArc.getOutElement();
-            AbsPlace tempPl = (Place) actArc.getInElement();
+                if (actArc.getOutElement() instanceof Transition) {
+                    Transition tempTr = (Transition) actArc.getOutElement();
+                    AbsPlace tempPl = (Place) actArc.getInElement();
 
-            tempTr.getListOfOutArcs().remove(actArc);
-            tempTr.getListOfOutPlaces().remove(tempPl);
+                    tempTr.getListOfOutArcs().remove(actArc);
+                    tempTr.getListOfOutPlaces().remove(tempPl);
 
-            tempPl.getListOfInArcs().remove(actArc);
-            tempPl.getListOfInTransitions().remove(tempTr);
-        } else {
-            Transition tempTr = (Transition) actArc.getInElement();
-            AbsPlace tempPl = (Place) actArc.getOutElement();
+                    tempPl.getListOfInArcs().remove(actArc);
+                    tempPl.getListOfInTransitions().remove(tempTr);
+                } else {
+                    Transition tempTr = (Transition) actArc.getInElement();
+                    AbsPlace tempPl = (Place) actArc.getOutElement();
 
-            tempTr.getListOfInArcs().remove(actArc);
-            tempTr.getListOfInPlaces().remove(tempPl);
+                    tempTr.getListOfInArcs().remove(actArc);
+                    tempTr.getListOfInPlaces().remove(tempPl);
 
-            tempPl.getListOfOutArcs().remove(actArc);
-            tempPl.getListOfOutTransitions().remove(tempTr);
-        }
+                    tempPl.getListOfOutArcs().remove(actArc);
+                    tempPl.getListOfOutTransitions().remove(tempTr);
+                }
 
-        //treeOfArcs.delete(actArc.getKey());
-        listOfArcs.remove(actArc);
-        return true;
+                //treeOfArcs.delete(actArc.getKey());
+                listOfArcs.remove(actArc);
+                return true;
             }
         }
         return false;
@@ -347,6 +347,33 @@ public class PetriNet extends Graph {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Transition getTransition(int x, int y) {
+        for (Transition t : listOfTransitions) {
+            if ((t.getDiagramElement().getX() == x) && (t.getDiagramElement().getY() == y)) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    public Resource getResource(int x, int y) {
+        for (Resource r : listOfResources) {
+            if ((r.getDiagramElement().getX() == x) && (r.getDiagramElement().getY() == y)) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    public Place getPlace(int x, int y) {
+        for (Place p : listOfPlaces) {
+            if ((p.getDiagramElement().getX() == x) && (p.getDiagramElement().getY() == y)) {
+                return p;
+            }
+        }
+        return null;
     }
 
 //    /**
