@@ -536,7 +536,9 @@ class DiagramPanel extends javax.swing.JPanel {
         
         // Get current selected element
         Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
-                
+        if (currentElement==null)
+            currentElement=controller.getLocationArc(x/elementWidth,y/elementWidth);
+        
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!! DOPLNIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Parameter place trans - instance of
@@ -558,8 +560,19 @@ class DiagramPanel extends javax.swing.JPanel {
             this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
             propertiesMenu.setVisible(true);
         }
-        // Arc 
-        if (currentElement!=null  &&  lineButton.isSelected()  )
+
+        // Arc
+        if (currentElement instanceof Arc)
+        {
+            //this.draggedColor=Color.GRAY;
+            //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
+            propertiesMenu.setVisible(true);
+        }
+        
+        
+        // Arc  create
+        if ((currentElement instanceof Transition || currentElement instanceof Place || currentElement instanceof Node)
+                &&  lineButton.isSelected()  )
         {
             this.draggedColor=Color.GRAY;
             this.draggedObject=new Line2D.Float(x,y,x,y);
@@ -605,13 +618,18 @@ class DiagramPanel extends javax.swing.JPanel {
     
     public void mouseRightClick(int x, int y) {  
         // Create RED shadow line indicating deletion of arc
-        Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+        controller.deleteElement(x/elementWidth,y/elementWidth);
+        controller.deleteArc(x/elementWidth,y/elementWidth);
+        repaint();
+        /*Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+        if (currentElement!=null)
+            controller.deleteElement(x, y);*/
         // Arc 
-        if (currentElement!=null)//  &&  lineButton.isSelected()  )
+        /*if (currentElement!=null)//  &&  lineButton.isSelected()  )
         {
             this.draggedColor=Color.RED;
             this.draggedObject=new Line2D.Float(x,y,x,y);
-        }  
+        }  */
         
         // Not reapinting ! Deleting single item
         //repaint();
@@ -643,13 +661,13 @@ class DiagramPanel extends javax.swing.JPanel {
       
     private void mouseRightDragged(int x, int y) {
         // Line
-        if (draggedObject instanceof Line2D)
+        /*if (draggedObject instanceof Line2D)
         {
             int x1=(int)((Line2D)draggedObject).getX1();
             int y1=(int)((Line2D)draggedObject).getY1();                
             draggedObject=new Line2D.Float(x1,y1,x,y);
         }  
-        repaint();        
+        repaint();     */   
     }    
     
     public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
@@ -676,6 +694,7 @@ class DiagramPanel extends javax.swing.JPanel {
 
     private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new)
     {
+        /*
         // Old and current positions
         int x_old_location=x_old/elementWidth;
         int y_old_location=y_old/elementWidth;            
@@ -691,10 +710,10 @@ class DiagramPanel extends javax.swing.JPanel {
         
         // Delete arc
         {
-            controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
+            //controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
         }
         draggedObject=null;
-        repaint();
+        repaint();*/
     }
 
   
@@ -744,7 +763,7 @@ public class DiagramMouseAdapter extends MouseAdapter
             // Right
             if (SwingUtilities.isRightMouseButton(e) )
             {
-                  diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
+                  //diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
             }      
       }
     }

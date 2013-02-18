@@ -12,6 +12,10 @@ import Core.PetriNet;
 import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Transition;
+import java.awt.Point;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -292,7 +296,20 @@ public class Controller {
             }
         }        
     }
-    
+
+    public void deleteArc(double x, double y) {
+        Arc arc=getLocationArc(x, y);
+        if (arc==null)
+            return;
+        if(graph instanceof PetriNet)
+        {
+            ((PetriNet)graph).deleteArc(arc.getName());
+        }
+        if(graph instanceof PrecedenceGraph)
+        {
+            ((PrecedenceGraph)graph).deleteArc(arc.getName());
+        }
+    }     
     public void setModel(Graph graph) {
         this.graph=graph;
     }
@@ -325,4 +342,53 @@ public class Controller {
         } // End precedence graph
     }
 
+    public Arc getLocationArc(double x, double y) {
+      if (graph instanceof PetriNet)
+      {
+            double x1,y1,x2,y2;
+            // Arc
+            for(Arc a:((PetriNet)graph).getListOfArcs())
+            {
+                x1=a.getInElement().getDiagramElement().getX();
+                y1=a.getInElement().getDiagramElement().getY();
+                x2=a.getOutElement().getDiagramElement().getX();
+                y2=a.getOutElement().getDiagramElement().getY();                
+                
+                Line2D line=new Line2D.Double(x1, y1, x2, y2);
+                // If point X,Y lies on Line(x1,y1,x2,y2)
+                if (line.relativeCCW(x, y)==0)
+                {
+                    System.out.println("Nachadzam sa na arc: "+a.getName());
+                    return a;
+                }
+            }
+            System.out.println("NEnachadzam sa na arc"); 
+        }
+        
+      //Precedencny graf  
+      if (graph instanceof PrecedenceGraph)
+        {
+            double x1,y1,x2,y2;
+            // Arc
+            for(Arc a:((PrecedenceGraph)graph).getListOfArcs())
+            {
+                x1=a.getInElement().getDiagramElement().getX();
+                y1=a.getInElement().getDiagramElement().getY();
+                x2=a.getOutElement().getDiagramElement().getX();
+                y2=a.getOutElement().getDiagramElement().getY();                
+                
+                Line2D line=new Line2D.Double(x1, y1, x2, y2);
+                // If point X,Y lies on Line(x1,y1,x2,y2)
+                if (line.relativeCCW(x, y)==0)
+                {
+                    System.out.println("Nachadzam sa na arc: "+a.getName());
+                    return a;
+                }
+            }
+            System.out.println("NEnachadzam sa na arc"); 
+        }
+        // Nothing found
+        return null;
+        
+    }
 }
