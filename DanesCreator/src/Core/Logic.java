@@ -25,12 +25,21 @@ public class Logic {
     /**
      * @method, that checks arc validity
      */
-    public boolean checkArc(Arc paArc){
+    public boolean checkArc(Arc paArc,Graph graph){
     
         Element p1=paArc.getOutElement();
         Element p2=paArc.getInElement();
-        if( ((p1 instanceof AbsPlace)&&(p2 instanceof Transition)) | ((p2 instanceof AbsPlace)&&(p1 instanceof Transition)) ) {
+        // Petri Net - Place / Transition
+        if (graph instanceof PetriNet)
+        if( ((p1 instanceof Place)&&(p2 instanceof Transition)) | ((p2 instanceof Place)&&(p1 instanceof Transition)) ) 
+        {
             return true;
+        }
+        // Precedence Graph - Node / Node
+        if (graph instanceof PrecedenceGraph)
+        if(((p1 instanceof Node)&&(p2 instanceof Node))&& !p1.equals(p2))
+        {
+            return true;            
         }    
         return false;
     }

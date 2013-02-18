@@ -14,7 +14,7 @@ import java.util.Queue;
  *
  * @author Michal Skovajsa
  */
-public class PetriNet {
+public class PetriNet extends Graph{
 
     //private ArrayList<Place> listOfPlaces;
     //private ArrayList<Transition> listOfTransitions;
@@ -339,23 +339,6 @@ public class PetriNet {
         this.name = name;
     }
 
-    public boolean isLocationEmpty(int x, int y) {
-
-        for (Element e : getListOfPlaces()) {
-            if (e.getDiagramElement().getX() == x
-                    && e.getDiagramElement().getY() == y) {
-                return false;
-            }
-        }
-        for (Element e : getListOfTransitions()) {
-            if (e.getDiagramElement().getX() == x
-                    && e.getDiagramElement().getY() == y) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     /**
      * @return the listOfPlaces

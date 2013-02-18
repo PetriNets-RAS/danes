@@ -6,8 +6,11 @@ package GUI;
 
 import Core.Arc;
 import Core.Element;
+import Core.Graph;
+import Core.Node;
 import Core.PetriNet;
 import Core.Place;
+import Core.PrecedenceGraph;
 import Core.Transition;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -33,7 +36,7 @@ import javax.swing.SwingUtilities;
  */
 public class View extends javax.swing.JFrame {
 
-    private PetriNet        petriNet;
+    private Graph           graph;
     private DiagramPanel    diagramPanel;
     
     private Controller  controller;
@@ -41,7 +44,7 @@ public class View extends javax.swing.JFrame {
     
     public View(PetriNet pa_petriNet,Controller pa_controller) {        
         super();  
-        this.petriNet       =pa_petriNet;  
+        this.graph          =pa_petriNet;  
         this.controller     =pa_controller;
         this.diagramPanel   =null;
         initComponents();
@@ -252,8 +255,8 @@ public class View extends javax.swing.JFrame {
 
     private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
         // Create and display new panel
-        PetriNet p=new PetriNet("Empty");
-        
+        // Petri Net ukazka ************************************************
+        /*PetriNet p=new PetriNet("Empty");        
         // umele pridanie siete
         Place a=new Place("a");
         a.setDiagramElement(new DiagramElement(4, 4));
@@ -276,8 +279,22 @@ public class View extends javax.swing.JFrame {
         p.addPlace(p1);
         p.addPlace(p2);
         p.addTransition(t1);
-        p.addTransition(t2);
+        p.addTransition(t2);*/
         // koniec umele pridanie siete
+        //*********************************************************** 
+        PrecedenceGraph p=new PrecedenceGraph("Test");
+        Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(4,2));
+        Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(4,4));
+        Node n3=new Node("n3"); n3.setDiagramElement(new DiagramElement(4,6));
+        
+        Arc a1=new Arc("a1", n2, n1);
+        Arc a2=new Arc("a2", n2, n3);
+
+        p.addNode(n1);
+        p.addNode(n2);
+        p.addNode(n3);
+        p.addArc(a1);
+        p.addArc(a2);
         
         controller.setModel(p);
         this.diagramPanel   =   new DiagramPanel(p);
@@ -335,7 +352,7 @@ class DiagramPanel extends javax.swing.JPanel {
     private int                     elementWidth;
     private DiagramMouseAdapter     mouseAdapter;    
     
-    private PetriNet                petriNet;
+    private Graph                   graph;
     
     private Graphics2D              g2d;
     
@@ -345,8 +362,8 @@ class DiagramPanel extends javax.swing.JPanel {
      * Creates new form GraphPanel
      */
     
-    public DiagramPanel(PetriNet pa_petriNet) {                      
-        this.petriNet=pa_petriNet;
+    public DiagramPanel(Graph pa_graph) {                      
+        this.graph=pa_graph;
         this.draggedObject=null;
         this.elementWidth    =   50; // 50 Px jeden prvok
         this.mouseAdapter   =   new DiagramMouseAdapter(); 
@@ -366,7 +383,7 @@ class DiagramPanel extends javax.swing.JPanel {
         super.paint(g);
         this.g2d = (Graphics2D) g;
         
-        drawPetriNet();
+        drawGraph();
         drawDraggedObject();
 
     }
@@ -424,29 +441,59 @@ class DiagramPanel extends javax.swing.JPanel {
     
     
    
-    public void drawPetriNet()                  
+    public void drawGraph()                  
     {
-        // Draw all arcs
-        for(Element e:petriNet.getListOfArcs())
-        {     
-            DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
-            DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+        if (graph==null)
+            return;
+        if (graph instanceof PetriNet)
+        {
+            // Arcs , Places, Transitions
+            // Draw all arcs
+            for(Element e:((PetriNet)graph).getListOfArcs())
+            {     
+                DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
+                DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+
+                drawArc(in.getX(),in.getY(),out.getX(),out.getY());
+            }  
+
+            // Draw all places
+            for(Element e:((PetriNet)graph).getListOfPlaces())
+            {            
+                drawPlace(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+            }
+
+            // Draw all transitions
+            for(Element e:((PetriNet)graph).getListOfTransitions())
+            {            
+                drawTransition(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+            }      
             
-            drawArc(in.getX(),in.getY(),out.getX(),out.getY());
-        }  
+            return;
+        }   // Koniec Petri net
+
+        if (graph instanceof PrecedenceGraph)
+        {
+            // Arcs, Nodes
+            
+            // Draw all arcs
+            for(Element e:((PrecedenceGraph)graph).getListOfArcs())
+            {     
+                DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
+                DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+
+                drawArc(in.getX(),in.getY(),out.getX(),out.getY());
+            }  
+
+            // Draw all nodes
+            for(Element e:((PrecedenceGraph)graph).getListOfNodes())
+            {            
+                drawPlace(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+            }  
+            
+            return;
+        }   // Koniec Precedence Graph
         
-        // Draw all places
-        for(Element e:petriNet.getListOfPlaces())
-        {            
-            drawPlace(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-        }
-        
-        // Draw all transitions
-        for(Element e:petriNet.getListOfTransitions())
-        {            
-            drawTransition(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-        }           
-       
     }
     
     private void drawDraggedObject() {
@@ -489,17 +536,18 @@ class DiagramPanel extends javax.swing.JPanel {
         
         // Get current selected element
         Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
-                
+        if (currentElement==null)
+            currentElement=controller.getLocationArc(x/elementWidth,y/elementWidth);
+        
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!! DOPLNIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // Parameter place trans - instance of
         // if (currentElement!=null)
         // Dakypanel dakyPanel = new DakyPanel(controller.getLocationElement(x, y));        
         // dakyPanel.setVisible(true);
-
         
-        // Place               
-        if (currentElement instanceof Place)
+        // Place or Node     
+        if (currentElement instanceof Place || currentElement instanceof Node)
         {   
             this.draggedColor=Color.GRAY;        
             this.draggedObject=new Ellipse2D.Float(x, y, elementWidth-10, elementWidth-10);
@@ -512,8 +560,19 @@ class DiagramPanel extends javax.swing.JPanel {
             this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
             propertiesMenu.setVisible(true);
         }
-        // Arc 
-        if (currentElement!=null  &&  lineButton.isSelected()  )
+
+        // Arc
+        if (currentElement instanceof Arc)
+        {
+            //this.draggedColor=Color.GRAY;
+            //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
+            propertiesMenu.setVisible(true);
+        }
+        
+        
+        // Arc  create
+        if ((currentElement instanceof Transition || currentElement instanceof Place || currentElement instanceof Node)
+                &&  lineButton.isSelected()  )
         {
             this.draggedColor=Color.GRAY;
             this.draggedObject=new Line2D.Float(x,y,x,y);
@@ -540,7 +599,10 @@ class DiagramPanel extends javax.swing.JPanel {
         {        
             int x_location=x/elementWidth;
             int y_location=y/elementWidth;
-            controller.addPlace("Place",x_location,y_location);
+            if (graph instanceof PetriNet)
+                controller.addPlace("Place",x_location,y_location);
+            if (graph instanceof PrecedenceGraph)
+                controller.addNode("Node",x_location,y_location);
         }    
             
         // Creating new transition
@@ -556,13 +618,18 @@ class DiagramPanel extends javax.swing.JPanel {
     
     public void mouseRightClick(int x, int y) {  
         // Create RED shadow line indicating deletion of arc
-        Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+        controller.deleteElement(x/elementWidth,y/elementWidth);
+        controller.deleteArc(x/elementWidth,y/elementWidth);
+        repaint();
+        /*Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+        if (currentElement!=null)
+            controller.deleteElement(x, y);*/
         // Arc 
-        if (currentElement!=null)//  &&  lineButton.isSelected()  )
+        /*if (currentElement!=null)//  &&  lineButton.isSelected()  )
         {
             this.draggedColor=Color.RED;
             this.draggedObject=new Line2D.Float(x,y,x,y);
-        }  
+        }  */
         
         // Not reapinting ! Deleting single item
         //repaint();
@@ -594,13 +661,13 @@ class DiagramPanel extends javax.swing.JPanel {
       
     private void mouseRightDragged(int x, int y) {
         // Line
-        if (draggedObject instanceof Line2D)
+        /*if (draggedObject instanceof Line2D)
         {
             int x1=(int)((Line2D)draggedObject).getX1();
             int y1=(int)((Line2D)draggedObject).getY1();                
             draggedObject=new Line2D.Float(x1,y1,x,y);
         }  
-        repaint();        
+        repaint();     */   
     }    
     
     public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
@@ -627,6 +694,7 @@ class DiagramPanel extends javax.swing.JPanel {
 
     private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new)
     {
+        /*
         // Old and current positions
         int x_old_location=x_old/elementWidth;
         int y_old_location=y_old/elementWidth;            
@@ -642,10 +710,10 @@ class DiagramPanel extends javax.swing.JPanel {
         
         // Delete arc
         {
-            controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
+            //controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
         }
         draggedObject=null;
-        repaint();
+        repaint();*/
     }
 
   
@@ -695,7 +763,7 @@ public class DiagramMouseAdapter extends MouseAdapter
             // Right
             if (SwingUtilities.isRightMouseButton(e) )
             {
-                  diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
+                  //diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
             }      
       }
     }
