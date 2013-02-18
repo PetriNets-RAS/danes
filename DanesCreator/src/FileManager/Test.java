@@ -2,13 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package FileCreator;
+package FileManager;
 
 import Core.Arc;
 import Core.PetriNet;
 import Core.Place;
 import Core.Resource;
 import Core.Transition;
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -85,9 +86,9 @@ public class Test {
             System.out.println(ap.getName()+" !!");
         }
         
-        XMLFileCreator xml=new XMLFileCreator();
+        XMLFileManager xml=new XMLFileManager();
         
-        System.out.println(xml.createPetriXML(pn));
+        System.out.println(xml.createPetriXML(pn,new File("C:\\file.xml")));
         
         
         

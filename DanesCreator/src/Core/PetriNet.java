@@ -408,4 +408,32 @@ public class PetriNet extends Graph {
         temp.setName(newName);
         treeOfArcs.addNode(temp);
     }
+
+    /**
+     * @param listOfPlaces the listOfPlaces to set
+     */
+    public void setListOfPlaces(ArrayList<Place> listOfPlaces) {
+        this.listOfPlaces = listOfPlaces;
+    }
+
+    /**
+     * @param listOfTransitions the listOfTransitions to set
+     */
+    public void setListOfTransitions(ArrayList<Transition> listOfTransitions) {
+        this.listOfTransitions = listOfTransitions;
+    }
+
+    /**
+     * @param listOfArcs the listOfArcs to set
+     */
+    public void setListOfArcs(ArrayList<Arc> listOfArcs) {
+        this.listOfArcs = listOfArcs;
+    }
+
+    /**
+     * @param listOfResources the listOfResources to set
+     */
+    public void setListOfResources(ArrayList<Resource> listOfResources) {
+        this.listOfResources = listOfResources;
+    }
 }

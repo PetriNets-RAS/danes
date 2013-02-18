@@ -12,6 +12,7 @@ import Core.PetriNet;
 import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Transition;
+import FileManager.XMLFileManager;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -41,6 +42,8 @@ public class View extends javax.swing.JFrame {
     
     private Controller  controller;
     private AboutUs about;
+    private PetriNet p;
+    //private PrecedenceGraph p;
     
     public View(PetriNet pa_petriNet,Controller pa_controller) {        
         super();  
@@ -95,6 +98,7 @@ public class View extends javax.swing.JFrame {
         newProjectItem = new javax.swing.JMenuItem();
         saveItem = new javax.swing.JMenuItem();
         saveAsItem = new javax.swing.JMenuItem();
+        loadItem = new javax.swing.JMenuItem();
         exitItem = new javax.swing.JMenuItem();
         editMenuItem = new javax.swing.JMenu();
         aboutUs = new javax.swing.JMenu();
@@ -188,6 +192,11 @@ public class View extends javax.swing.JFrame {
         fileMenu.add(newProjectItem);
 
         saveItem.setText("Save");
+        saveItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveItem);
 
         saveAsItem.setText("Save as ...");
@@ -197,6 +206,14 @@ public class View extends javax.swing.JFrame {
             }
         });
         fileMenu.add(saveAsItem);
+
+        loadItem.setText("Load");
+        loadItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loadItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(loadItem);
 
         exitItem.setText("Exit");
         exitItem.addActionListener(new java.awt.event.ActionListener() {
@@ -254,10 +271,10 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_saveAsItemActionPerformed
 
     private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
-       /*
+       
         //Create and display new panel
          //Petri Net ukazka ************************************************
-        PetriNet p=new PetriNet("Empty");        
+        p=new PetriNet("Empty");        
          //umele pridanie siete
         Place a=new Place("a");
         a.setDiagramElement(new DiagramElement(4, 4));
@@ -280,9 +297,10 @@ public class View extends javax.swing.JFrame {
         p.addPlace(p1);
         p.addPlace(p2);
         p.addTransition(t1);
-        p.addTransition(t2);*/
+        p.addTransition(t2);
         // koniec umele pridanie siete
         //*********************************************************** 
+        /*
         PrecedenceGraph p=new PrecedenceGraph("Test");
         Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(4,2));
         Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(4,4));
@@ -296,7 +314,7 @@ public class View extends javax.swing.JFrame {
         p.addNode(n3);
         p.addArc(a1);
         p.addArc(a2);
-        
+        */
         controller.setModel(p);
         this.diagramPanel   =   new DiagramPanel(p);
         diagramScrollPane.setViewportView(this.diagramPanel);
@@ -326,6 +344,21 @@ public class View extends javax.swing.JFrame {
         rectangleButton.setSelected(false);
     }//GEN-LAST:event_lineButtonActionPerformed
 
+    private void loadItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadItemActionPerformed
+        // TODO add your handling code here:
+        File inputFile=new File("C:\\file.xml");
+        FileManager.XMLFileManager x = new XMLFileManager();
+        x.getPetriNetFromXML(inputFile);
+        PetriNet pn=new PetriNet(null);
+        ///
+    }//GEN-LAST:event_loadItemActionPerformed
+
+    private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
+        // TODO add your handling code here:
+        FileManager.XMLFileManager newXML=new XMLFileManager();
+        newXML.createPetriXML(p,new File("C:\\file.xml"));       
+    }//GEN-LAST:event_saveItemActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
@@ -338,6 +371,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JToggleButton lineButton;
+    private javax.swing.JMenuItem loadItem;
     private javax.swing.JMenuItem newProjectItem;
     private javax.swing.JPanel propertiesMenu;
     private GUI.PropertiesParentMenu propertiesParentMenu1;
