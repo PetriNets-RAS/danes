@@ -497,7 +497,7 @@ class DiagramPanel extends javax.swing.JPanel {
                 DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
                 DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
 
-                drawArc(in.getX(),in.getY(),out.getX(),out.getY());
+                drawArc(out.getX(),out.getY(),in.getX(),in.getY());
             }  
 
             // Draw all places
@@ -525,7 +525,7 @@ class DiagramPanel extends javax.swing.JPanel {
                 DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
                 DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
 
-                drawArc(in.getX(),in.getY(),out.getX(),out.getY());
+                drawArc(out.getX(),out.getY(),in.getX(),in.getY());
             }  
 
             // Draw all nodes

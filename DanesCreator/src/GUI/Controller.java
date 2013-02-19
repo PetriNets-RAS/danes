@@ -125,8 +125,8 @@ public class Controller {
 
     public void addArc(String name, int x1, int y1, int x2, int y2) 
     {
-        Element out     =getLocationElement(x2, y2);
-        Element in      =getLocationElement(x1, y1);
+        Element out     =getLocationElement(x1, y1);
+        Element in      =getLocationElement(x2, y2);
         Core.Logic log=new Core.Logic();
         
         // Null
