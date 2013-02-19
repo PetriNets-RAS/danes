@@ -20,10 +20,11 @@ public class PetriNet extends Graph {
     private ArrayList<Transition> listOfTransitions;
     private ArrayList<Arc> listOfArcs;
     private ArrayList<Resource> listOfResources;
-    private AVL_Tree.Tree treeOfPlaces;
-    private AVL_Tree.Tree treeOfTransitions;
-    private AVL_Tree.Tree treeOfArcs;
-    private AVL_Tree.Tree treeOfResources;
+    
+//    private AVL_Tree.Tree treeOfPlaces;
+//    private AVL_Tree.Tree treeOfTransitions;
+//    private AVL_Tree.Tree treeOfArcs;
+//    private AVL_Tree.Tree treeOfResources;
     private String name;
 
     /**
@@ -36,10 +37,10 @@ public class PetriNet extends Graph {
         this.listOfTransitions = new ArrayList<>();
         this.listOfResources = new ArrayList<>();
 
-        this.treeOfPlaces = new Tree(null);
-        this.treeOfArcs = new Tree(null);
-        this.treeOfTransitions = new Tree(null);
-        this.treeOfResources = new Tree(null);
+//        this.treeOfPlaces = new Tree(null);
+//        this.treeOfArcs = new Tree(null);
+//        this.treeOfTransitions = new Tree(null);
+//        this.treeOfResources = new Tree(null);
     }
 
     /**
@@ -396,45 +397,45 @@ public class PetriNet extends Graph {
 //    public AVL_Tree.Tree getTreeOfArcs() {
 //        return treeOfArcs;
 //    }
-    public Arc getArc(String name) {
-        return (Arc) treeOfArcs.find(new StringKey(name));
-    }
-
-    public Transition getTransition(String name) {
-        return (Transition) treeOfTransitions.find(new StringKey(name));
-    }
-
-    public Place getPlace(String name) {
-        return (Place) treeOfPlaces.find(new StringKey(name));
-    }
-
-    public void changeNameOfPlace(String oldName, String newName) {
-        Place temp = (Place) treeOfPlaces.find(new StringKey(oldName));
-        treeOfPlaces.delete(temp.getKey());
-        temp.setName(newName);
-        treeOfPlaces.addNode(temp);
-    }
-
-    public void changeNameOfResource(String oldName, String newName) {
-        Resource temp = (Resource) treeOfResources.find(new StringKey(oldName));
-        treeOfResources.delete(temp.getKey());
-        temp.setName(newName);
-        treeOfResources.addNode(temp);
-    }
-
-    public void changeNameOfTransition(String oldName, String newName) {
-        Transition temp = (Transition) treeOfTransitions.find(new StringKey(oldName));
-        treeOfTransitions.delete(temp.getKey());
-        temp.setName(newName);
-        treeOfTransitions.addNode(temp);
-    }
-
-    public void changeNameOfArc(String oldName, String newName) {
-        Arc temp = (Arc) treeOfArcs.find(new StringKey(oldName));
-        treeOfArcs.delete(temp.getKey());
-        temp.setName(newName);
-        treeOfArcs.addNode(temp);
-    }
+//    public Arc getArc(String name) {
+//        return (Arc) treeOfArcs.find(new StringKey(name));
+//    }
+//
+//    public Transition getTransition(String name) {
+//        return (Transition) treeOfTransitions.find(new StringKey(name));
+//    }
+//
+//    public Place getPlace(String name) {
+//        return (Place) treeOfPlaces.find(new StringKey(name));
+//    }
+//
+//    public void changeNameOfPlace(String oldName, String newName) {
+//        Place temp = (Place) treeOfPlaces.find(new StringKey(oldName));
+//        treeOfPlaces.delete(temp.getKey());
+//        temp.setName(newName);
+//        treeOfPlaces.addNode(temp);
+//    }
+//
+//    public void changeNameOfResource(String oldName, String newName) {
+//        Resource temp = (Resource) treeOfResources.find(new StringKey(oldName));
+//        treeOfResources.delete(temp.getKey());
+//        temp.setName(newName);
+//        treeOfResources.addNode(temp);
+//    }
+//
+//    public void changeNameOfTransition(String oldName, String newName) {
+//        Transition temp = (Transition) treeOfTransitions.find(new StringKey(oldName));
+//        treeOfTransitions.delete(temp.getKey());
+//        temp.setName(newName);
+//        treeOfTransitions.addNode(temp);
+//    }
+//
+//    public void changeNameOfArc(String oldName, String newName) {
+//        Arc temp = (Arc) treeOfArcs.find(new StringKey(oldName));
+//        treeOfArcs.delete(temp.getKey());
+//        temp.setName(newName);
+//        treeOfArcs.addNode(temp);
+//    }
 
     /**
      * @param listOfPlaces the listOfPlaces to set
