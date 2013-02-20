@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Core.AbsPlace;
 import Core.Arc;
 import Core.Element;
 import Core.Graph;
@@ -43,6 +44,7 @@ public class View extends javax.swing.JFrame {
     private Controller  controller;
     private AboutUs about;
     private PetriNet p;
+    private Element currentElement;
     //private PrecedenceGraph p;
     
     public View(PetriNet pa_petriNet,Controller pa_controller) {        
@@ -88,10 +90,9 @@ public class View extends javax.swing.JFrame {
         lineButton = new javax.swing.JToggleButton();
         propertiesMenu = new javax.swing.JPanel();
         specificPropertiesMenu = new javax.swing.JPanel();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        propertiesParentMenu1 = new GUI.PropertiesParentMenu();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        propertiesTab = new javax.swing.JTabbedPane();
+        generalProperties = new GUI.PropertiesMenu();
+        notes = new javax.swing.JTextArea();
         diagramScrollPane = new javax.swing.JScrollPane();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -134,6 +135,12 @@ public class View extends javax.swing.JFrame {
         });
         sideMenu.add(lineButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 2, 82, 24));
 
+        propertiesMenu.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                propertiesMenuFocusLost(evt);
+            }
+        });
+
         javax.swing.GroupLayout specificPropertiesMenuLayout = new javax.swing.GroupLayout(specificPropertiesMenu);
         specificPropertiesMenu.setLayout(specificPropertiesMenuLayout);
         specificPropertiesMenuLayout.setHorizontalGroup(
@@ -145,15 +152,28 @@ public class View extends javax.swing.JFrame {
             .addGap(0, 340, Short.MAX_VALUE)
         );
 
-        jTabbedPane1.setBackground(new java.awt.Color(204, 204, 204));
-        jTabbedPane1.addTab("Properties", propertiesParentMenu1);
+        propertiesTab.setBackground(new java.awt.Color(204, 204, 204));
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        generalProperties.setFocusCycleRoot(true);
+        generalProperties.setFocusTraversalPolicyProvider(true);
+        generalProperties.setName(""); // NOI18N
+        generalProperties.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                generalPropertiesFocusLost(evt);
+            }
+        });
+        propertiesTab.addTab("Properties", generalProperties);
 
-        jTabbedPane1.addTab("Notes", jScrollPane1);
+        notes.setColumns(20);
+        notes.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        notes.setLineWrap(true);
+        notes.setRows(5);
+        notes.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                notesFocusLost(evt);
+            }
+        });
+        propertiesTab.addTab("Notes", notes);
 
         javax.swing.GroupLayout propertiesMenuLayout = new javax.swing.GroupLayout(propertiesMenu);
         propertiesMenu.setLayout(propertiesMenuLayout);
@@ -162,19 +182,19 @@ public class View extends javax.swing.JFrame {
             .addGroup(propertiesMenuLayout.createSequentialGroup()
                 .addGroup(propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(specificPropertiesMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(propertiesTab, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         propertiesMenuLayout.setVerticalGroup(
             propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(propertiesMenuLayout.createSequentialGroup()
-                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(propertiesTab, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17)
                 .addComponent(specificPropertiesMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jTabbedPane1.getAccessibleContext().setAccessibleName("Properties");
+        propertiesTab.getAccessibleContext().setAccessibleName("Properties");
 
         sideMenu.add(propertiesMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 105, 240, -1));
 
@@ -367,6 +387,19 @@ public class View extends javax.swing.JFrame {
         newXML.createPetriXML(p,new File("C:\\file.xml"));       
     }//GEN-LAST:event_saveItemActionPerformed
 
+    private void notesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_notesFocusLost
+       currentElement.setNote(notes.getText());
+       // System.out.print("notes");
+    }//GEN-LAST:event_notesFocusLost
+
+    private void propertiesMenuFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_propertiesMenuFocusLost
+        System.out.print("properties");        // TODO add your handling code here:
+    }//GEN-LAST:event_propertiesMenuFocusLost
+
+    private void generalPropertiesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_generalPropertiesFocusLost
+        System.out.print("properties");        // TODO add your handling code here:
+    }//GEN-LAST:event_generalPropertiesFocusLost
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
@@ -375,14 +408,13 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JToggleButton ellipseButton;
     private javax.swing.JMenuItem exitItem;
     private javax.swing.JMenu fileMenu;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private GUI.PropertiesMenu generalProperties;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem loadItem;
     private javax.swing.JMenuItem newProjectItem;
+    private javax.swing.JTextArea notes;
     private javax.swing.JPanel propertiesMenu;
-    private GUI.PropertiesParentMenu propertiesParentMenu1;
+    private javax.swing.JTabbedPane propertiesTab;
     private javax.swing.JToggleButton rectangleButton;
     private javax.swing.JMenuItem saveAsItem;
     private javax.swing.JMenuItem saveItem;
@@ -578,7 +610,22 @@ class DiagramPanel extends javax.swing.JPanel {
     public void mouseLeftClick(int x, int y) {  
         
         // Get current selected element
-        Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+        //Element 
+          currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+        /*
+        if (currentElement instanceof Transition) {
+            System.out.print(currentElement.getName()+"\n");
+        }
+        if (currentElement instanceof Place) {
+            System.out.print(currentElement.getName()+"\n");
+        }
+        if (currentElement instanceof Arc) {
+            System.out.print("hrana");
+        }
+        */
+        if(currentElement instanceof AbsPlace || currentElement instanceof Transition)
+            loadElementProperties(currentElement);
+        
         if (currentElement==null)
             currentElement=controller.getLocationArc(x/elementWidth,y/elementWidth);
         
@@ -758,6 +805,29 @@ class DiagramPanel extends javax.swing.JPanel {
         draggedObject=null;
         repaint();*/
     }
+
+        private void loadElementProperties(Element currentElement) 
+        {
+            generalProperties.loadProperties(currentElement);
+            notes.setText(currentElement.getNote());
+            /*
+            generalProperties.setElementName(currentElement.getName());
+            generalProperties.setElementFontSize(Integer.toString(currentElement.getFontSize()));
+            notes.setText(currentElement.getNote());
+            if(currentElement instanceof AbsPlace)
+            {
+                AbsPlace current= (AbsPlace) currentElement;
+                generalProperties.setElementWidth(Integer.toString(current.getWidth()));
+                generalProperties.setElementHeight(Integer.toString(current.getHeight()));
+            }
+            if(currentElement instanceof Transition)
+            {
+                Transition current= (Transition) currentElement;
+                generalProperties.setElementWidth(Integer.toString(current.getWidth()));
+                generalProperties.setElementHeight(Integer.toString(current.getHeight()));
+            }
+            */ 
+        }
 
   
 
