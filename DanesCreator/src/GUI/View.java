@@ -45,7 +45,7 @@ public class View extends javax.swing.JFrame {
     private AboutUs about;
     private PetriNet p;
     private Element currentElement;
-    //private PrecedenceGraph p;
+    private PrecedenceGraph pg;
     
     public View(PetriNet pa_petriNet,Controller pa_controller) {        
         super();  
@@ -246,6 +246,11 @@ public class View extends javax.swing.JFrame {
         topMenu.add(fileMenu);
 
         editMenuItem.setText("Export");
+        editMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                editMenuItemMouseClicked(evt);
+            }
+        });
         topMenu.add(editMenuItem);
 
         aboutUs.setText("About us");
@@ -291,7 +296,7 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_saveAsItemActionPerformed
 
     private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
-       
+       /*
         //Create and display new panel
          //Petri Net ukazka ************************************************
         p=new PetriNet("Empty");        
@@ -317,11 +322,11 @@ public class View extends javax.swing.JFrame {
         p.addPlace(p1);
         p.addPlace(p2);
         p.addTransition(t1);
-        p.addTransition(t2);
+        p.addTransition(t2);*/
         // koniec umele pridanie siete
         //*********************************************************** 
-        /*
-        PrecedenceGraph p=new PrecedenceGraph("Test");
+        
+        pg=new PrecedenceGraph("Test");
         Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(4,2));
         Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(4,4));
         Node n3=new Node("n3"); n3.setDiagramElement(new DiagramElement(4,6));
@@ -329,14 +334,18 @@ public class View extends javax.swing.JFrame {
         Arc a1=new Arc("a1", n2, n1);
         Arc a2=new Arc("a2", n2, n3);
 
-        p.addNode(n1);
-        p.addNode(n2);
-        p.addNode(n3);
-        p.addArc(a1);
-        p.addArc(a2);
-        */
-        controller.setModel(p);
-        this.diagramPanel   =   new DiagramPanel(p);
+        pg.addNode(n1);
+        pg.addNode(n2);
+        pg.addNode(n3);
+        pg.addArc(a1);
+        pg.addArc(a2);
+        
+        //controller.setModel(p);
+        //this.diagramPanel   =   new DiagramPanel(p);
+        
+        controller.setModel(pg);
+        this.diagramPanel   =   new DiagramPanel(pg);
+        
         diagramScrollPane.setViewportView(this.diagramPanel);
         
         sideMenu.setVisible(true);
@@ -399,6 +408,18 @@ public class View extends javax.swing.JFrame {
     private void generalPropertiesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_generalPropertiesFocusLost
         System.out.print("properties");        // TODO add your handling code here:
     }//GEN-LAST:event_generalPropertiesFocusLost
+
+    private void editMenuItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editMenuItemMouseClicked
+        // TODO add your handling code here:
+        p=pg.changePrecedenceGraphToPN();
+        controller.setModel(p);
+        this.diagramPanel   =   new DiagramPanel(p);
+        diagramScrollPane.setViewportView(this.diagramPanel);
+        
+        sideMenu.setVisible(true);
+        // hide side menu
+        propertiesMenu.setVisible(false);
+    }//GEN-LAST:event_editMenuItemMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
