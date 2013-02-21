@@ -23,10 +23,10 @@ public abstract class AbsPlace extends Element{
     
     public AbsPlace(String paName){
         super(paName);
-        listOfInArcs=new ArrayList<>();
-        listOfOutArcs=new ArrayList<>();
-        listOfInTransitions=new ArrayList<>();
-        listOfOutTransitions=new ArrayList<>();
+        listOfInArcs=new ArrayList<Arc>();
+        listOfOutArcs=new ArrayList<Arc>();
+        listOfInTransitions=new ArrayList<Transition>();
+        listOfOutTransitions=new ArrayList<Transition>();
         this.width=50;
         this.height=35;
     }

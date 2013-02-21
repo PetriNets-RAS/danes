@@ -106,7 +106,7 @@ public class CoBA_XMLManager {
             this.getArcsFromXML(doc, pn);
 
             return pn;
-        } catch (SAXException | IOException | ParserConfigurationException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

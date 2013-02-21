@@ -25,10 +25,10 @@ public class Node extends Element{
      */
     public Node(String paName){
         super(paName);
-        listOfInArcs=new ArrayList<>();
-        listOfOutArcs=new ArrayList<>();
-        listOfInNodes=new ArrayList<>();
-        listOfOutNodes=new ArrayList<>();
+        listOfInArcs=new ArrayList<Arc>();
+        listOfOutArcs=new ArrayList<Arc>();
+        listOfInNodes=new ArrayList<Node>();
+        listOfOutNodes=new ArrayList<Node>();
         this.width=50;
         this.height=35;
     }

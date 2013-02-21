@@ -24,10 +24,10 @@ public class Transition extends Element {
      */
     public Transition(String paNazov) {
         super(paNazov);
-        listOfInArcs=new ArrayList<>();
-        listOfOutArcs=new ArrayList<>();
-        listOfInPlaces=new ArrayList<>();
-        listOfOutPlaces=new ArrayList<>();
+        listOfInArcs=new ArrayList<Arc>();
+        listOfOutArcs=new ArrayList<Arc>();
+        listOfInPlaces=new ArrayList<AbsPlace>();
+        listOfOutPlaces=new ArrayList<AbsPlace>();
         width = 45;
         height = 25;
     }

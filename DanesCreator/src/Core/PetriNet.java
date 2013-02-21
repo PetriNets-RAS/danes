@@ -4,8 +4,6 @@
  */
 package Core;
 
-import AVL_Tree.StringKey;
-import AVL_Tree.Tree;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -21,10 +19,6 @@ public class PetriNet extends Graph {
     private ArrayList<Arc> listOfArcs;
     private ArrayList<Resource> listOfResources;
     
-//    private AVL_Tree.Tree treeOfPlaces;
-//    private AVL_Tree.Tree treeOfTransitions;
-//    private AVL_Tree.Tree treeOfArcs;
-//    private AVL_Tree.Tree treeOfResources;
     private String name;
 
     /**
@@ -32,15 +26,11 @@ public class PetriNet extends Graph {
      */
     public PetriNet(String paName) {
         this.name = paName;
-        this.listOfPlaces = new ArrayList<>();
-        this.listOfArcs = new ArrayList<>();
-        this.listOfTransitions = new ArrayList<>();
-        this.listOfResources = new ArrayList<>();
+        this.listOfPlaces = new ArrayList<Place>();
+        this.listOfArcs = new ArrayList<Arc>();
+        this.listOfTransitions = new ArrayList<Transition>();
+        this.listOfResources = new ArrayList<Resource>();
 
-//        this.treeOfPlaces = new Tree(null);
-//        this.treeOfArcs = new Tree(null);
-//        this.treeOfTransitions = new Tree(null);
-//        this.treeOfResources = new Tree(null);
     }
 
     /**
@@ -55,8 +45,6 @@ public class PetriNet extends Graph {
         listOfPlaces.add(paPlace);
         return true;
 
-        //boolean temp = treeOfPlaces.addNode(paPlace);
-        //return temp;
     }
 
     /**
@@ -65,30 +53,19 @@ public class PetriNet extends Graph {
     public boolean deletePlace(String paName) {
         for (Place actPlace : listOfPlaces) {
             if (actPlace.getName().equals(paName)) {
-//        Place actPlace = (Place) treeOfPlaces.find(new StringKey(paName));
-//        System.out.println("mazem: "+paName);
-//        if (tempPlace == null) {
-//            return false;
-//        }
                 for (Arc actArc : actPlace.getListOfInArcs()) {
                     Transition temp = (Transition) actArc.getOutElement();
                     temp.getListOfOutArcs().remove(actArc);
                     temp.getListOfOutPlaces().remove(actPlace);
-                    System.out.println("Mazem hranu " + actArc.getKey().getKey());
                     listOfArcs.remove(actArc);
-                    //treeOfArcs.delete(actArc.getKey());
                 }
 
                 for (Arc actArc : actPlace.getListOfOutArcs()) {
                     Transition temp = (Transition) actArc.getInElement();
                     temp.getListOfInArcs().remove(actArc);
                     temp.getListOfInPlaces().remove(actPlace);
-                    System.out.println("Mazem hranu " + actArc.getKey().getKey());
                     listOfArcs.remove(actArc);
-                    //treeOfArcs.delete(actArc.getKey());
                 }
-
-                //treeOfPlaces.delete(tempPlace.getKey());
                 listOfPlaces.remove(actPlace);
                 return true;
             }
@@ -107,10 +84,6 @@ public class PetriNet extends Graph {
         }
         listOfResources.add(paResource);
         return true;
-
-
-//        boolean temp = treeOfResources.addNode(paResource);
-//        return temp;
     }
 
     /**
@@ -119,31 +92,20 @@ public class PetriNet extends Graph {
     public boolean deleteResource(String paName) {
         for (Resource actResource : listOfResources) {
             if (actResource.getName().equals(paName)) {
-
-//        Resource actResource = (Resource) treeOfResources.find(new StringKey(paName));
-//        System.out.println("mazem: "+paName);
-//        if (actResource == null) {
-//            return false;
-//        }
                 for (Arc actArc : actResource.getListOfInArcs()) {
                     Transition temp = (Transition) actArc.getOutElement();
                     temp.getListOfOutArcs().remove(actArc);
                     temp.getListOfOutPlaces().remove(actResource);
-                    System.out.println("Mazem hranu " + actArc.getKey().getKey());
                     listOfArcs.remove(actArc);
-                    //treeOfArcs.delete(actArc.getKey());
                 }
 
                 for (Arc actArc : actResource.getListOfOutArcs()) {
                     Transition temp = (Transition) actArc.getInElement();
                     temp.getListOfInArcs().remove(actArc);
                     temp.getListOfInPlaces().remove(actResource);
-                    System.out.println("Mazem hranu " + actArc.getKey().getKey());
                     listOfArcs.remove(actArc);
-                    //treeOfArcs.delete(actArc.getKey());
                 }
                 listOfResources.remove(actResource);
-                //treeOfResources.delete(actResource.getKey());
                 return true;
             }
         }
@@ -161,9 +123,6 @@ public class PetriNet extends Graph {
         }
         listOfTransitions.add(paTransition);
         return true;
-
-//        boolean temp = treeOfTransitions.addNode(paTransition);
-//        return temp;
     }
 
     /**
@@ -172,16 +131,11 @@ public class PetriNet extends Graph {
     public boolean deleteTransition(String paName) {
         for (Transition actTransition : listOfTransitions) {
             if (actTransition.getName().equals(paName)) {
-//        Transition actTransition = (Transition) treeOfTransitions.find(new StringKey(paName));
-//        if (actTransition == null) {
-//            return false;
-//        }
                 for (Arc actArc : actTransition.getListOfInArcs()) {
                     Place temp = (Place) actArc.getOutElement();
                     temp.getListOfOutArcs().remove(actArc);
                     temp.getListOfOutTransitions().remove(actTransition);
                     listOfArcs.remove(actArc);
-                    //treeOfArcs.delete(actArc.getKey());
                 }
 
                 for (Arc actArc : actTransition.getListOfOutArcs()) {
@@ -189,10 +143,8 @@ public class PetriNet extends Graph {
                     temp.getListOfInArcs().remove(actArc);
                     temp.getListOfInTransitions().remove(actTransition);
                     listOfArcs.remove(actArc);
-                    //treeOfArcs.delete(actArc.getKey());
                 }
                 listOfTransitions.remove(actTransition);
-                //treeOfTransitions.delete(actTransition.getKey());
                 return true;
             }
         }
@@ -210,14 +162,9 @@ public class PetriNet extends Graph {
             }
         }
         listOfArcs.add(paArc);
-//        boolean temp = treeOfArcs.addNode(paArc);
-//        if (temp == false) {
-//            return false;
-//        }
         if (paArc.getOutElement() instanceof Transition) {
             Transition tempTran = (Transition) paArc.getOutElement();
             AbsPlace tempPla = (AbsPlace) paArc.getInElement();
-
 
             tempTran.getListOfOutArcs().add(paArc);
             tempTran.getListOfOutPlaces().add(tempPla);
@@ -245,10 +192,6 @@ public class PetriNet extends Graph {
     public boolean deleteArc(String paName) {
         for (Arc actArc : listOfArcs) {
             if (actArc.getName().equals(paName)) {
-//        Arc actArc = (Arc) treeOfArcs.find(new StringKey(paName));
-//        if (actArc == null) {
-//            return false;
-//        }
                 if (actArc.getOutElement() instanceof Transition) {
                     Transition tempTr = (Transition) actArc.getOutElement();
                     AbsPlace tempPl = (Place) actArc.getInElement();
@@ -268,8 +211,6 @@ public class PetriNet extends Graph {
                     tempPl.getListOfOutArcs().remove(actArc);
                     tempPl.getListOfOutTransitions().remove(tempTr);
                 }
-
-                //treeOfArcs.delete(actArc.getKey());
                 listOfArcs.remove(actArc);
                 return true;
             }
@@ -281,28 +222,10 @@ public class PetriNet extends Graph {
      * @return the listOfPlaces
      */
     public ArrayList<Place> getListOfPlaces() {
-//
-//        ArrayList<Place> ret = new ArrayList<>();
-//
-//        for (AVL_Tree.Node n : treeOfPlaces.inOrder()) {
-//            Place tempPlace = (Place) n;
-//            ret.add(tempPlace);
-//        }
-//
-//        return ret;
         return listOfPlaces;
     }
 
     public ArrayList<Resource> getListOfResources() {
-//
-//        ArrayList<Resource> ret = new ArrayList<>();
-//
-//        for (AVL_Tree.Node n : treeOfResources.inOrder()) {
-//            Resource tempPlace = (Resource) n;
-//            ret.add(tempPlace);
-//        }
-//
-//        return ret;
         return listOfResources;
     }
 
@@ -310,14 +233,6 @@ public class PetriNet extends Graph {
      * @return the listOfTransitions
      */
     public ArrayList<Transition> getListOfTransitions() {
-//        ArrayList<Transition> ret = new ArrayList<>();
-//
-//        for (AVL_Tree.Node n : treeOfTransitions.inOrder()) {
-//            Transition tempTran = (Transition) n;
-//            ret.add(tempTran);
-//        }
-//
-//        return ret;
         return listOfTransitions;
     }
 
@@ -325,14 +240,6 @@ public class PetriNet extends Graph {
      * @return the listOfArcs
      */
     public ArrayList<Arc> getListOfArcs() {
-//        ArrayList<Arc> ret = new ArrayList<>();
-//
-//        for (AVL_Tree.Node n : treeOfArcs.inOrder()) {
-//            Arc tempArc = (Arc) n;
-//            ret.add(tempArc);
-//        }
-//
-//        return ret;
         return listOfArcs;
     }
 
@@ -376,66 +283,6 @@ public class PetriNet extends Graph {
         }
         return null;
     }
-
-//    /**
-//     * @return the listOfPlaces
-//     */
-//    public AVL_Tree.Tree getTreeOfPlaces() {
-//        return treeOfPlaces;
-//    }
-//
-//    /**
-//     * @return the listOfTransitions
-//     */
-//    public AVL_Tree.Tree getTreeOfTransitions() {
-//        return treeOfTransitions;
-//    }
-//
-//    /**
-//     * @return the listOfArcs
-//     */
-//    public AVL_Tree.Tree getTreeOfArcs() {
-//        return treeOfArcs;
-//    }
-//    public Arc getArc(String name) {
-//        return (Arc) treeOfArcs.find(new StringKey(name));
-//    }
-//
-//    public Transition getTransition(String name) {
-//        return (Transition) treeOfTransitions.find(new StringKey(name));
-//    }
-//
-//    public Place getPlace(String name) {
-//        return (Place) treeOfPlaces.find(new StringKey(name));
-//    }
-//
-//    public void changeNameOfPlace(String oldName, String newName) {
-//        Place temp = (Place) treeOfPlaces.find(new StringKey(oldName));
-//        treeOfPlaces.delete(temp.getKey());
-//        temp.setName(newName);
-//        treeOfPlaces.addNode(temp);
-//    }
-//
-//    public void changeNameOfResource(String oldName, String newName) {
-//        Resource temp = (Resource) treeOfResources.find(new StringKey(oldName));
-//        treeOfResources.delete(temp.getKey());
-//        temp.setName(newName);
-//        treeOfResources.addNode(temp);
-//    }
-//
-//    public void changeNameOfTransition(String oldName, String newName) {
-//        Transition temp = (Transition) treeOfTransitions.find(new StringKey(oldName));
-//        treeOfTransitions.delete(temp.getKey());
-//        temp.setName(newName);
-//        treeOfTransitions.addNode(temp);
-//    }
-//
-//    public void changeNameOfArc(String oldName, String newName) {
-//        Arc temp = (Arc) treeOfArcs.find(new StringKey(oldName));
-//        treeOfArcs.delete(temp.getKey());
-//        temp.setName(newName);
-//        treeOfArcs.addNode(temp);
-//    }
 
     /**
      * @param listOfPlaces the listOfPlaces to set

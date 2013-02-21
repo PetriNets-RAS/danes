@@ -55,7 +55,7 @@ public class View extends javax.swing.JFrame {
         initComponents();
         
         about = new AboutUs(this, rootPaneCheckingEnabled);
-        String IconPath="..\\DanesCreator\\Images\\icon.png";
+        String IconPath="Images\\icon.png";
         BufferedImage icon = null;
         try{
             File iconFile = new File(IconPath);
@@ -127,7 +127,7 @@ public class View extends javax.swing.JFrame {
         });
         sideMenu.add(rectangleButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 71, 82, 23));
 
-        lineButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\LineIcon.png"));
+        lineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon.png"))); // NOI18N
         lineButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lineButtonActionPerformed(evt);

@@ -156,8 +156,8 @@
         </Component>
         <Component class="javax.swing.JToggleButton" name="lineButton">
           <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new javax.swing.ImageIcon(&quot;..\\DanesCreator\\Images\\LineIcon.png&quot;)" type="code"/>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/img/icon.png"/>
             </Property>
           </Properties>
           <Events>
