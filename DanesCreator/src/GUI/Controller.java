@@ -12,10 +12,7 @@ import Core.PetriNet;
 import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Transition;
-import java.awt.Point;
 import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import javax.swing.JOptionPane;
 
 /**
  *

@@ -296,25 +296,25 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_saveAsItemActionPerformed
 
     private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
-       /*
+       
         //Create and display new panel
          //Petri Net ukazka ************************************************
         p=new PetriNet("Empty");        
          //umele pridanie siete
         Place a=new Place("a");
-        a.setDiagramElement(new DiagramElement(4, 4));
+        a.setDiagramElement(new DiagramElement(500, 400));
         Transition b= new Transition("b");
-        b.setDiagramElement(new DiagramElement(8, 4));
+        b.setDiagramElement(new DiagramElement(100, 400));
         Arc c=new Arc("c", b, a);
         Place p1=new Place("p1");
-        p1.setDiagramElement(new DiagramElement(4, 2));
+        p1.setDiagramElement(new DiagramElement(300, 200));
         Place p2=new Place("p2");        
-        p2.setDiagramElement(new DiagramElement(4, 6));
+        p2.setDiagramElement(new DiagramElement(400, 600));
         
         Transition t1= new Transition("t1");        
-        t1.setDiagramElement(new DiagramElement(8, 2));
+        t1.setDiagramElement(new DiagramElement(500, 200));
         Transition t2= new Transition("t2");
-        t2.setDiagramElement(new DiagramElement(8, 6));        
+        t2.setDiagramElement(new DiagramElement(500, 600));        
         
         p.addPlace(a);
         p.addTransition(b);
@@ -322,10 +322,10 @@ public class View extends javax.swing.JFrame {
         p.addPlace(p1);
         p.addPlace(p2);
         p.addTransition(t1);
-        p.addTransition(t2);*/
+        p.addTransition(t2);
         // koniec umele pridanie siete
         //*********************************************************** 
-        
+        /*
         pg=new PrecedenceGraph("Test");
         Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(4,2));
         Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(4,4));
@@ -339,12 +339,15 @@ public class View extends javax.swing.JFrame {
         pg.addNode(n3);
         pg.addArc(a1);
         pg.addArc(a2);
-        
-        //controller.setModel(p);
-        //this.diagramPanel   =   new DiagramPanel(p);
-        
+         
         controller.setModel(pg);
         this.diagramPanel   =   new DiagramPanel(pg);
+        */
+        
+        controller.setModel(p);
+        this.diagramPanel   =   new DiagramPanel(p);
+        
+     
         
         diagramScrollPane.setViewportView(this.diagramPanel);
         
@@ -444,8 +447,6 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JMenuBar topMenu;
     // End of variables declaration//GEN-END:variables
 class DiagramPanel extends javax.swing.JPanel {
-
-    private int                     elementWidth;
     private DiagramMouseAdapter     mouseAdapter;    
     
     private Graph                   graph;
@@ -461,7 +462,6 @@ class DiagramPanel extends javax.swing.JPanel {
     public DiagramPanel(Graph pa_graph) {                      
         this.graph=pa_graph;
         this.draggedObject=null;
-        this.elementWidth    =   50; // 50 Px jeden prvok
         this.mouseAdapter   =   new DiagramMouseAdapter(); 
                 
         // Click listener, drag listener
@@ -485,17 +485,26 @@ class DiagramPanel extends javax.swing.JPanel {
     }
    
     public void drawPlace(int column,int row){
+        drawPlace(column, row, Color.BLACK, Color.WHITE);          
+    }
+    public void drawPlace(int column,int row,Color c1, Color c2){
         // Place / Ring
-        g2d.setColor(new Color(0, 0, 0));
-        g2d.fill(new Ellipse2D.Double(column*elementWidth+5,row*elementWidth+5,elementWidth-10,elementWidth-10));        
+        g2d.setColor(c2);
+        g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
+        g2d.setColor(c1);    
+        g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
     }
-
+    
     public void drawTransition(int column,int row){
-        // Transition / Rectangle
-        g2d.setColor(new Color(0, 0, 0));
-        g2d.fill(new Rectangle2D.Float(column*elementWidth+12,row*elementWidth+5,25,elementWidth-10));                
+        drawTransition(column, row ,Color.BLACK,Color.WHITE);
     }
-
+    public void drawTransition(int column,int row,Color c1,Color c2){
+        // Transition / Rectangle
+        g2d.setColor(c2);
+        g2d.fill(new Rectangle2D.Float(column+12,row+5,25,40));                
+        g2d.setColor(c1);
+        g2d.draw(new Rectangle2D.Float(column+12,row+5,25,40));                        
+    }
     public void drawArrow(int x1, int y1, int x2, int y2, String type) 
     {
          // Size of arrow in px
@@ -530,8 +539,8 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.setColor(new Color(27,161,226)); // Windows8Blue
         g2d.setStroke(new BasicStroke(3));        
         // Draw arrow        
-        drawArrow( column1*elementWidth+elementWidth/2  ,row1*elementWidth+elementWidth/2,
-                   column2*elementWidth+elementWidth/2,  row2*elementWidth+elementWidth/2,"short");
+        drawArrow( column1+25  ,row1+25,
+                   column2+25,  row2+25,"short");
 
     }    
     
@@ -605,7 +614,8 @@ class DiagramPanel extends javax.swing.JPanel {
                 int x=(int) ((Rectangle2D)draggedObject).getX();
                 int y=(int) ((Rectangle2D)draggedObject).getY();    
 
-                g2d.fill((Rectangle2D)draggedObject);
+                drawTransition(x, y, Color.GRAY, Color.WHITE);
+                //g2d.fill((Rectangle2D)draggedObject);
             }
 
             // Ellipse
@@ -614,7 +624,8 @@ class DiagramPanel extends javax.swing.JPanel {
                 int x=(int) ((Ellipse2D)draggedObject).getX();
                 int y=(int) ((Ellipse2D)draggedObject).getY();    
 
-                g2d.fill((Ellipse2D)draggedObject);
+                drawPlace(x, y, Color.GRAY, Color.WHITE);
+                //g2d.fill((Ellipse2D)draggedObject);
             }
             
             if (draggedObject instanceof Line2D)
@@ -632,7 +643,7 @@ class DiagramPanel extends javax.swing.JPanel {
         
         // Get current selected element
         //Element 
-          currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+          currentElement=controller.getLocationElement(x,y);
         /*
         if (currentElement instanceof Transition) {
             System.out.print(currentElement.getName()+"\n");
@@ -648,7 +659,7 @@ class DiagramPanel extends javax.swing.JPanel {
             loadElementProperties(currentElement);
         
         if (currentElement==null)
-            currentElement=controller.getLocationArc(x/elementWidth,y/elementWidth);
+            currentElement=controller.getLocationArc(x,y);
         
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!! DOPLNIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -661,14 +672,14 @@ class DiagramPanel extends javax.swing.JPanel {
         if (currentElement instanceof Place || currentElement instanceof Node)
         {   
             this.draggedColor=Color.GRAY;        
-            this.draggedObject=new Ellipse2D.Float(x, y, elementWidth-10, elementWidth-10);
+            this.draggedObject=new Ellipse2D.Float(x, y, 40, 40);
             propertiesMenu.setVisible(true);
         }
         // Transition
         if (currentElement instanceof Transition)
         {
             this.draggedColor=Color.GRAY;
-            this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
+            this.draggedObject=new Rectangle2D.Float(x, y, 25, 40);
             propertiesMenu.setVisible(true);
         }
 
@@ -708,20 +719,16 @@ class DiagramPanel extends javax.swing.JPanel {
         // Creating new place
         if (ellipseButton.isSelected())
         {        
-            int x_location=x/elementWidth;
-            int y_location=y/elementWidth;
             if (graph instanceof PetriNet)
-                controller.addPlace("Place",x_location,y_location);
+                controller.addPlace("Place",x,y);
             if (graph instanceof PrecedenceGraph)
-                controller.addNode("Node",x_location,y_location);
+                controller.addNode("Node",x,y);
         }    
             
         // Creating new transition
         if (rectangleButton.isSelected())
         {        
-            int x_location=x/elementWidth;
-            int y_location=y/elementWidth;   
-            controller.addTransition("Transition", x_location, y_location);                   
+            controller.addTransition("Transition", x, y);                   
         }
         
         repaint();    
@@ -729,8 +736,8 @@ class DiagramPanel extends javax.swing.JPanel {
     
     public void mouseRightClick(int x, int y) {  
         // Create RED shadow line indicating deletion of arc
-        controller.deleteElement(x/elementWidth,y/elementWidth);
-        controller.deleteArc(x/elementWidth,y/elementWidth);
+        controller.deleteElement(x,y);
+        controller.deleteArc(x,y);
         repaint();
         /*Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
         if (currentElement!=null)
@@ -753,11 +760,11 @@ class DiagramPanel extends javax.swing.JPanel {
 
         // Rectangle
         if (draggedObject instanceof Rectangle2D)
-            draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
+            draggedObject=new Rectangle2D.Float(x, y, 25, 40);
         
         // Ellipse
         if (draggedObject instanceof Ellipse2D)
-            draggedObject=new Ellipse2D.Float(x, y, elementWidth-10, elementWidth-10);       
+            draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
         
         // Line
         if (draggedObject instanceof Line2D)
@@ -783,21 +790,17 @@ class DiagramPanel extends javax.swing.JPanel {
     
     public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
         // Old and current positions
-        int x_old_location=x_old/elementWidth;
-        int y_old_location=y_old/elementWidth;            
-        int x_new_location=x_new/elementWidth;
-        int y_new_location=y_new/elementWidth;
         
         // Move place / transition
         if (!ellipseButton.isSelected() && !rectangleButton.isSelected() && !lineButton.isSelected())
         {                    
-            controller.moveElement(x_old_location,y_old_location,x_new_location,y_new_location);
+            controller.moveElement(x_old,y_old,x_new,y_new);
         }   
         
         // Add arc
         if (lineButton.isSelected() && draggedObject instanceof Line2D)
         {
-            controller.addArc("Arc", x_old_location, y_old_location, x_new_location, y_new_location);
+            controller.addArc("Arc", x_old, y_old, x_new, y_new);
         }
         draggedObject=null;
         repaint();
