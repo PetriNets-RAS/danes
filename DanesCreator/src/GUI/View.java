@@ -88,6 +88,7 @@ public class View extends javax.swing.JFrame {
         ellipseButton = new javax.swing.JToggleButton();
         rectangleButton = new javax.swing.JToggleButton();
         lineButton = new javax.swing.JToggleButton();
+        resuorceButton = new javax.swing.JToggleButton();
         propertiesMenu = new javax.swing.JPanel();
         specificPropertiesMenu = new javax.swing.JPanel();
         propertiesTab = new javax.swing.JTabbedPane();
@@ -96,12 +97,15 @@ public class View extends javax.swing.JFrame {
         diagramScrollPane = new javax.swing.JScrollPane();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        newProjectItem = new javax.swing.JMenuItem();
+        newPetriNet = new javax.swing.JMenuItem();
+        newPrecedenceNet = new javax.swing.JMenuItem();
         saveItem = new javax.swing.JMenuItem();
         saveAsItem = new javax.swing.JMenuItem();
         loadItem = new javax.swing.JMenuItem();
         exitItem = new javax.swing.JMenuItem();
-        editMenuItem = new javax.swing.JMenu();
+        editMenu = new javax.swing.JMenu();
+        convert = new javax.swing.JMenuItem();
+        export = new javax.swing.JMenuItem();
         aboutUs = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -109,31 +113,39 @@ public class View extends javax.swing.JFrame {
         sideMenu.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         sideMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        ellipseButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\EllipseIcon.png"));
+        ellipseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/EllipseIcon.png"))); // NOI18N
         ellipseButton.setToolTipText("Pridat miesto");
         ellipseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ellipseButtonActionPerformed(evt);
             }
         });
-        sideMenu.add(ellipseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 37, 82, 23));
+        sideMenu.add(ellipseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 82, 23));
 
-        rectangleButton.setIcon(new javax.swing.ImageIcon("..\\DanesCreator\\Images\\RectangleIcon.png"));
+        rectangleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/RectangleIcon.png"))); // NOI18N
         rectangleButton.setToolTipText("pridate priechod");
         rectangleButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rectangleButtonActionPerformed(evt);
             }
         });
-        sideMenu.add(rectangleButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 71, 82, 23));
+        sideMenu.add(rectangleButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, 82, 23));
 
-        lineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon.png"))); // NOI18N
+        lineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/lineIcon.png"))); // NOI18N
         lineButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 lineButtonActionPerformed(evt);
             }
         });
-        sideMenu.add(lineButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 2, 82, 24));
+        sideMenu.add(lineButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 82, 24));
+
+        resuorceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Resources.png"))); // NOI18N
+        resuorceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resuorceButtonActionPerformed(evt);
+            }
+        });
+        sideMenu.add(resuorceButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, 80, -1));
 
         propertiesMenu.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -145,11 +157,11 @@ public class View extends javax.swing.JFrame {
         specificPropertiesMenu.setLayout(specificPropertiesMenuLayout);
         specificPropertiesMenuLayout.setHorizontalGroup(
             specificPropertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 340, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         specificPropertiesMenuLayout.setVerticalGroup(
             specificPropertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 340, Short.MAX_VALUE)
+            .addGap(0, 361, Short.MAX_VALUE)
         );
 
         propertiesTab.setBackground(new java.awt.Color(204, 204, 204));
@@ -180,18 +192,18 @@ public class View extends javax.swing.JFrame {
         propertiesMenuLayout.setHorizontalGroup(
             propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(propertiesMenuLayout.createSequentialGroup()
-                .addGroup(propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(specificPropertiesMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(propertiesTab, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(propertiesTab, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
+                    .addComponent(specificPropertiesMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 14, Short.MAX_VALUE))
         );
         propertiesMenuLayout.setVerticalGroup(
             propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(propertiesMenuLayout.createSequentialGroup()
                 .addComponent(propertiesTab, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(17, 17, 17)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(specificPropertiesMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         propertiesTab.getAccessibleContext().setAccessibleName("Properties");
@@ -203,13 +215,16 @@ public class View extends javax.swing.JFrame {
 
         fileMenu.setText("File");
 
-        newProjectItem.setText("New net");
-        newProjectItem.addActionListener(new java.awt.event.ActionListener() {
+        newPetriNet.setText("Petri net");
+        newPetriNet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                newProjectItemActionPerformed(evt);
+                newPetriNetActionPerformed(evt);
             }
         });
-        fileMenu.add(newProjectItem);
+        fileMenu.add(newPetriNet);
+
+        newPrecedenceNet.setText("Precedence graph");
+        fileMenu.add(newPrecedenceNet);
 
         saveItem.setText("Save");
         saveItem.addActionListener(new java.awt.event.ActionListener() {
@@ -245,13 +260,15 @@ public class View extends javax.swing.JFrame {
 
         topMenu.add(fileMenu);
 
-        editMenuItem.setText("Export");
-        editMenuItem.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                editMenuItemMouseClicked(evt);
-            }
-        });
-        topMenu.add(editMenuItem);
+        editMenu.setText("Edit");
+
+        convert.setText("Convert");
+        editMenu.add(convert);
+
+        export.setText("Export");
+        editMenu.add(export);
+
+        topMenu.add(editMenu);
 
         aboutUs.setText("About us");
         aboutUs.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -289,13 +306,27 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_exitItemActionPerformed
 
     private void saveAsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsItemActionPerformed
-      JFileChooser fileChooser = new JFileChooser();
-        int showOpenDialog = fileChooser.showSaveDialog(this);
-
+      JFileChooser fileChooser = new JFileChooser();  
+      int showOpenDialog = fileChooser.showSaveDialog(this);
+        File file = fileChooser.getSelectedFile();
+        if(!file.exists())
+        {
+            file = new File(file.getAbsolutePath());
+            try
+            {
+            file.createNewFile();
+            }catch(IOException e)
+            {
+                System.out.print("Chyba pri praci so suborom");
+            }
+        }
+        FileManager.CoBA_XMLManager newXML=new CoBA_XMLManager();
+        newXML.createPetriXML(p,file);
+        
         if (showOpenDialog != JFileChooser.APPROVE_OPTION) return; 
     }//GEN-LAST:event_saveAsItemActionPerformed
 
-    private void newProjectItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newProjectItemActionPerformed
+    private void newPetriNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPetriNetActionPerformed
        
         //Create and display new panel
          //Petri Net ukazka ************************************************
@@ -354,7 +385,7 @@ public class View extends javax.swing.JFrame {
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
-    }//GEN-LAST:event_newProjectItemActionPerformed
+    }//GEN-LAST:event_newPetriNetActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
         //AboutUs about = new AboutUs(this, rootPaneCheckingEnabled);
@@ -364,21 +395,28 @@ public class View extends javax.swing.JFrame {
     private void ellipseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ellipseButtonActionPerformed
         rectangleButton.setSelected(false);
         lineButton.setSelected(false);
+        resuorceButton.setSelected(false);
     }//GEN-LAST:event_ellipseButtonActionPerformed
 
     private void rectangleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rectangleButtonActionPerformed
         ellipseButton.setSelected(false);
         lineButton.setSelected(false);
+        resuorceButton.setSelected(false);
     }//GEN-LAST:event_rectangleButtonActionPerformed
 
     private void lineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineButtonActionPerformed
         ellipseButton.setSelected(false);
         rectangleButton.setSelected(false);
+        resuorceButton.setSelected(false);
     }//GEN-LAST:event_lineButtonActionPerformed
 
     private void loadItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadItemActionPerformed
         // TODO add your handling code here:
-        File inputFile=new File("C:\\file.xml");
+        JFileChooser jFileChooser = new JFileChooser();
+        int openShowDialog = jFileChooser.showOpenDialog(this);
+        
+        File file = jFileChooser.getSelectedFile();
+        File inputFile=new File(file.getAbsolutePath());
         FileManager.CoBA_XMLManager x = new CoBA_XMLManager();
         
         p=x.getPetriNetFromXML(inputFile);
@@ -390,7 +428,8 @@ public class View extends javax.swing.JFrame {
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
-        ///
+        
+         ///
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
@@ -412,34 +451,32 @@ public class View extends javax.swing.JFrame {
         System.out.print("properties");        // TODO add your handling code here:
     }//GEN-LAST:event_generalPropertiesFocusLost
 
-    private void editMenuItemMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_editMenuItemMouseClicked
-        // TODO add your handling code here:
-        p=pg.changePrecedenceGraphToPN();
-        controller.setModel(p);
-        this.diagramPanel   =   new DiagramPanel(p);
-        diagramScrollPane.setViewportView(this.diagramPanel);
-        
-        sideMenu.setVisible(true);
-        // hide side menu
-        propertiesMenu.setVisible(false);
-    }//GEN-LAST:event_editMenuItemMouseClicked
+    private void resuorceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resuorceButtonActionPerformed
+        lineButton.setSelected(false);
+        rectangleButton.setSelected(false);
+        ellipseButton.setSelected(false);// TODO add your handling code here:
+    }//GEN-LAST:event_resuorceButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
+    private javax.swing.JMenuItem convert;
     private javax.swing.JScrollPane diagramScrollPane;
-    private javax.swing.JMenu editMenuItem;
+    private javax.swing.JMenu editMenu;
     private javax.swing.JToggleButton ellipseButton;
     private javax.swing.JMenuItem exitItem;
+    private javax.swing.JMenuItem export;
     private javax.swing.JMenu fileMenu;
     private GUI.PropertiesMenu generalProperties;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem loadItem;
-    private javax.swing.JMenuItem newProjectItem;
+    private javax.swing.JMenuItem newPetriNet;
+    private javax.swing.JMenuItem newPrecedenceNet;
     private javax.swing.JTextArea notes;
     private javax.swing.JPanel propertiesMenu;
     private javax.swing.JTabbedPane propertiesTab;
     private javax.swing.JToggleButton rectangleButton;
+    private javax.swing.JToggleButton resuorceButton;
     private javax.swing.JMenuItem saveAsItem;
     private javax.swing.JMenuItem saveItem;
     private javax.swing.JPanel sideMenu;
