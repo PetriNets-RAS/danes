@@ -11,6 +11,7 @@ import Core.Node;
 import Core.PetriNet;
 import Core.Place;
 import Core.PrecedenceGraph;
+import Core.Resource;
 import Core.Transition;
 import java.awt.geom.Line2D;
 
@@ -27,7 +28,10 @@ public class Controller {
     }
 
     public boolean isLocationEmpty(int x, int y) {
-        if (graph instanceof PetriNet)
+        if (getLocationElement(x, y)!=null)
+            return false;
+        return true;
+        /*if (graph instanceof PetriNet)
         {
             for (Element e : ((PetriNet)graph).getListOfPlaces()) {
                 if (e.getDiagramElement().getX() == x &&
@@ -60,6 +64,7 @@ public class Controller {
         return true;
         //throw new Exception("Chyba isLocationEmpty");
         //return true;
+        */
     }
         
     public void addPlace(String name, int x, int y) {                
@@ -91,6 +96,35 @@ public class Controller {
             }
         } // Koniec Petri Net
     }
+        public void addResource(String name, int x, int y) {                
+        // Check if coordinates place is empty  
+        if (!isLocationEmpty(x, y))
+            return;        
+        if (graph instanceof PetriNet)
+        {
+            Resource resource;
+
+            if(name.equals("Resource"))
+            {            
+
+                // Generate text name until it is unique
+                do
+                {
+                    resource=new Resource("Resource"+Math.random());
+                    resource.setDiagramElement(new DiagramElement(x, y));                
+                }
+                while 
+                (!((PetriNet)graph).addResource(resource));
+            }
+            else // Normal add
+            {
+                    resource=new Resource(name);
+                    resource.setDiagramElement(new DiagramElement(x, y));  
+                    ((PetriNet)graph).addResource(resource);
+            }
+        } // Koniec Petri Net
+    }
+
     public void addTransition(String name, int x, int y) {            
         // Check if coordinates place is empty  
         if (!isLocationEmpty(x, y))
@@ -201,17 +235,41 @@ public class Controller {
             // Place
             for(Element e:((PetriNet)graph).getListOfPlaces())
             {
-                if (    e.getDiagramElement().getX()==x &&
-                        e.getDiagramElement().getY()==y )
+                // Ak sa X nachadza medzi bodom a jeho sirkou
+                // Ak sa Y nachadza medzi bodom a jeho vyskou
+                if (    e.getDiagramElement().getX()                                      <=x &&
+                        e.getDiagramElement().getX()+e.getDiagramElement().getWidth()     >=x &&
+                        e.getDiagramElement().getY()                                      <=y &&
+                        e.getDiagramElement().getY()+e.getDiagramElement().getHeight()    >=y
+                    )
                 {
                     return e;
                 }
             }
+            // Resource
+            for(Element e:((PetriNet)graph).getListOfResources())
+            {
+                // Ak sa X nachadza medzi bodom a jeho sirkou
+                // Ak sa Y nachadza medzi bodom a jeho vyskou
+                if (    e.getDiagramElement().getX()                                      <=x &&
+                        e.getDiagramElement().getX()+e.getDiagramElement().getWidth()     >=x &&
+                        e.getDiagramElement().getY()                                      <=y &&
+                        e.getDiagramElement().getY()+e.getDiagramElement().getHeight()    >=y
+                    )
+                {
+                    return e;
+                }
+            }            
             // Transition
             for(Element e:((PetriNet)graph).getListOfTransitions())
             {
-                if (    e.getDiagramElement().getX()==x &&
-                        e.getDiagramElement().getY()==y )
+                // Ak sa X nachadza medzi bodom a jeho sirkou
+                // Ak sa Y nachadza medzi bodom a jeho vyskou
+                if (    e.getDiagramElement().getX()                                      <=x &&
+                        e.getDiagramElement().getX()+e.getDiagramElement().getWidth()     >=x &&
+                        e.getDiagramElement().getY()                                      <=y &&
+                        e.getDiagramElement().getY()+e.getDiagramElement().getHeight()    >=y
+                    )
                 {
                     return e;
                 }
@@ -223,8 +281,13 @@ public class Controller {
             // Node
             for(Element e:((PrecedenceGraph)graph).getListOfNodes())
             {
-                if (    e.getDiagramElement().getX()==x &&
-                        e.getDiagramElement().getY()==y )
+                // Ak sa X nachadza medzi bodom a jeho sirkou
+                // Ak sa Y nachadza medzi bodom a jeho vyskou
+                if (    e.getDiagramElement().getX()                                      <=x &&
+                        e.getDiagramElement().getX()+e.getDiagramElement().getWidth()     >=x &&
+                        e.getDiagramElement().getY()                                      <=y &&
+                        e.getDiagramElement().getY()+e.getDiagramElement().getHeight()    >=y
+                    )
                 {
                     return e;
                 }
