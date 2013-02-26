@@ -47,6 +47,7 @@ public class View extends javax.swing.JFrame {
     private PetriNet p;
     private Element currentElement;
     private PrecedenceGraph pg;
+    private File selectedFile;
     
     public View(PetriNet pa_petriNet,Controller pa_controller) {        
         super();  
@@ -309,20 +310,20 @@ public class View extends javax.swing.JFrame {
     private void saveAsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsItemActionPerformed
       JFileChooser fileChooser = new JFileChooser();  
       int showOpenDialog = fileChooser.showSaveDialog(this);
-        File file = fileChooser.getSelectedFile();
-        if(!file.exists())
+        selectedFile = fileChooser.getSelectedFile();
+        if(!selectedFile.exists())
         {
-            file = new File(file.getAbsolutePath());
+            selectedFile = new File(selectedFile.getAbsolutePath());
             try
             {
-            file.createNewFile();
+            selectedFile.createNewFile();
             }catch(IOException e)
             {
                 System.out.print("Chyba pri praci so suborom");
             }
         }
         FileManager.CoBA_XMLManager newXML=new CoBA_XMLManager();
-        newXML.createPetriXML(p,file);
+        newXML.createPetriXML(p,selectedFile);
         
         if (showOpenDialog != JFileChooser.APPROVE_OPTION) return; 
     }//GEN-LAST:event_saveAsItemActionPerformed
@@ -420,8 +421,8 @@ public class View extends javax.swing.JFrame {
         JFileChooser jFileChooser = new JFileChooser();
         int openShowDialog = jFileChooser.showOpenDialog(this);
         
-        File file = jFileChooser.getSelectedFile();
-        File inputFile=new File(file.getAbsolutePath());
+        selectedFile = jFileChooser.getSelectedFile();
+        File inputFile=new File(selectedFile.getAbsolutePath());
         FileManager.CoBA_XMLManager x = new CoBA_XMLManager();
         
         p=x.getPetriNetFromXML(inputFile);
@@ -440,7 +441,29 @@ public class View extends javax.swing.JFrame {
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
         // TODO add your handling code here:
         FileManager.CoBA_XMLManager newXML=new CoBA_XMLManager();
-        newXML.createPetriXML(p,new File("C:\\file.xml"));       
+        if(selectedFile==null)
+        {
+            JFileChooser fileChooser = new JFileChooser();  
+            int showOpenDialog = fileChooser.showSaveDialog(this);
+            selectedFile = fileChooser.getSelectedFile();
+            if(!selectedFile.exists())
+            {
+                selectedFile = new File(selectedFile.getAbsolutePath());
+                try
+                {
+                    selectedFile.createNewFile();
+                }catch(IOException e)
+                {
+                    System.out.print("Chyba pri praci so suborom");
+                }
+            }
+            newXML.createPetriXML(p,selectedFile);  
+            if (showOpenDialog != JFileChooser.APPROVE_OPTION) return; 
+        }
+        else
+        {    
+            newXML.createPetriXML(p,new File(selectedFile.getAbsolutePath()));
+        }
     }//GEN-LAST:event_saveItemActionPerformed
 
     private void notesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_notesFocusLost
