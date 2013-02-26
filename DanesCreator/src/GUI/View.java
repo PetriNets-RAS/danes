@@ -12,6 +12,7 @@ import Core.Node;
 import Core.PetriNet;
 import Core.Place;
 import Core.PrecedenceGraph;
+import Core.Resource;
 import Core.Transition;
 import FileManager.CoBA_XMLManager;
 import java.awt.BasicStroke;
@@ -316,6 +317,10 @@ public class View extends javax.swing.JFrame {
         Transition t2= new Transition("t2");
         t2.setDiagramElement(new DiagramElement(500, 600));        
         
+        Resource r1=new Resource("r1");
+        r1.setDiagramElement(new DiagramElement(100, 100));
+        
+        p.addResource(r1);
         p.addPlace(a);
         p.addTransition(b);
         p.addArc(c);        
@@ -494,6 +499,17 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.setColor(c1);    
         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
     }
+
+    public void drawResource(int column,int row){
+        drawPlace(column, row, Color.BLACK, Color.GRAY);          
+    }
+    public void drawResource(int column,int row,Color c1, Color c2){
+        // Place / Ring
+        g2d.setColor(c2); //white vypln
+        g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
+        g2d.setColor(c1); //black   
+        g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
+    }
     
     public void drawTransition(int column,int row){
         drawTransition(column, row ,Color.BLACK,Color.WHITE);
@@ -567,7 +583,13 @@ class DiagramPanel extends javax.swing.JPanel {
             {            
                 drawPlace(e.getDiagramElement().getX(), e.getDiagramElement().getY());
             }
-
+            
+            // Draw all resources
+            for(Element e:((PetriNet)graph).getListOfResources())
+            {            
+                drawResource(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+            }
+            
             // Draw all transitions
             for(Element e:((PetriNet)graph).getListOfTransitions())
             {            
@@ -660,14 +682,7 @@ class DiagramPanel extends javax.swing.JPanel {
         
         if (currentElement==null)
             currentElement=controller.getLocationArc(x,y);
-        
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // !!!!!!!!!!!!!! DOPLNIT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // Parameter place trans - instance of
-        // if (currentElement!=null)
-        // Dakypanel dakyPanel = new DakyPanel(controller.getLocationElement(x, y));        
-        // dakyPanel.setVisible(true);
-        
+                       
         // Place or Node     
         if (currentElement instanceof Place || currentElement instanceof Node)
         {   
@@ -724,6 +739,12 @@ class DiagramPanel extends javax.swing.JPanel {
             if (graph instanceof PrecedenceGraph)
                 controller.addNode("Node",x,y);
         }    
+        // Creating new resource
+        /*if (resourceButton.isSelected())
+        {        
+            if (graph instanceof PetriNet)
+                controller.addResource("Resource",x,y);        
+         }*/
             
         // Creating new transition
         if (rectangleButton.isSelected())
@@ -792,6 +813,7 @@ class DiagramPanel extends javax.swing.JPanel {
         // Old and current positions
         
         // Move place / transition
+        // && resource isSelected
         if (!ellipseButton.isSelected() && !rectangleButton.isSelected() && !lineButton.isSelected())
         {                    
             controller.moveElement(x_old,y_old,x_new,y_new);
