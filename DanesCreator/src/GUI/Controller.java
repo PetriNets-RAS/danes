@@ -319,6 +319,11 @@ public class Controller {
         if (element instanceof Node)
         {
             ((PrecedenceGraph)graph).deleteNode(((Node)element).getName());
+        }    
+        // Place
+        if (element instanceof Resource)
+        {
+            ((PetriNet)graph).deleteResource(((Resource)element).getName());
         }        
     }            
 

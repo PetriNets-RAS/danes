@@ -4,7 +4,6 @@
  */
 package GUI;
 
-import Core.AbsPlace;
 import Core.Arc;
 import Core.Element;
 import Core.Graph;
@@ -29,6 +28,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
@@ -45,7 +45,6 @@ public class View extends javax.swing.JFrame {
     private Controller  controller;
     private AboutUs about;
     private PetriNet p;
-    private Element currentElement;
     private PrecedenceGraph pg;
     private File selectedFile;
     
@@ -351,11 +350,13 @@ public class View extends javax.swing.JFrame {
         
         Resource r1=new Resource("r1");
         r1.setDiagramElement(new DiagramElement(100, 100));
+        Arc a2=new Arc("a2", t1, r1);
         
         p.addResource(r1);
         p.addPlace(a);
         p.addTransition(b);
-        p.addArc(c);        
+        p.addArc(c);       
+        p.addArc(a2);
         p.addPlace(p1);
         p.addPlace(p2);
         p.addTransition(t1);
@@ -467,7 +468,7 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_saveItemActionPerformed
 
     private void notesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_notesFocusLost
-       currentElement.setNote(notes.getText());
+       //currentElement.setNote(notes.getText());
        // System.out.print("notes");
     }//GEN-LAST:event_notesFocusLost
 
@@ -517,7 +518,8 @@ class DiagramPanel extends javax.swing.JPanel {
     private Graph                   graph;
     
     private Graphics2D              g2d;
-    
+    private ArrayList<Element>      selectedElements;
+    private Element                 draggedElement;
     private Object                  draggedObject;
     private Color                   draggedColor;
     /**
@@ -527,6 +529,8 @@ class DiagramPanel extends javax.swing.JPanel {
     public DiagramPanel(Graph pa_graph) {                      
         this.graph=pa_graph;
         this.draggedObject=null;
+        this.draggedElement=null;
+        this.selectedElements=new ArrayList<Element>();
         this.mouseAdapter   =   new DiagramMouseAdapter(); 
                 
         // Click listener, drag listener
@@ -546,6 +550,7 @@ class DiagramPanel extends javax.swing.JPanel {
         
         drawGraph();
         drawDraggedObject();
+        drawSelectedElements();
 
     }
    
@@ -685,30 +690,35 @@ class DiagramPanel extends javax.swing.JPanel {
     
     private void drawDraggedObject() {
             // Nothing to draw
-            if (draggedObject==null)
+            if (draggedObject==null && draggedElement==null)
                 return;
             
             g2d.setColor(draggedColor);
             
             // Rectangle 
-            if (draggedObject instanceof Rectangle2D)
-            {
-                int x=(int) ((Rectangle2D)draggedObject).getX();
-                int y=(int) ((Rectangle2D)draggedObject).getY();    
+            if (draggedElement instanceof Transition)
+            {                
+                int x=draggedElement.getDiagramElement().getX();
+                int y=draggedElement.getDiagramElement().getY();
 
                 drawTransition(x, y, Color.GRAY, Color.WHITE);
                 //g2d.fill((Rectangle2D)draggedObject);
             }
 
-            // Ellipse
-            if (draggedObject instanceof Ellipse2D)
+            // Ellipse white
+            if (draggedElement instanceof Place || draggedElement instanceof Node || draggedElement instanceof Resource)                           
             {
-                int x=(int) ((Ellipse2D)draggedObject).getX();
-                int y=(int) ((Ellipse2D)draggedObject).getY();    
+                int x=draggedElement.getDiagramElement().getX();
+                int y=draggedElement.getDiagramElement().getY();
 
-                drawPlace(x, y, Color.GRAY, Color.WHITE);
+                if (draggedElement instanceof Resource)
+                    drawPlace(x, y, Color.GRAY, Color.gray);
+                else
+                    drawPlace(x, y, Color.GRAY, Color.WHITE);
+
                 //g2d.fill((Ellipse2D)draggedObject);
             }
+            
             
             if (draggedObject instanceof Line2D)
             {
@@ -720,98 +730,85 @@ class DiagramPanel extends javax.swing.JPanel {
                 drawArrow(x1, y1, x2, y2,"long");            
             }
         }    
-
-    public void mouseLeftClick(int x, int y) {  
-        
-        // Get current selected element
-        //Element 
-          currentElement=controller.getLocationElement(x,y);
-        /*
-        if (currentElement instanceof Transition) {
-            System.out.print(currentElement.getName()+"\n");
-        }
-        if (currentElement instanceof Place) {
-            System.out.print(currentElement.getName()+"\n");
-        }
-        if (currentElement instanceof Arc) {
-            System.out.print("hrana");
-        }
-        */
-        if(currentElement instanceof AbsPlace || currentElement instanceof Transition)
-            loadElementProperties(currentElement);
-        
-        if (currentElement==null)
-            currentElement=controller.getLocationArc(x,y);
-                       
-        // Place or Node     
-        if (currentElement instanceof Place || currentElement instanceof Node)
-        {   
-            this.draggedColor=Color.GRAY;        
-            this.draggedObject=new Ellipse2D.Float(x, y, 40, 40);
-            propertiesMenu.setVisible(true);
-        }
-        // Transition
-        if (currentElement instanceof Transition)
-        {
-            this.draggedColor=Color.GRAY;
-            this.draggedObject=new Rectangle2D.Float(x, y, 25, 40);
-            propertiesMenu.setVisible(true);
-        }
-
-        // Arc
-        if (currentElement instanceof Arc)
-        {
-            //this.draggedColor=Color.GRAY;
-            //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
-            propertiesMenu.setVisible(true);
-        }
-        
-        
-        // Arc  create
-        if ((currentElement instanceof Transition || currentElement instanceof Place || currentElement instanceof Node)
-                &&  lineButton.isSelected()  )
-        {
-            this.draggedColor=Color.GRAY;
-            this.draggedObject=new Line2D.Float(x,y,x,y);
-        }
-        
-        if (currentElement == null)
-        {
-            propertiesMenu.setVisible(false);
-        }
-        
-        // None exist or not creating mode
-        if (currentElement==null            || 
-            rectangleButton.isSelected()    || 
-            ellipseButton.  isSelected()    //||
-//            lineButton.     isSelected()                
-            )
-        {
-            this.draggedObject=null;
-        }           
-        
-        // Create new        
-        // Creating new place
-        if (ellipseButton.isSelected())
-        {        
-            if (graph instanceof PetriNet)
-                controller.addPlace("Place",x,y);
-            if (graph instanceof PrecedenceGraph)
-                controller.addNode("Node",x,y);
-        }    
-        // Creating new resource
-        /*if (resourceButton.isSelected())
-        {        
-            if (graph instanceof PetriNet)
-                controller.addResource("Resource",x,y);        
-         }*/
+        private void drawSelectedElements() {
+            // Nothing to draw
+            if (selectedElements.isEmpty())
+                return;
             
-        // Creating new transition
-        if (rectangleButton.isSelected())
-        {        
-            controller.addTransition("Transition", x, y);                   
+            Element e=selectedElements.get(0);            
+            drawPlace(e.getDiagramElement().getX(),e.getDiagramElement().getY(),Color.RED,Color.RED);
+        }
+    public void mouseLeftClick(int x, int y) {  
+        // Select 1 element
+        selectedElements.clear();
+        Element e=controller.getLocationElement(x,y);
+        Arc     a=controller.getLocationArc(x,y);
+        if (e!=null)
+            selectedElements.add(e);
+        if (a!=null)
+            selectedElements.add(a);
+        
+        // Create new
+        if (selectedElements.isEmpty())
+        {
+               this.draggedObject=null;               
+               
+               // Place / Node
+               if (ellipseButton.isSelected())
+               {        
+                   if (graph instanceof PetriNet)
+                       controller.addPlace("Place",x,y);
+                   if (graph instanceof PrecedenceGraph)
+                       controller.addNode("Node",x,y);
+               }    
+               // Resource
+               if (resuorceButton.isSelected())
+               {        
+                   if (graph instanceof PetriNet)
+                       controller.addResource("Resource",x,y);        
+                }
+               // Transition
+               if (rectangleButton.isSelected())
+               {        
+                   controller.addTransition("Transition", x, y);                   
+               }                             
+               
+        }
+        // Dragging preparation & create new arc
+        else if (selectedElements.size()==1)
+        {
+            Element currentElement=selectedElements.get(0);
+            
+            // Creat new Arc
+            if ((currentElement instanceof Transition || currentElement instanceof Place || currentElement instanceof Node || currentElement instanceof Resource)
+                    &&  lineButton.isSelected()  )
+            {
+                this.draggedColor=Color.GRAY;
+                this.draggedObject=new Line2D.Float(x,y,x,y);                
+            }               
+            else    
+            
+            // Place or Node or Resource or Transition
+            if (currentElement instanceof Place || currentElement instanceof Node || currentElement instanceof Resource || currentElement instanceof Transition)
+            {   
+                this.draggedElement=currentElement;
+                propertiesMenu.setVisible(true);
+            }            
+
+            // Arc
+            if (currentElement instanceof Arc)
+            {
+                //this.draggedColor=Color.GRAY;
+                //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
+                propertiesMenu.setVisible(true);
+            }
         }
         
+        
+        
+       
+        if (selectedElements.isEmpty())
+            propertiesMenu.setVisible(false);
         repaint();    
     }
     
@@ -835,18 +832,30 @@ class DiagramPanel extends javax.swing.JPanel {
     }
 
     private void mouseLeftDragged(int x, int y) {
-        // None
-        if (draggedObject==null)
-            return;
-
+        // None element or arc
+        if (draggedObject==null && draggedElement==null)
+            return;        
+        // Element
+        if (draggedElement instanceof Place || draggedElement instanceof Node || draggedElement instanceof Resource ||
+                draggedElement instanceof Transition)
+        {
+            draggedElement.getDiagramElement().setX(x);
+            draggedElement.getDiagramElement().setY(y);
+        }
+            //draggedObject=new Rectangle2D.Float(x, y, 25, 40);
+        
+        // Ellipse
+       /* if (draggedObject instanceof Ellipse2D)
+            draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
+        */
         // Rectangle
-        if (draggedObject instanceof Rectangle2D)
+        /*if (draggedObject instanceof Rectangle2D)
             draggedObject=new Rectangle2D.Float(x, y, 25, 40);
         
         // Ellipse
         if (draggedObject instanceof Ellipse2D)
             draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
-        
+        */
         // Line
         if (draggedObject instanceof Line2D)
         {
@@ -884,7 +893,9 @@ class DiagramPanel extends javax.swing.JPanel {
         {
             controller.addArc("Arc", x_old, y_old, x_new, y_new);
         }
+        
         draggedObject=null;
+        draggedElement=null;
         repaint();
     }
 
