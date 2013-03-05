@@ -225,6 +225,11 @@ public class View extends javax.swing.JFrame {
         fileMenu.add(newPetriNet);
 
         newPrecedenceNet.setText("Precedence graph");
+        newPrecedenceNet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newPrecedenceNetActionPerformed(evt);
+            }
+        });
         fileMenu.add(newPrecedenceNet);
 
         saveItem.setText("Save");
@@ -264,6 +269,11 @@ public class View extends javax.swing.JFrame {
         editMenu.setText("Edit");
 
         convert.setText("Convert");
+        convert.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                convertActionPerformed(evt);
+            }
+        });
         editMenu.add(convert);
 
         export.setText("Export");
@@ -485,6 +495,42 @@ public class View extends javax.swing.JFrame {
         rectangleButton.setSelected(false);
         ellipseButton.setSelected(false);// TODO add your handling code here:
     }//GEN-LAST:event_resuorceButtonActionPerformed
+
+    private void newPrecedenceNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPrecedenceNetActionPerformed
+        // TODO add your handling code here:
+        
+        pg=new PrecedenceGraph("Test");
+        Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(400,200));
+        Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(200,150));
+        Node n3=new Node("n3"); n3.setDiagramElement(new DiagramElement(400,60));
+        
+        Arc a1=new Arc("a1", n2, n1);
+        Arc a2=new Arc("a2", n2, n3);
+
+        pg.addNode(n1);
+        pg.addNode(n2);
+        pg.addNode(n3);
+        pg.addArc(a1);
+        pg.addArc(a2);
+         
+        controller.setModel(pg);
+        this.diagramPanel   =   new DiagramPanel(pg);                
+        diagramScrollPane.setViewportView(this.diagramPanel);       
+        sideMenu.setVisible(true);
+        // hide side menu
+        propertiesMenu.setVisible(false);             
+    }//GEN-LAST:event_newPrecedenceNetActionPerformed
+
+    private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
+        // TODO add your handling code here:
+        PetriNet converted=pg.changePrecedenceGraphToPN();
+        controller.setModel(converted);
+        this.diagramPanel   =   new DiagramPanel(converted);                
+        diagramScrollPane.setViewportView(this.diagramPanel);       
+        sideMenu.setVisible(true);
+        // hide side menu
+        propertiesMenu.setVisible(false); 
+    }//GEN-LAST:event_convertActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
