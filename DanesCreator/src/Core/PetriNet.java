@@ -132,14 +132,14 @@ public class PetriNet extends Graph {
         for (Transition actTransition : listOfTransitions) {
             if (actTransition.getName().equals(paName)) {
                 for (Arc actArc : actTransition.getListOfInArcs()) {
-                    Place temp = (Place) actArc.getOutElement();
+                    AbsPlace temp = (AbsPlace) actArc.getOutElement();
                     temp.getListOfOutArcs().remove(actArc);
                     temp.getListOfOutTransitions().remove(actTransition);
                     listOfArcs.remove(actArc);
                 }
 
                 for (Arc actArc : actTransition.getListOfOutArcs()) {
-                    Place temp = (Place) actArc.getInElement();
+                    AbsPlace temp = (AbsPlace) actArc.getInElement();
                     temp.getListOfInArcs().remove(actArc);
                     temp.getListOfInTransitions().remove(actTransition);
                     listOfArcs.remove(actArc);
