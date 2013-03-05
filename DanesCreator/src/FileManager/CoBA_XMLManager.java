@@ -124,7 +124,7 @@ public class CoBA_XMLManager {
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
                 int quantity = Integer.parseInt(eElement.getAttribute("quantity"));
-                res.setQuantity(quantity);
+                res.setCapacity(quantity);
                 res.setDiagramElement(new DiagramElement(x, y));
                 pn.addResource(res);
             }
@@ -216,7 +216,7 @@ public class CoBA_XMLManager {
                     pl.setEnd(false);
                 }
 
-                pl.setQuantity(tokens);
+                pl.setCapacity(tokens);
                 pl.setDiagramElement(new DiagramElement(x, y));
                 pn.addPlace(pl);
             }
@@ -283,25 +283,6 @@ public class CoBA_XMLManager {
             edge.setAttributeNode(Y1);
             edge.setAttributeNode(X2);
             edge.setAttributeNode(Y2);
-
-
-
-//            
-//            //X1.setValue("");
-//            edge.setAttributeNode(X1);
-//
-//            
-//            
-//            //Y1.setValue("");
-//            edge.setAttributeNode(Y1);
-//
-//            
-//            //X2.setValue("");
-//            edge.setAttributeNode(X2);
-//
-//            
-//            //Y2.setValue("");
-//            edge.setAttributeNode(Y2);
 
             Attr power = doc.createAttribute("power");
             //?????????????
@@ -399,7 +380,7 @@ public class CoBA_XMLManager {
             resource.setAttributeNode(resName);
 
             Attr quantity = doc.createAttribute("quantity");
-            quantity.setValue(r.getQuantity() + "");
+            quantity.setValue(r.getCapacity() + "");
             resource.setAttributeNode(quantity);
 
             Attr resX = doc.createAttribute("x");

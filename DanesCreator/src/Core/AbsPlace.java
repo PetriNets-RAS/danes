@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public abstract class AbsPlace extends Element{
     
-    private int quantity;
+    private int capacity;
     private int width;
     private int height;
     private int tokens;
@@ -46,17 +46,17 @@ public abstract class AbsPlace extends Element{
     }
 
     /**
-     * @return the quantity
+     * @return the capacity
      */
-    public int getQuantity() {
-        return quantity;
+    public int getCapacity() {
+        return capacity;
     }
 
     /**
-     * @param quantity the quantity to set
+     * @param capacity the capacity to set
      */
-    public void setQuantity(int capacity) {
-        this.quantity = capacity;
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     /**

@@ -18,7 +18,7 @@ public class Node extends Element{
     private ArrayList<Arc> listOfOutArcs;
     private int width;
     private int height;
-    
+    private int capacity;
     
     /**
      * @Class constructor 
@@ -87,6 +87,20 @@ public class Node extends Element{
      */
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    /**
+     * @return the capacity
+     */
+    public int getCapacity() {
+        return capacity;
+    }
+
+    /**
+     * @param capacity the capacity to set
+     */
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
     
 }
