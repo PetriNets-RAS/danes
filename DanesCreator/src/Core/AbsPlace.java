@@ -11,7 +11,6 @@ import java.util.ArrayList;
  * @author Atarin
  */
 public abstract class AbsPlace extends Element{
-    
     private int capacity;
     private int width;
     private int height;

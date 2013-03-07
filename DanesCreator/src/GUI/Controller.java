@@ -13,6 +13,7 @@ import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Resource;
 import Core.Transition;
+import java.awt.Polygon;
 import java.awt.geom.Line2D;
 
 /**
@@ -419,9 +420,23 @@ public class Controller {
                 x2=a.getOutElement().getDiagramElement().getX();
                 y2=a.getOutElement().getDiagramElement().getY();                
                 
+                // System.out.println(Math.ceil(23.46)); // Prints 24
+                // System.out.println(Math.floor(23.46)); // Prints 23
+
+                x1=Math.ceil(x1/10.0);
+                y1=Math.ceil(y1/10.0);
+                x2=Math.ceil(x2/10.0);
+                y2=Math.ceil(y2/10.0);
+                
+                double x_round=Math.ceil(x/10.0);
+                double y_round=Math.ceil(y/10.0);
+                                    
+                //xx.contains(null);
+                
                 Line2D line=new Line2D.Double(x1, y1, x2, y2);
                 // If point X,Y lies on Line(x1,y1,x2,y2)
-                if (line.relativeCCW(x, y)==0)
+                //if (line.relativeCCW(x, y)==0)
+                if (line.relativeCCW(x_round, y_round)==0)
                 {
                     System.out.println("Nachadzam sa na arc: "+a.getName());
                     return a;

@@ -19,6 +19,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
+import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -597,6 +599,12 @@ class DiagramPanel extends javax.swing.JPanel {
         drawGraph();
         drawDraggedObject();
         drawSelectedElements();
+        /*
+        Polygon poly=new Polygon();
+        poly.addPoint(100, 100);
+        poly.addPoint(150, 150);
+        poly.addPoint(50,  150);
+        g2d.fill(poly);*/
 
     }
    
@@ -610,6 +618,19 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.setColor(c1);    
         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
     }
+    public void drawPlace(int column,int row,Color c1, Color c2,int width,int height){
+        // Place / Ring
+        g2d.setColor(c2);
+        g2d.fill(new Ellipse2D.Double(column+5,row+5,width,height));        
+        g2d.setColor(c1);    
+        g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));                
+    }    
+    public void drawPlaceSelected(int column,int row){   
+        g2d.setColor(Color.GRAY);   
+        Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
+        g2d.setStroke(s);
+        g2d.draw(new Ellipse2D.Double(column+5-10,row+5-10,40+20,40+20));        
+    }
 
     public void drawResource(int column,int row){
         drawPlace(column, row, Color.BLACK, Color.GRAY);          
@@ -620,6 +641,13 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
         g2d.setColor(c1); //black   
         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
+    }
+    public void drawResource(int column,int row,Color c1, Color c2,int width,int height){
+        // Place / Ring
+        g2d.setColor(c2); //white vypln
+        g2d.fill(new Ellipse2D.Double(column+5,row+5,width,height));        
+        g2d.setColor(c1); //black   
+        g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));        
     }
     
     public void drawTransition(int column,int row){
@@ -632,6 +660,19 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.setColor(c1);
         g2d.draw(new Rectangle2D.Float(column+12,row+5,25,40));                        
     }
+    public void drawTransition(int column,int row,Color c1,Color c2,int width,int height){
+        // Transition / Rectangle
+        g2d.setColor(c2);
+        g2d.fill(new Rectangle2D.Float(column+12,row+5,width,height));                
+        g2d.setColor(c1);
+        g2d.draw(new Rectangle2D.Float(column+12,row+5,width,height));                        
+    }    
+    public void drawTransitionSelected(int column,int row){   
+        g2d.setColor(Color.GRAY);   
+        Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
+        g2d.setStroke(s);
+        g2d.draw(new Rectangle2D.Float(column+12-10,row+5-10,25+20,40+20));                        
+    }    
     public void drawArrow(int x1, int y1, int x2, int y2, String type) 
     {
          // Size of arrow in px
@@ -782,7 +823,11 @@ class DiagramPanel extends javax.swing.JPanel {
                 return;
             
             Element e=selectedElements.get(0);            
-            drawPlace(e.getDiagramElement().getX(),e.getDiagramElement().getY(),Color.RED,Color.RED);
+            if(e instanceof Place || e instanceof Node || e instanceof Resource)
+                drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+
+            if(e instanceof Transition)
+                drawTransitionSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
         }
     public void mouseLeftClick(int x, int y) {  
         // Select 1 element
