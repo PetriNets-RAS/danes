@@ -16,6 +16,9 @@ public class Element{
     private String name;
     private String note;
     private Color color;
+    private Color color2;
+    private int x;
+    private int y;
     private int fontSize;
     
     private DiagramElement diagramElement;
@@ -89,6 +92,48 @@ public class Element{
 
     public void setDiagramElement(DiagramElement diagramElement) {
         this.diagramElement = diagramElement;
+    }
+
+    /**
+     * @return the color2
+     */
+    public Color getColor2() {
+        return color2;
+    }
+
+    /**
+     * @param color2 the color2 to set
+     */
+    public void setColor2(Color color2) {
+        this.color2 = color2;
+    }
+
+    /**
+     * @return the x
+     */
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * @param x the x to set
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /**
+     * @return the y
+     */
+    public int getY() {
+        return y;
+    }
+
+    /**
+     * @param y the y to set
+     */
+    public void setY(int y) {
+        this.y = y;
     }
     
 }
