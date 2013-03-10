@@ -259,7 +259,8 @@ public class PetriNet extends Graph {
 
     public Transition getTransition(int x, int y) {
         for (Transition t : listOfTransitions) {
-            if ((t.getDiagramElement().getX() == x) && (t.getDiagramElement().getY() == y)) {
+            //if ((t.getDiagramElement().getX() == x) && (t.getDiagramElement().getY() == y)) {
+            if ((t.getX() == x) && (t.getY() == y)) {
                 return t;
             }
         }
@@ -268,7 +269,8 @@ public class PetriNet extends Graph {
 
     public Resource getResource(int x, int y) {
         for (Resource r : listOfResources) {
-            if ((r.getDiagramElement().getX() == x) && (r.getDiagramElement().getY() == y)) {
+            //if ((r.getDiagramElement().getX() == x) && (r.getDiagramElement().getY() == y)) {
+            if ((r.getX() == x) && (r.getY() == y)) {                
                 return r;
             }
         }
@@ -277,7 +279,8 @@ public class PetriNet extends Graph {
 
     public Place getPlace(int x, int y) {
         for (Place p : listOfPlaces) {
-            if ((p.getDiagramElement().getX() == x) && (p.getDiagramElement().getY() == y)) {
+            //if ((p.getDiagramElement().getX() == x) && (p.getDiagramElement().getY() == y)) {
+            if ((p.getX() == x) && (p.getY() == y)) {
                 return p;
             }
         }

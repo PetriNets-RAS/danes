@@ -13,8 +13,11 @@ import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Resource;
 import Core.Transition;
+import java.awt.Point;
 import java.awt.Polygon;
+import java.awt.geom.Area;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 
 /**
  *
@@ -84,7 +87,8 @@ public class Controller {
                 do
                 {
                     place=new Place("Place"+Math.random());
-                    place.setDiagramElement(new DiagramElement(x, y));                
+                    place.setX(x);
+                    place.setY(y);
                 }
                 while 
                 (!((PetriNet)graph).addPlace(place));
@@ -92,7 +96,8 @@ public class Controller {
             else // Normal add
             {
                     place=new Place(name);
-                    place.setDiagramElement(new DiagramElement(x, y));  
+                    place.setX(x);
+                    place.setY(y);
                     ((PetriNet)graph).addPlace(place);
             }
         } // Koniec Petri Net
@@ -112,7 +117,9 @@ public class Controller {
                 do
                 {
                     resource=new Resource("Resource"+Math.random());
-                    resource.setDiagramElement(new DiagramElement(x, y));                
+                    resource.setX(x);
+                    resource.setY(y);
+                    //resource.setDiagramElement(new DiagramElement(x, y));                
                 }
                 while 
                 (!((PetriNet)graph).addResource(resource));
@@ -120,7 +127,9 @@ public class Controller {
             else // Normal add
             {
                     resource=new Resource(name);
-                    resource.setDiagramElement(new DiagramElement(x, y));  
+                    resource.setX(x);
+                    resource.setY(y);
+                    //resource.setDiagramElement(new DiagramElement(x, y));  
                     ((PetriNet)graph).addResource(resource);
             }
         } // Koniec Petri Net
@@ -141,7 +150,9 @@ public class Controller {
                 do
                 {
                     transition=new Transition("Transition"+Math.random());
-                    transition.setDiagramElement(new DiagramElement(x, y));                
+                    transition.setX(x);
+                    transition.setY(y);
+                    //transition.setDiagramElement(new DiagramElement(x, y));                
                 }
                 while      
                    (!((PetriNet)graph).addTransition(transition));
@@ -149,7 +160,9 @@ public class Controller {
             else // Normal add
             {
                 transition=new Transition(name);
-                transition.setDiagramElement(new DiagramElement(x, y));      
+                transition.setX(x);
+                transition.setY(y);
+                //transition.setDiagramElement(new DiagramElement(x, y));      
                 ((PetriNet)graph).addTransition(transition);
             }  
         } // Koniec Petri Net transition
@@ -226,7 +239,9 @@ public class Controller {
             return;       
         
         Element e = getLocationElement(x_old_location, y_old_location);
-        e.setDiagramElement(new DiagramElement(x_new_location, y_new_location));            
+        //e.setDiagramElement(new DiagramElement(x_new_location, y_new_location));
+        e.setX(x_new_location);
+        e.setY(y_new_location);
 
     }
 
@@ -238,10 +253,10 @@ public class Controller {
             {
                 // Ak sa X nachadza medzi bodom a jeho sirkou
                 // Ak sa Y nachadza medzi bodom a jeho vyskou
-                if (    e.getDiagramElement().getX()                                      <=x &&
-                        e.getDiagramElement().getX()+e.getDiagramElement().getWidth()     >=x &&
-                        e.getDiagramElement().getY()                                      <=y &&
-                        e.getDiagramElement().getY()+e.getDiagramElement().getHeight()    >=y
+                if (    e.getX()                  <=x &&
+                        e.getX()+((Place)e).getWidth()     >=x &&
+                        e.getY()                  <=y &&
+                        e.getY()+((Place)e).getHeight()    >=y
                     )
                 {
                     return e;
@@ -252,10 +267,10 @@ public class Controller {
             {
                 // Ak sa X nachadza medzi bodom a jeho sirkou
                 // Ak sa Y nachadza medzi bodom a jeho vyskou
-                if (    e.getDiagramElement().getX()                                      <=x &&
-                        e.getDiagramElement().getX()+e.getDiagramElement().getWidth()     >=x &&
-                        e.getDiagramElement().getY()                                      <=y &&
-                        e.getDiagramElement().getY()+e.getDiagramElement().getHeight()    >=y
+                if (    e.getX()                                      <=x &&
+                        e.getX()+((Resource)e).getWidth()     >=x &&
+                        e.getY()                                      <=y &&
+                        e.getY()+((Resource)e).getHeight()    >=y
                     )
                 {
                     return e;
@@ -266,10 +281,10 @@ public class Controller {
             {
                 // Ak sa X nachadza medzi bodom a jeho sirkou
                 // Ak sa Y nachadza medzi bodom a jeho vyskou
-                if (    e.getDiagramElement().getX()                                      <=x &&
-                        e.getDiagramElement().getX()+e.getDiagramElement().getWidth()     >=x &&
-                        e.getDiagramElement().getY()                                      <=y &&
-                        e.getDiagramElement().getY()+e.getDiagramElement().getHeight()    >=y
+                if (    e.getX()                                      <=x &&
+                        e.getX()+((Transition)e).getWidth()     >=x &&
+                        e.getY()                                      <=y &&
+                        e.getY()+((Transition)e).getHeight()    >=y
                     )
                 {
                     return e;
@@ -284,10 +299,10 @@ public class Controller {
             {
                 // Ak sa X nachadza medzi bodom a jeho sirkou
                 // Ak sa Y nachadza medzi bodom a jeho vyskou
-                if (    e.getDiagramElement().getX()                                      <=x &&
-                        e.getDiagramElement().getX()+e.getDiagramElement().getWidth()     >=x &&
-                        e.getDiagramElement().getY()                                      <=y &&
-                        e.getDiagramElement().getY()+e.getDiagramElement().getHeight()    >=y
+                if (    e.getX()                                      <=x &&
+                        e.getX()+((Node)e).getWidth()     >=x &&
+                        e.getY()                                      <=y &&
+                        e.getY()+((Node)e).getHeight()    >=y
                     )
                 {
                     return e;
@@ -394,7 +409,9 @@ public class Controller {
                 do
                 {
                     node=new Node("Node"+Math.random());
-                    node.setDiagramElement(new DiagramElement(x, y));                
+                    node.setX(x);
+                    node.setY(y);
+                    //node.setDiagramElement(new DiagramElement(x, y));                
                 }
                 while 
                 (!((PrecedenceGraph)graph).addNode(node));
@@ -402,7 +419,8 @@ public class Controller {
             else // Normal add
             {
                     node=new Node(name);
-                    node.setDiagramElement(new DiagramElement(x, y));  
+                    node.setX(x);
+                    node.setY(y);
                     ((PrecedenceGraph)graph).addNode(node);
             }
         } // End precedence graph
@@ -412,17 +430,83 @@ public class Controller {
       if (graph instanceof PetriNet)
       {
             double x1,y1,x2,y2;
-            // Arc
+            // Arcs
             for(Arc a:((PetriNet)graph).getListOfArcs())
             {
-                x1=a.getInElement().getDiagramElement().getX();
-                y1=a.getInElement().getDiagramElement().getY();
-                x2=a.getOutElement().getDiagramElement().getX();
-                y2=a.getOutElement().getDiagramElement().getY();                
+                x1=a.getInElement().getX();
+                y1=a.getInElement().getY();
+                x2=a.getOutElement().getX();
+                y2=a.getOutElement().getY();                
                 
-                // System.out.println(Math.ceil(23.46)); // Prints 24
-                // System.out.println(Math.floor(23.46)); // Prints 23
+                // Width and Height depends on element
+                x1+=25;
+                y1+=25;                
+                x2+=25;
+                y2+=25;
+                
+                // Get line between 2 points
+                Line2D.Double ln = new Line2D.Double(x1,y1,x2,y2);
+          
+                // Distance from central line
+                double indent = 10.0; 
+                double length = ln.getP1().distance(ln.getP2());
+                
+                double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+                double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
 
+                // moved p1 point
+                //double p1X = ln.getX1() - dx_li;
+                //double p1Y = ln.getY1() - dy_li;
+
+                // line moved to the left
+                double lX1 = ln.getX1() - dy_li;
+                double lY1 = ln.getY1() + dx_li;
+                double lX2 = ln.getX2() - dy_li;
+                double lY2 = ln.getY2() + dx_li;
+
+                // moved p2 point
+                //double p2X = ln.getX2() + dx_li;
+                //double p2Y = ln.getY2() + dy_li;
+
+                // line moved to the right
+                double rX1_ = ln.getX1() + dy_li;
+                double rY1 = ln.getY1() - dx_li;
+                double rX2 = ln.getX2() + dy_li;
+                double rY2 = ln.getY2() - dx_li;
+                    
+                Path2D path = new Path2D.Double();
+                path.moveTo(lX1, lY1);
+
+                path.lineTo(lX1, lY1);            
+                path.lineTo(lX2, lY2);
+                //path.lineTo(p2X, p2Y);
+                path.lineTo(rX2, rY2);
+                path.lineTo(rX1_, rY1);
+                //path.lineTo(p1X, p1Y);
+
+
+               
+                // Check if clickPoint(x,y) lies inside path
+                if (path.contains(new Point((int)x, (int)y)))
+                {
+                    //System.out.println(("Ano: "+x+" " +y));
+                    return a;
+                }
+                
+
+                 // Draw results
+                //Area area = new Area();
+                //area.add(new Area(path));
+                
+               // g2d.draw(ln);
+                //g2d.draw(p);            /*Rectangle2D rec=p.getBounds();
+              //   g2d.draw(area);
+                //g2d.draw(rec);*/
+                //}
+ 
+               // System.out.println(Math.ceil(23.46)); // Prints 24
+                // System.out.println(Math.floor(23.46)); // Prints 23
+/*
                 x1=Math.ceil(x1/10.0);
                 y1=Math.ceil(y1/10.0);
                 x2=Math.ceil(x2/10.0);
@@ -442,7 +526,10 @@ public class Controller {
                     return a;
                 }
             }
-            System.out.println("NEnachadzam sa na arc"); 
+            System.out.println("NEnachadzam sa na arc");*/ 
+            }
+            // No arc found
+            return null;
         }
         
       //Precedencny graf  
@@ -452,20 +539,67 @@ public class Controller {
             // Arc
             for(Arc a:((PrecedenceGraph)graph).getListOfArcs())
             {
-                x1=a.getInElement().getDiagramElement().getX();
-                y1=a.getInElement().getDiagramElement().getY();
-                x2=a.getOutElement().getDiagramElement().getX();
-                y2=a.getOutElement().getDiagramElement().getY();                
+                x1=a.getInElement().getX();
+                y1=a.getInElement().getY();
+                x2=a.getOutElement().getX();
+                y2=a.getOutElement().getY();                
+             
+            // Width and Height depends on element
+                x1+=25;
+                y1+=25;                
+                x2+=25;
+                y2+=25;
                 
-                Line2D line=new Line2D.Double(x1, y1, x2, y2);
-                // If point X,Y lies on Line(x1,y1,x2,y2)
-                if (line.relativeCCW(x, y)==0)
+                // Get line between 2 points
+                Line2D.Double ln = new Line2D.Double(x1,y1,x2,y2);
+          
+                // Distance from central line
+                double indent = 10.0; 
+                double length = ln.getP1().distance(ln.getP2());
+                
+                double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+                double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+
+                // moved p1 point
+                //double p1X = ln.getX1() - dx_li;
+                //double p1Y = ln.getY1() - dy_li;
+
+                // line moved to the left
+                double lX1 = ln.getX1() - dy_li;
+                double lY1 = ln.getY1() + dx_li;
+                double lX2 = ln.getX2() - dy_li;
+                double lY2 = ln.getY2() + dx_li;
+
+                // moved p2 point
+                //double p2X = ln.getX2() + dx_li;
+                //double p2Y = ln.getY2() + dy_li;
+
+                // line moved to the right
+                double rX1_ = ln.getX1() + dy_li;
+                double rY1 = ln.getY1() - dx_li;
+                double rX2 = ln.getX2() + dy_li;
+                double rY2 = ln.getY2() - dx_li;
+                    
+                Path2D path = new Path2D.Double();
+                path.moveTo(lX1, lY1);
+
+                path.lineTo(lX1, lY1);            
+                path.lineTo(lX2, lY2);
+                //path.lineTo(p2X, p2Y);
+                path.lineTo(rX2, rY2);
+                path.lineTo(rX1_, rY1);
+                //path.lineTo(p1X, p1Y);
+
+
+               
+                // Check if clickPoint(x,y) lies inside path
+                if (path.contains(new Point((int)x, (int)y)))
                 {
-                    System.out.println("Nachadzam sa na arc: "+a.getName());
+                    //System.out.println(("Ano: "+x+" " +y));
                     return a;
                 }
+                                
             }
-            System.out.println("NEnachadzam sa na arc"); 
         }
         // Nothing found
         return null;

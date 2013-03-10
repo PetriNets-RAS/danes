@@ -9,7 +9,6 @@ import Core.PetriNet;
 import Core.Place;
 import Core.Resource;
 import Core.Transition;
-import GUI.DiagramElement;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -125,7 +124,9 @@ public class CoBA_XMLManager {
                 int y = Integer.parseInt(eElement.getAttribute("y"));
                 int quantity = Integer.parseInt(eElement.getAttribute("quantity"));
                 res.setCapacity(quantity);
-                res.setDiagramElement(new DiagramElement(x, y));
+                res.setX(x);
+                res.setY(y);
+                //res.setDiagramElement(new DiagramElement(x, y));
                 pn.addResource(res);
             }
         }
@@ -217,7 +218,9 @@ public class CoBA_XMLManager {
                 }
 
                 pl.setCapacity(tokens);
-                pl.setDiagramElement(new DiagramElement(x, y));
+                pl.setX(x);
+                pl.setY(y);
+                //pl.setDiagramElement(new DiagramElement(x, y));
                 pn.addPlace(pl);
             }
         }
@@ -234,7 +237,9 @@ public class CoBA_XMLManager {
                 Transition tr = new Transition(eElement.getAttribute("name"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-                tr.setDiagramElement(new DiagramElement(x, y));
+                tr.setX(x);
+                tr.setY(y);
+                //tr.setDiagramElement(new DiagramElement(x, y));
                 pn.addTransition(tr);
             }
         }
@@ -262,20 +267,27 @@ public class CoBA_XMLManager {
                 if (a.getInElement() instanceof Resource) {
                     resourceType = "P_" + a.getInElement().getName();
                 }
-                X1.setValue(a.getInElement().getDiagramElement().getX() + "");
+                /*X1.setValue(a.getInElement().getDiagramElement().getX() + "");
                 Y1.setValue(a.getInElement().getDiagramElement().getY() + "");
                 X2.setValue(a.getOutElement().getDiagramElement().getX() + "");
-                Y2.setValue(a.getOutElement().getDiagramElement().getY() + "");
+                Y2.setValue(a.getOutElement().getDiagramElement().getY() + "");*/
+                X1.setValue(a.getInElement().getX() + "");
+                Y1.setValue(a.getInElement().getY() + "");
+                X2.setValue(a.getOutElement().getX() + "");
+                Y2.setValue(a.getOutElement().getY() + "");                
             } else {
                 type = "PT";
                 if (a.getOutElement() instanceof Resource) {
                     resourceType = "P_" + a.getOutElement().getName();
                 }
-                X1.setValue(a.getOutElement().getDiagramElement().getX() + "");
+                /*X1.setValue(a.getOutElement().getDiagramElement().getX() + "");
                 Y1.setValue(a.getOutElement().getDiagramElement().getY() + "");
                 X2.setValue(a.getInElement().getDiagramElement().getX() + "");
-                Y2.setValue(a.getInElement().getDiagramElement().getY() + "");
-
+                Y2.setValue(a.getInElement().getDiagramElement().getY() + "");*/
+                X1.setValue(a.getOutElement().getX() + "");
+                Y1.setValue(a.getOutElement().getY() + "");
+                X2.setValue(a.getInElement().getX() + "");
+                Y2.setValue(a.getInElement().getY() + "");
             }
             edgeType.setValue(type);
             edge.setAttributeNode(edgeType);
@@ -310,12 +322,14 @@ public class CoBA_XMLManager {
             place.setAttributeNode(name);
 
             Attr X = doc.createAttribute("x");
-            X.setValue(p.getDiagramElement().getX() + "");
+            //X.setValue(p.getDiagramElement().getX() + "");
+            X.setValue(p.getX() + "");
             //X.setValue("");
             place.setAttributeNode(X);
 
             Attr Y = doc.createAttribute("y");
-            Y.setValue(p.getDiagramElement().getY() + "");
+            //Y.setValue(p.getDiagramElement().getY() + "");
+            Y.setValue(p.getY() + "");
             //Y.setValue("");
             place.setAttributeNode(Y);
 
@@ -355,12 +369,14 @@ public class CoBA_XMLManager {
             transition.setAttributeNode(name);
 
             Attr X = doc.createAttribute("x");
-            X.setValue(p.getDiagramElement().getX() + "");
+            //X.setValue(p.getDiagramElement().getX() + "");
+            X.setValue(p.getX() + "");
             //X.setValue("");
             transition.setAttributeNode(X);
 
             Attr Y = doc.createAttribute("y");
-            Y.setValue(p.getDiagramElement().getY() + "");
+            //Y.setValue(p.getDiagramElement().getY() + "");
+            Y.setValue(p.getY() + "");
             //Y.setValue("");
             transition.setAttributeNode(Y);
 
@@ -384,12 +400,14 @@ public class CoBA_XMLManager {
             resource.setAttributeNode(quantity);
 
             Attr resX = doc.createAttribute("x");
-            resX.setValue(r.getDiagramElement().getX() + "");
+            //resX.setValue(r.getDiagramElement().getX() + "");\
+            resX.setValue(r.getX() + "");
             //resX.setValue("");
             resource.setAttributeNode(resX);
 
             Attr resY = doc.createAttribute("y");
-            resY.setValue(r.getDiagramElement().getY() + "");
+            //resY.setValue(r.getDiagramElement().getY() + "");
+            resY.setValue(r.getY() + "");
             //resY.setValue("");
             resource.setAttributeNode(resY);
             resources.appendChild(resource);

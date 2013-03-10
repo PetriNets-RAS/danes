@@ -19,13 +19,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Polygon;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -345,23 +346,23 @@ public class View extends javax.swing.JFrame {
          //Petri Net ukazka ************************************************
         p=new PetriNet("Empty");        
          //umele pridanie siete
-        Place a=new Place("a");
-        a.setDiagramElement(new DiagramElement(500, 400));
-        Transition b= new Transition("b");
-        b.setDiagramElement(new DiagramElement(100, 400));
+        Place a=new Place("a");a.setX(500);a.setY(400);
+        //a.setDiagramElement(new DiagramElement(500, 400));
+        Transition b= new Transition("b");b.setX(100);b.setY(400);
+        //b.setDiagramElement(new DiagramElement(100, 400));
         Arc c=new Arc("c", b, a);
-        Place p1=new Place("p1");
-        p1.setDiagramElement(new DiagramElement(300, 200));
-        Place p2=new Place("p2");        
-        p2.setDiagramElement(new DiagramElement(400, 600));
+        Place p1=new Place("p1");p1.setX(300);p1.setY(200);
+        //p1.setDiagramElement(new DiagramElement(300, 200));
+        Place p2=new Place("p2");p2.setX(400);p2.setY(600);
+        //p2.setDiagramElement(new DiagramElement(400, 600));
         
-        Transition t1= new Transition("t1");        
-        t1.setDiagramElement(new DiagramElement(500, 200));
-        Transition t2= new Transition("t2");
-        t2.setDiagramElement(new DiagramElement(500, 600));        
+        Transition t1= new Transition("t1");t1.setX(500);t1.setY(200);
+        //t1.setDiagramElement(new DiagramElement(500, 200));
+        Transition t2= new Transition("t2");t2.setX(500);t2.setY(600);
+        //t2.setDiagramElement(new DiagramElement(500, 600));        
         
-        Resource r1=new Resource("r1");
-        r1.setDiagramElement(new DiagramElement(100, 100));
+        Resource r1=new Resource("r1");r1.setX(100);r1.setY(100);
+        //r1.setDiagramElement(new DiagramElement(100, 100));
         Arc a2=new Arc("a2", t1, r1);
         
         p.addResource(r1);
@@ -502,9 +503,9 @@ public class View extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         pg=new PrecedenceGraph("Test");
-        Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(400,200));
-        Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(200,150));
-        Node n3=new Node("n3"); n3.setDiagramElement(new DiagramElement(400,60));
+        Node n1=new Node("n1"); n1.setX(400);n1.setY(200);
+        Node n2=new Node("n2"); n2.setX(200);n2.setY(150);//n2.setDiagramElement(new DiagramElement(200,150));
+        Node n3=new Node("n3"); n3.setX(400);n3.setY(60);//n3.setDiagramElement(new DiagramElement(400,60));
         
         Arc a1=new Arc("a1", n2, n1);
         Arc a2=new Arc("a2", n2, n3);
@@ -598,13 +599,7 @@ class DiagramPanel extends javax.swing.JPanel {
         
         drawGraph();
         drawDraggedObject();
-        drawSelectedElements();
-        /*
-        Polygon poly=new Polygon();
-        poly.addPoint(100, 100);
-        poly.addPoint(150, 150);
-        poly.addPoint(50,  150);
-        g2d.fill(poly);*/
+        drawSelectedElements();                
 
     }
    
@@ -692,7 +687,7 @@ class DiagramPanel extends javax.swing.JPanel {
 
          // Draw horizontal arrow starting in (0, 0)
          // Length decrease by X pixels if type of arrow is short
-         if (type=="short")
+         if ("short".equals(type))
             len=len-20;
          
          g2d.drawLine(0, 0, len-5, 0);
@@ -709,9 +704,65 @@ class DiagramPanel extends javax.swing.JPanel {
         // Draw arrow        
         drawArrow( column1+25  ,row1+25,
                    column2+25,  row2+25,"short");
-
     }    
-    
+    public void drawArcSelected(int column1,int row1,int column2,int row2){        
+        /* Calculating */                
+        // Get line between 2 points
+        Line2D.Double ln = new Line2D.Double(column1+25,row1+25,column2+25,row2+25);
+
+        // Distance from central line
+        double indent = 10.0; 
+        double length = ln.getP1().distance(ln.getP2());
+
+        double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+        double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+
+        // moved p1 point
+        //double p1X = ln.getX1() - dx_li;
+        //double p1Y = ln.getY1() - dy_li;
+
+        // line moved to the left
+        double lX1 = ln.getX1() - dy_li;
+        double lY1 = ln.getY1() + dx_li;
+        double lX2 = ln.getX2() - dy_li;
+        double lY2 = ln.getY2() + dx_li;
+
+        // moved p2 point
+        //double p2X = ln.getX2() + dx_li;
+        //double p2Y = ln.getY2() + dy_li;
+
+        // line moved to the right
+        double rX1_ = ln.getX1() + dy_li;
+        double rY1 = ln.getY1() - dx_li;
+        double rX2 = ln.getX2() + dy_li;
+        double rY2 = ln.getY2() - dx_li;
+
+        Path2D path = new Path2D.Double();
+        path.moveTo(lX1, lY1);
+
+        path.lineTo(lX1, lY1);            
+        path.lineTo(lX2, lY2);
+        //path.lineTo(p2X, p2Y);
+        path.lineTo(rX2, rY2);
+        path.lineTo(rX1_, rY1);
+        //path.lineTo(p1X, p1Y);
+
+         // Add result
+        Area area = new Area();
+        area.add(new Area(path));
+        /* End calculating */
+        
+
+        // Arc / Arrow
+        g2d.setColor(Color.GRAY);   
+        Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
+        g2d.setStroke(s);
+        // Draw arrow        
+        //drawArrow( column1+25  ,row1+25,
+        //           column2+25,  row2+25,"short");   
+        // Draw dashed line around line
+        g2d.draw(area);                        
+    }        
     
    
     public void drawGraph()                  
@@ -724,8 +775,8 @@ class DiagramPanel extends javax.swing.JPanel {
             // Draw all arcs
             for(Element e:((PetriNet)graph).getListOfArcs())
             {     
-                DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
-                DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+                Element in  =((Arc)e).getInElement();
+                Element out =((Arc)e).getOutElement();
 
                 drawArc(out.getX(),out.getY(),in.getX(),in.getY());
             }  
@@ -733,19 +784,19 @@ class DiagramPanel extends javax.swing.JPanel {
             // Draw all places
             for(Element e:((PetriNet)graph).getListOfPlaces())
             {            
-                drawPlace(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                drawPlace(e.getX(), e.getY());
             }
             
             // Draw all resources
             for(Element e:((PetriNet)graph).getListOfResources())
             {            
-                drawResource(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                drawResource(e.getX(), e.getY());
             }
             
             // Draw all transitions
             for(Element e:((PetriNet)graph).getListOfTransitions())
             {            
-                drawTransition(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                drawTransition(e.getX(), e.getY());
             }      
             
             return;
@@ -758,8 +809,8 @@ class DiagramPanel extends javax.swing.JPanel {
             // Draw all arcs
             for(Element e:((PrecedenceGraph)graph).getListOfArcs())
             {     
-                DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
-                DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+                Element in  =((Arc)e).getInElement();
+                Element out =((Arc)e).getOutElement();
 
                 drawArc(out.getX(),out.getY(),in.getX(),in.getY());
             }  
@@ -767,7 +818,7 @@ class DiagramPanel extends javax.swing.JPanel {
             // Draw all nodes
             for(Element e:((PrecedenceGraph)graph).getListOfNodes())
             {            
-                drawPlace(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                drawPlace(e.getX(), e.getY());
             }  
             
             return;
@@ -785,8 +836,8 @@ class DiagramPanel extends javax.swing.JPanel {
             // Rectangle 
             if (draggedElement instanceof Transition)
             {                
-                int x=draggedElement.getDiagramElement().getX();
-                int y=draggedElement.getDiagramElement().getY();
+                int x=draggedElement.getX();
+                int y=draggedElement.getY();
 
                 drawTransition(x, y, Color.GRAY, Color.WHITE);
                 //g2d.fill((Rectangle2D)draggedObject);
@@ -795,8 +846,8 @@ class DiagramPanel extends javax.swing.JPanel {
             // Ellipse white
             if (draggedElement instanceof Place || draggedElement instanceof Node || draggedElement instanceof Resource)                           
             {
-                int x=draggedElement.getDiagramElement().getX();
-                int y=draggedElement.getDiagramElement().getY();
+                int x=draggedElement.getX();
+                int y=draggedElement.getY();
 
                 if (draggedElement instanceof Resource)
                     drawPlace(x, y, Color.GRAY, Color.gray);
@@ -822,12 +873,26 @@ class DiagramPanel extends javax.swing.JPanel {
             if (selectedElements.isEmpty())
                 return;
             
-            Element e=selectedElements.get(0);            
+            Element e=selectedElements.get(0);     
+            // Ring
             if(e instanceof Place || e instanceof Node || e instanceof Resource)
-                drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-
+                //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                drawPlaceSelected(e.getX(), e.getY());
             if(e instanceof Transition)
-                drawTransitionSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                //drawTransitionSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());7
+                drawTransitionSelected(e.getX(), e.getY());
+            if(e instanceof Arc)
+            {                
+             /*   DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
+                DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+
+                drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());*/
+                Element  in =((Arc)e).getInElement();
+                Element out =((Arc)e).getOutElement();
+                drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());
+            }
+            
+                        
         }
     public void mouseLeftClick(int x, int y) {  
         // Select 1 element
@@ -836,6 +901,7 @@ class DiagramPanel extends javax.swing.JPanel {
         Arc     a=controller.getLocationArc(x,y);
         if (e!=null)
             selectedElements.add(e);
+        else
         if (a!=null)
             selectedElements.add(a);
         
@@ -904,7 +970,7 @@ class DiagramPanel extends javax.swing.JPanel {
     }
     
     public void mouseRightClick(int x, int y) {  
-        // Create RED shadow line indicating deletion of arc
+        // Create RED shadow line indicating deletion of arc        
         controller.deleteElement(x,y);
         controller.deleteArc(x,y);
         repaint();
@@ -930,8 +996,8 @@ class DiagramPanel extends javax.swing.JPanel {
         if (draggedElement instanceof Place || draggedElement instanceof Node || draggedElement instanceof Resource ||
                 draggedElement instanceof Transition)
         {
-            draggedElement.getDiagramElement().setX(x);
-            draggedElement.getDiagramElement().setY(y);
+            draggedElement.setX(x);
+            draggedElement.setY(y);
         }
             //draggedObject=new Rectangle2D.Float(x, y, 25, 40);
         

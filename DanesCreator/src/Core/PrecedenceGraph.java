@@ -4,7 +4,6 @@
  */
 package Core;
 
-import GUI.DiagramElement;
 import java.util.ArrayList;
 
 /**
@@ -154,7 +153,7 @@ public class PrecedenceGraph extends Graph {
             tr.setHeight(n.getHeight());
             tr.setNote(n.getNote());
             tr.setWidth(n.getWidth());
-            tr.setDiagramElement(new DiagramElement(n.getDiagramElement().getX(),n.getDiagramElement().getY()));
+            //tr.setDiagramElement(new DiagramElement(n.getDiagramElement().getX(),n.getDiagramElement().getY()));
             pn.addTransition(tr);
         }
         
@@ -167,8 +166,10 @@ public class PrecedenceGraph extends Graph {
             //pl.setDiagramElement(new DiagramElement(5,6));
            
             //vystupny prechod
-            int x1=a.getOutElement().getDiagramElement().getX();
-            int y1=a.getOutElement().getDiagramElement().getY();
+            //int x1=a.getOutElement().getDiagramElement().getX();
+            //int y1=a.getOutElement().getDiagramElement().getY();
+            int x1=a.getOutElement().getX();
+            int y1=a.getOutElement().getY();            
             Transition tempTrIn=pn.getTransition(x1, y1);
             tempTrIn.getListOfOutPlaces().add(pl);
             pl.getListOfInTransitions().add(tempTrIn);
@@ -180,8 +181,10 @@ public class PrecedenceGraph extends Graph {
             temp++;
             
             //vystupny prechod
-            int x2=a.getInElement().getDiagramElement().getX();
-            int y2=a.getInElement().getDiagramElement().getY();
+            //int x2=a.getInElement().getDiagramElement().getX();
+            //int y2=a.getInElement().getDiagramElement().getY();
+            int x2=a.getInElement().getX();
+            int y2=a.getInElement().getY();            
             Transition tempTrOut=pn.getTransition(x2, y2);
             tempTrOut.getListOfInPlaces().add(pl);
             pl.getListOfOutTransitions().add(tempTrOut);
@@ -195,7 +198,7 @@ public class PrecedenceGraph extends Graph {
             //nastav umiestnenie miesta
             int x=(x1+x2)/2;
             int y=(y1+y2)/2;
-            pl.setDiagramElement(new DiagramElement(x, y));
+            //pl.setDiagramElement(new DiagramElement(x, y));
         }
         
         return pn;
