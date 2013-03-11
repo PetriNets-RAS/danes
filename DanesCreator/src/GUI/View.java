@@ -1064,8 +1064,8 @@ class DiagramPanel extends javax.swing.JPanel {
                 }   
                 else if (in instanceof Node)
                 {
-                    width1  =((AbsPlace)in).getWidth();
-                    height1 =((AbsPlace)in).getHeight();                    
+                    width1  =((Node)in).getWidth();
+                    height1 =((Node)in).getHeight();                    
                 }
                 else if (in instanceof Transition)
                 {
@@ -1081,8 +1081,8 @@ class DiagramPanel extends javax.swing.JPanel {
                 }   
                 else if (out instanceof Node)
                 {
-                    width2  =((AbsPlace)out).getWidth();
-                    height2 =((AbsPlace)out).getHeight();                    
+                    width2  =((Node)out).getWidth();
+                    height2 =((Node)out).getHeight();                    
                 }    
                 else if (out instanceof Transition)
                 {

@@ -153,6 +153,8 @@ public class PrecedenceGraph extends Graph {
             tr.setHeight(n.getHeight());
             tr.setNote(n.getNote());
             tr.setWidth(n.getWidth());
+            tr.setX(n.getX());
+            tr.setY(n.getY());
             //tr.setDiagramElement(new DiagramElement(n.getDiagramElement().getX(),n.getDiagramElement().getY()));
             pn.addTransition(tr);
         }
@@ -198,6 +200,8 @@ public class PrecedenceGraph extends Graph {
             //nastav umiestnenie miesta
             int x=(x1+x2)/2;
             int y=(y1+y2)/2;
+            pl.setX(x);
+            pl.setY(y);
             //pl.setDiagramElement(new DiagramElement(x, y));
         }
         
