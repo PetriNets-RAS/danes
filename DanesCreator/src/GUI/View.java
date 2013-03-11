@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Core.AbsPlace;
 import Core.Arc;
 import Core.Element;
 import Core.Graph;
@@ -17,6 +18,8 @@ import FileManager.CoBA_XMLManager;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Stroke;
@@ -34,6 +37,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 /**
@@ -75,7 +79,7 @@ public class View extends javax.swing.JFrame {
         propertiesMenu.setVisible(false);
         // Custom init 
         setTitle("DANES Creator");
-       /* setSize(800, 600); */
+        //setSize(800, 600); 
         setVisible(true);
     }
 
@@ -99,6 +103,8 @@ public class View extends javax.swing.JFrame {
         generalProperties = new GUI.PropertiesMenu();
         notes = new javax.swing.JTextArea();
         diagramScrollPane = new javax.swing.JScrollPane();
+        btnZoomIn = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newPetriNet = new javax.swing.JMenuItem();
@@ -217,6 +223,15 @@ public class View extends javax.swing.JFrame {
         diagramScrollPane.setBorder(null);
         diagramScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 
+        btnZoomIn.setText("Zoom in");
+        btnZoomIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZoomInActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Zoom out");
+
         fileMenu.setText("File");
 
         newPetriNet.setText("Petri net");
@@ -299,8 +314,16 @@ public class View extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(267, 267, 267)
+                        .addComponent(btnZoomIn)
+                        .addGap(29, 29, 29)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
@@ -308,8 +331,13 @@ public class View extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(diagramScrollPane)
-                    .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)))
+                    .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnZoomIn)
+                            .addComponent(jButton2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(diagramScrollPane))))
         );
 
         pack();
@@ -346,7 +374,7 @@ public class View extends javax.swing.JFrame {
          //Petri Net ukazka ************************************************
         p=new PetriNet("Empty");        
          //umele pridanie siete
-        Place a=new Place("a");a.setX(500);a.setY(400);
+        Place a=new Place("a");a.setX(500);a.setY(400);a.setWidth(40);a.setHeight(40);
         //a.setDiagramElement(new DiagramElement(500, 400));
         Transition b= new Transition("b");b.setX(100);b.setY(400);
         //b.setDiagramElement(new DiagramElement(100, 400));
@@ -535,9 +563,27 @@ public class View extends javax.swing.JFrame {
         propertiesMenu.setVisible(false); 
     }//GEN-LAST:event_convertActionPerformed
 
+    private void btnZoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomInActionPerformed
+        /*diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]/2;
+        diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]/2;
+        repaint();*/
+        /*controller.setModel(pg);
+        this.diagramPanel   =   new DiagramPanel(pg);                
+        diagramScrollPane.setViewportView(this.diagramPanel);       
+        sideMenu.setVisible(true);
+        repaint();
+        diagramPanel.g2d.scale(0.8, 0.8);*/
+        // hide side menu
+        //propertiesMenu.setVisible(false);          
+        //diagramPanel.g2d.scale(1,1);
+        //diagramScrollPane.setViewportView(this.diagramPanel);               
+        //repaint();
+    }//GEN-LAST:event_btnZoomInActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
+    private javax.swing.JButton btnZoomIn;
     private javax.swing.JMenuItem convert;
     private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenu;
@@ -546,6 +592,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JMenuItem export;
     private javax.swing.JMenu fileMenu;
     private GUI.PropertiesMenu generalProperties;
+    private javax.swing.JButton jButton2;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem loadItem;
     private javax.swing.JMenuItem newPetriNet;
@@ -571,12 +618,16 @@ class DiagramPanel extends javax.swing.JPanel {
     private Element                 draggedElement;
     private Object                  draggedObject;
     private Color                   draggedColor;
+    private double[]                scaleRatio;
     /**
      * Creates new form GraphPanel
      */
     
-    public DiagramPanel(Graph pa_graph) {                      
+    public DiagramPanel(Graph pa_graph) {  
+        super();
         this.graph=pa_graph;
+        //this.g2d;//null;
+        this.scaleRatio=new double[]{1.0,1.0};
         this.draggedObject=null;
         this.draggedElement=null;
         this.selectedElements=new ArrayList<Element>();
@@ -594,15 +645,22 @@ class DiagramPanel extends javax.swing.JPanel {
     @Override
     public void paint(Graphics g) 
     {
+        
         super.paint(g);
         this.g2d = (Graphics2D) g;
+        g2d.scale(scaleRatio[0], scaleRatio[1]);
         
+        /*
+        if (g2d==null)
+          
+        else
+            g=this.g2d;*/
         drawGraph();
         drawDraggedObject();
-        drawSelectedElements();                
+        drawSelectedElements();
 
     }
-   
+   /*
     public void drawPlace(int column,int row){
         drawPlace(column, row, Color.BLACK, Color.WHITE);          
     }
@@ -612,22 +670,82 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
         g2d.setColor(c1);    
         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
-    }
-    public void drawPlace(int column,int row,Color c1, Color c2,int width,int height){
+    }*/
+    public void drawPlace(int column,int row,Color c1, Color c2,int width,int height,String name,int fontSize){
         // Place / Ring
-        g2d.setColor(c2);
+        /*g2d.setColor(c2);
         g2d.fill(new Ellipse2D.Double(column+5,row+5,width,height));        
         g2d.setColor(c1);    
-        g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));                
+        g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));   
+        */
+        g2d.setColor(c2);
+        g2d.fill(new Ellipse2D.Double(column,row,width,height));        
+        g2d.setColor(c1);    
+        g2d.draw(new Ellipse2D.Double(column,row,width,height));                        
+        
+        
+        // Remember old
+        Font oldFont=g2d.getFont();     
+        Font newFont=new Font("Times New Roman", Font.PLAIN, fontSize);
+        g2d.setFont(newFont);
+        
+        // Center string
+        // Find the size of string NAME in font FONT in the current Graphics context G2D
+        FontMetrics fm   = g2d.getFontMetrics(newFont);
+        java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
+
+        int textWidth  = (int)(rect.getWidth());       
+        int textHeight = (int)(rect.getHeight());         
+
+        // Center text horizontally and vertically
+        int x = (int)(column+width/2.0 - textWidth/2.0);
+        int y = (int)(row+height/2.0   - textHeight/2.0)+   fm.getAscent();
+
+        // Draw the string.                          
+        g2d.drawString(name, x,y);
+        
+        // Revert back
+        g2d.setFont(oldFont);
+        
     }    
-    public void drawPlaceSelected(int column,int row){   
+    public void drawPlace(int column,int row,Color c1, Color c2,int width,int height,String name,int fontSize,int alpha){
+        /* Transparency */
+        Color c1alpha=c1;
+        Color c2alpha=c2;
+        for (int i=1;i<=alpha;i++)
+        {
+            c1alpha=c1alpha.brighter();
+            c2alpha=c2alpha.brighter();
+        }
+        /*
+        Color c1alpha=c1.brighter();
+        Color c2alpha=c2.brighter();*/
+        //c1alpha.seta
+                
+        /*
+        g2d.setColor(Color.GREEN);
+        g2d.fill(new Ellipse2D.Double(column,row,width,height));        
+        g2d.setColor(c1alpha);    
+        g2d.draw(new Ellipse2D.Double(column,row,width,height));      */
+        
+        drawPlace(column, row, c1alpha, c2alpha, width, height, name,fontSize);
+    }
+            
+    public void drawPlaceSelected(int column,int row,int width,int height){   
+        Color color=g2d.getColor();
+        Stroke _oldStroke=g2d.getStroke();
         g2d.setColor(Color.GRAY);   
         Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
         g2d.setStroke(s);
-        g2d.draw(new Ellipse2D.Double(column+5-10,row+5-10,40+20,40+20));        
+        //g2d.draw(new Ellipse2D.Double(column+5-10,row+5-10,40+20,40+20));  
+        int distance=10;
+        
+        g2d.draw(new Ellipse2D.Double(column-distance,row-distance,width+distance*2,height+distance*2));        
+        g2d.setColor(color);
+        g2d.setStroke(_oldStroke);
     }
 
-    public void drawResource(int column,int row){
+    /*public void drawResource(int column,int row){
         drawPlace(column, row, Color.BLACK, Color.GRAY);          
     }
     public void drawResource(int column,int row,Color c1, Color c2){
@@ -636,15 +754,52 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
         g2d.setColor(c1); //black   
         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
-    }
-    public void drawResource(int column,int row,Color c1, Color c2,int width,int height){
+    }*/
+    public void drawResource(int column,int row,Color c1, Color c2,int width,int height,String name,int fontSize){
         // Place / Ring
+        Stroke _oldStroke=g2d.getStroke();
+        
         g2d.setColor(c2); //white vypln
-        g2d.fill(new Ellipse2D.Double(column+5,row+5,width,height));        
+        g2d.fill(new Ellipse2D.Double(column,row,width,height));        
+        
+        // Border more width
+        g2d.setStroke(new BasicStroke(5));
         g2d.setColor(c1); //black   
-        g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));        
+        g2d.draw(new Ellipse2D.Double(column,row,width,height));                       
+        g2d.setStroke(_oldStroke);
+        
+
+// Remember old
+        Font oldFont=g2d.getFont();     
+        Font newFont=new Font("Times New Roman", Font.PLAIN, fontSize);
+        g2d.setFont(newFont);
+        
+        // Center string
+        // Find the size of string NAME in font FONT in the current Graphics context G2D
+        FontMetrics fm   = g2d.getFontMetrics(newFont);
+        java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
+
+        int textWidth  = (int)(rect.getWidth());       
+        int textHeight = (int)(rect.getHeight());         
+
+        // Center text horizontally and vertically
+        int x = (int)(column+width/2.0 - textWidth/2.0);
+        int y = (int)(row+height/2.0   - textHeight/2.0)+   fm.getAscent();
+
+        // Draw the string.                          
+        g2d.drawString(name, x,y);
+        
+        // Revert back
+        g2d.setFont(oldFont);        
     }
-    
+    public void drawResource(int column,int row,Color c1, Color c2,int width,int height,String name,int fontSize,int alpha){
+        // Place / Ring
+        Color c1alpha=new Color(c1.getRed(),c1.getGreen(),c1.getBlue(),alpha);
+        Color c2alpha=new Color(c2.getRed(),c2.getGreen(),c2.getBlue(),alpha);      
+        drawResource(column, row, c1alpha, c2alpha, width, height, name,fontSize);
+    }    
+        
+    /*
     public void drawTransition(int column,int row){
         drawTransition(column, row ,Color.BLACK,Color.WHITE);
     }
@@ -654,21 +809,61 @@ class DiagramPanel extends javax.swing.JPanel {
         g2d.fill(new Rectangle2D.Float(column+12,row+5,25,40));                
         g2d.setColor(c1);
         g2d.draw(new Rectangle2D.Float(column+12,row+5,25,40));                        
-    }
-    public void drawTransition(int column,int row,Color c1,Color c2,int width,int height){
-        // Transition / Rectangle
+    }*/
+    public void drawTransition(int column,int row,Color c1,Color c2,int width,int height,String name,int fontSize){
+        // Transition / Rectangle                        
+        
         g2d.setColor(c2);
-        g2d.fill(new Rectangle2D.Float(column+12,row+5,width,height));                
+        g2d.fill(new Rectangle2D.Float(column,row,width,height));                
         g2d.setColor(c1);
-        g2d.draw(new Rectangle2D.Float(column+12,row+5,width,height));                        
+        g2d.draw(new Rectangle2D.Float(column,row,width,height));                                                      
+
+        // Remember old
+        Font oldFont=g2d.getFont();     
+        Font newFont=new Font("Times New Roman", Font.PLAIN, fontSize);
+        g2d.setFont(newFont);
+        
+        // Center string
+        // Find the size of string NAME in font FONT in the current Graphics context G2D
+        FontMetrics fm   = g2d.getFontMetrics(newFont);
+        java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
+
+        int textWidth  = (int)(rect.getWidth());       
+        int textHeight = (int)(rect.getHeight());         
+
+        // Center text horizontally and vertically
+        int x = (int)(column+width/2.0 - textWidth/2.0);
+        int y = (int)(row+height/2.0   - textHeight/2.0)+   fm.getAscent();
+
+        // Draw the string.                          
+        g2d.drawString(name, x,y);
+        
+        // Revert back
+        g2d.setFont(oldFont);        
     }    
-    public void drawTransitionSelected(int column,int row){   
+    public void drawTransition(int column,int row,Color c1,Color c2,int width,int height,String name,int fontSize,int alpha){    
+        /* Transparency */
+        Color c1alpha=c1;
+        Color c2alpha=c2;
+        for (int i=1;i<=alpha;i++)
+        {
+            c1alpha=c1alpha.brighter();
+            c2alpha=c2alpha.brighter();
+        }
+        
+        drawTransition(column, row, c1alpha, c2alpha, width, height, name,fontSize);
+    }
+    public void drawTransitionSelected(int column,int row,int width,int height){        
+        Color color=g2d.getColor();
         g2d.setColor(Color.GRAY);   
         Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
         g2d.setStroke(s);
-        g2d.draw(new Rectangle2D.Float(column+12-10,row+5-10,25+20,40+20));                        
+        int distance=10;
+        g2d.draw(new Rectangle2D.Float(column-distance,row-distance,width+distance*2,height+distance*2));                        
+        
+        g2d.setColor(color);
     }    
-    public void drawArrow(int x1, int y1, int x2, int y2, String type) 
+    public void drawArrow(int x1, int y1, int x2, int y2, String type,String name,int fontSize) 
     {
          // Size of arrow in px
          int ARR_SIZE=8;
@@ -688,22 +883,31 @@ class DiagramPanel extends javax.swing.JPanel {
          // Draw horizontal arrow starting in (0, 0)
          // Length decrease by X pixels if type of arrow is short
          if ("short".equals(type))
-            len=len-20;
+         {
+            // Add functionality
+            len=len-30;
+         }
          
          g2d.drawLine(0, 0, len-5, 0);
          g2d.fillPolygon(new int[]   {len, len-ARR_SIZE  , len-ARR_SIZE    , len},
                          new int[]     {0  , -ARR_SIZE     , ARR_SIZE      , 0}, 4 );
          // Retract old
          g2d.setTransform(oldTransform);
+         
+         /*
+          * Add name and fontSize drawString
+          * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\    FILL   ///////////////////////////
+          */
      }
 
-    public void drawArc(int column1,int row1,int column2,int row2){        
+    public void drawArc(int column1,int row1,int width1,int height1,int column2,int row2, int width2,int height2,Color color,String name,int fontSize){        
         // Arc / Arrow
-        g2d.setColor(new Color(27,161,226)); // Windows8Blue
+        //g2d.setColor(new Color(27,161,226)); // Windows8Blue
+        g2d.setColor(color);
         g2d.setStroke(new BasicStroke(3));        
         // Draw arrow        
-        drawArrow( column1+25  ,row1+25,
-                   column2+25,  row2+25,"short");
+        drawArrow( column1+(int)(width1/2.0)  ,row1+(int)(height1/2.0),
+                   column2+(int)(width2/2.0),  row2+(int)(height2/2.0),"short",name,fontSize);
     }    
     public void drawArcSelected(int column1,int row1,int column2,int row2){        
         /* Calculating */                
@@ -777,26 +981,63 @@ class DiagramPanel extends javax.swing.JPanel {
             {     
                 Element in  =((Arc)e).getInElement();
                 Element out =((Arc)e).getOutElement();
+                Arc arc=(Arc)e;
+                
+                int width1=0,width2=0,height1=0,height2=0;
 
-                drawArc(out.getX(),out.getY(),in.getX(),in.getY());
+                // In element
+                if (in instanceof Place || in instanceof Resource)
+                {
+                    width1  =((AbsPlace)in).getWidth();
+                    height1 =((AbsPlace)in).getHeight();
+                }   
+                else if (in instanceof Node)
+                {
+                    width1  =((Node)in).getWidth();
+                    height1 =((Node)in).getHeight();                    
+                }
+                else if (in instanceof Transition)
+                {
+                    width1  =((Transition)in).getWidth();
+                    height1 =((Transition)in).getHeight();                    
+                }                
+                
+                // Out element
+                if (out instanceof Place || out instanceof Resource)
+                {
+                    width2  =((AbsPlace)out).getWidth();
+                    height2 =((AbsPlace)out).getHeight();
+                }   
+                else if (out instanceof Node)
+                {
+                    width2  =((Node)out).getWidth();
+                    height2 =((Node)out).getHeight();                    
+                }    
+                else if (out instanceof Transition)
+                {
+                    width2  =((Transition)out).getWidth();
+                    height2 =((Transition)out).getHeight();                    
+                }                  
+                //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
+                drawArc(out.getX(),out.getY(),width1,height1,in.getX(),in.getY(),width2,height2,arc.getColor(),arc.getName(),arc.getFontSize());
             }  
 
             // Draw all places
             for(Element e:((PetriNet)graph).getListOfPlaces())
             {            
-                drawPlace(e.getX(), e.getY());
+                drawPlace(e.getX(), e.getY(),e.getColor(),e.getColor2(),((Place)e).getWidth(),((Place)e).getHeight(),e.getName(),e.getFontSize());
             }
             
             // Draw all resources
             for(Element e:((PetriNet)graph).getListOfResources())
             {            
-                drawResource(e.getX(), e.getY());
+                drawResource(e.getX(), e.getY(),e.getColor(),e.getColor2(),((Resource)e).getWidth(),((Resource)e).getHeight(),e.getName(),e.getFontSize());
             }
             
             // Draw all transitions
             for(Element e:((PetriNet)graph).getListOfTransitions())
             {            
-                drawTransition(e.getX(), e.getY());
+                drawTransition(e.getX(), e.getY(),e.getColor(),e.getColor2(),((Transition)e).getWidth(),((Transition)e).getHeight(),e.getName(),e.getFontSize());
             }      
             
             return;
@@ -811,14 +1052,51 @@ class DiagramPanel extends javax.swing.JPanel {
             {     
                 Element in  =((Arc)e).getInElement();
                 Element out =((Arc)e).getOutElement();
+                Arc arc=(Arc)e;
+                
+                int width1=0,width2=0,height1=0,height2=0;
 
-                drawArc(out.getX(),out.getY(),in.getX(),in.getY());
+                // In element
+                if (in instanceof Place || in instanceof Resource)
+                {
+                    width1  =((AbsPlace)in).getWidth();
+                    height1 =((AbsPlace)in).getHeight();
+                }   
+                else if (in instanceof Node)
+                {
+                    width1  =((AbsPlace)in).getWidth();
+                    height1 =((AbsPlace)in).getHeight();                    
+                }
+                else if (in instanceof Transition)
+                {
+                    width1  =((Transition)in).getWidth();
+                    height1 =((Transition)in).getHeight();                    
+                }                    
+                
+                // Out element
+                if (out instanceof Place || out instanceof Resource)
+                {
+                    width2  =((AbsPlace)out).getWidth();
+                    height2 =((AbsPlace)out).getHeight();
+                }   
+                else if (out instanceof Node)
+                {
+                    width2  =((AbsPlace)out).getWidth();
+                    height2 =((AbsPlace)out).getHeight();                    
+                }    
+                else if (out instanceof Transition)
+                {
+                    width1  =((Transition)out).getWidth();
+                    height1 =((Transition)out).getHeight();                    
+                }                    
+                //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
+                drawArc(out.getX(),out.getY(),width1,height1,in.getX(),in.getY(),width2,height2,arc.getColor(),arc.getName(),arc.getFontSize());
             }  
 
             // Draw all nodes
             for(Element e:((PrecedenceGraph)graph).getListOfNodes())
             {            
-                drawPlace(e.getX(), e.getY());
+                drawPlace(e.getX(), e.getY(),e.getColor(),e.getColor2(),((Node)e).getWidth(),((Node)e).getHeight(),e.getName(),e.getFontSize());
             }  
             
             return;
@@ -835,38 +1113,52 @@ class DiagramPanel extends javax.swing.JPanel {
             
             // Rectangle 
             if (draggedElement instanceof Transition)
-            {                
-                int x=draggedElement.getX();
-                int y=draggedElement.getY();
-
-                drawTransition(x, y, Color.GRAY, Color.WHITE);
+            {           
+                Transition t=(Transition)draggedElement;                
+                drawTransition(t.getX(), t.getY(),t.getColor(),t.getColor2(),t.getWidth(),t.getHeight(),t.getName(),t.getFontSize(),2);
+                //drawTransition(x, y, Color.GRAY, Color.WHITE);
                 //g2d.fill((Rectangle2D)draggedObject);
             }
 
-            // Ellipse white
-            if (draggedElement instanceof Place || draggedElement instanceof Node || draggedElement instanceof Resource)                           
+            // Resource
+            if (draggedElement instanceof Resource)
             {
-                int x=draggedElement.getX();
-                int y=draggedElement.getY();
-
-                if (draggedElement instanceof Resource)
-                    drawPlace(x, y, Color.GRAY, Color.gray);
-                else
-                    drawPlace(x, y, Color.GRAY, Color.WHITE);
-
-                //g2d.fill((Ellipse2D)draggedObject);
+                Resource r=(Resource)draggedElement;
+                drawPlace(r.getX(), r.getY(),r.getColor(),r.getColor2(),r.getWidth(),r.getHeight(),r.getName(),r.getFontSize(),2);
+                //drawPlace(x, y, Color.GRAY, Color.gray);
             }
             
-            
+            // Place
+            if (draggedElement instanceof Place)
+            {
+                Place p=(Place)draggedElement;
+                drawPlace(p.getX(), p.getY(),p.getColor(),p.getColor2(),p.getWidth(),p.getHeight(),p.getName(),p.getFontSize(),2);
+                //drawPlace(x, y, Color.GRAY, Color.gray);
+            }
+            // Node
+            if (draggedElement instanceof Node)
+            {
+                Node n=(Node)draggedElement;
+                drawPlace(n.getX(), n.getY(),n.getColor(),n.getColor2(),n.getWidth(),n.getHeight(),n.getName(),n.getFontSize(),2);
+                //drawPlace(x, y, Color.GRAY, Color.gray);
+            }
+ 
+
+
+            // Selected is 
             if (draggedObject instanceof Line2D)
+            //if(lineButton.isSelected())
             {
                 int x1=(int)((Line2D)draggedObject).getX1();
                 int y1=(int)((Line2D)draggedObject).getY1();
                 int x2=(int)((Line2D)draggedObject).getX2();
                 int y2=(int)((Line2D)draggedObject).getY2();
                 
-                drawArrow(x1, y1, x2, y2,"long");            
+                // Arc is selected when it is moving
+                //Arc _arc=(Arc)selectedElements.get(0); 
+                drawArrow(x1, y1, x2, y2,"long","",0);//_arc.getName(),_arc.getFontSize());
             }
+            
         }    
         private void drawSelectedElements() {
             // Nothing to draw
@@ -875,12 +1167,30 @@ class DiagramPanel extends javax.swing.JPanel {
             
             Element e=selectedElements.get(0);     
             // Ring
-            if(e instanceof Place || e instanceof Node || e instanceof Resource)
+            if(e instanceof Place)
+            {
+                Place p=(Place)e;
                 //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-                drawPlaceSelected(e.getX(), e.getY());
+                drawPlaceSelected(p.getX(), p.getY(),p.getWidth(),p.getHeight());
+            }
+            if(e instanceof Node)
+            {
+                Node n=(Node)e;
+                //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                drawPlaceSelected(n.getX(), n.getY(),n.getWidth(),n.getHeight());
+            }                
+            if(e instanceof Resource)
+            {
+                Resource r=(Resource)e;
+                //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                drawPlaceSelected(r.getX(), r.getY(),r.getWidth(),r.getHeight());
+            }                
             if(e instanceof Transition)
+            {
+                Transition t=(Transition)e;
                 //drawTransitionSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());7
-                drawTransitionSelected(e.getX(), e.getY());
+                drawTransitionSelected(t.getX(), t.getY(),t.getWidth(),t.getHeight());
+            }
             if(e instanceof Arc)
             {                
              /*   DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
@@ -931,8 +1241,10 @@ class DiagramPanel extends javax.swing.JPanel {
                }                             
                
         }
+        
         // Dragging preparation & create new arc
-        else if (selectedElements.size()==1)
+        //else 
+        if (selectedElements.size()==1)
         {
             Element currentElement=selectedElements.get(0);
             
@@ -997,7 +1309,7 @@ class DiagramPanel extends javax.swing.JPanel {
                 draggedElement instanceof Transition)
         {
             draggedElement.setX(x);
-            draggedElement.setY(y);
+            draggedElement.setY(y);            
         }
             //draggedObject=new Rectangle2D.Float(x, y, 25, 40);
         

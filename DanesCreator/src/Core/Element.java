@@ -12,13 +12,14 @@ import java.awt.Color;
  */
 public class Element{
     
-    private String name;
-    private String note;
-    private Color color;
-    private Color color2;
-    private int x;
-    private int y;
-    private int fontSize;    
+    /* Defaul vaules */
+    private String name="unset";
+    private String note="unset";
+    private Color color =   new Color(10,10,10);
+    private Color color2=   new Color(100,100,150);
+    private int x=50;
+    private int y=50;
+    private int fontSize=16;
         
      /**
      * @Class constructor.

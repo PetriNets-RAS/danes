@@ -9,7 +9,7 @@ import Core.PetriNet;
 import GUI.Controller;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-import sun.applet.Main;
+//import sun.applet.Main;
 
 
 
@@ -31,6 +31,12 @@ public class DanesCreator {
                     break;
                 }
             }
+        }
+        catch(Exception e)
+        {
+            System.out.println("Error while loading graphics: "+e);
+        }
+            /*
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
@@ -39,7 +45,7 @@ public class DanesCreator {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
+        }*/
         
         
         // MVC
