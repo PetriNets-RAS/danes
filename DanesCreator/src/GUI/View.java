@@ -14,7 +14,8 @@ import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Resource;
 import Core.Transition;
-import FileManager.CoBA_XMLManager;
+import FileManager.XMLPetriManager;
+import FileManager.XMLPrecedenceManager;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -39,6 +40,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+//import sun.org.mozilla.javascript.internal.xmlimpl.XML;
 
 /**
  *
@@ -46,33 +48,32 @@ import javax.swing.SwingUtilities;
  */
 public class View extends javax.swing.JFrame {
 
-    private Graph           graph;
-    private DiagramPanel    diagramPanel;
-    
-    private Controller  controller;
+    private Graph graph;
+    private DiagramPanel diagramPanel;
+    private Controller controller;
     private AboutUs about;
-    private PetriNet p;
-    private PrecedenceGraph pg;
+    private Graph g;
+    //private PetriNet p;
+    //private PrecedenceGraph pg;
     private File selectedFile;
-    
-    public View(PetriNet pa_petriNet,Controller pa_controller) {        
-        super();  
-        this.graph          =pa_petriNet;  
-        this.controller     =pa_controller;
-        this.diagramPanel   =null;
+
+    public View(PetriNet pa_petriNet, Controller pa_controller) {
+        super();
+        this.graph = pa_petriNet;
+        this.controller = pa_controller;
+        this.diagramPanel = null;
         initComponents();
-        
+
         about = new AboutUs(this, rootPaneCheckingEnabled);
-        String IconPath="Images\\icon.png";
+        String IconPath = "Images\\icon.png";
         BufferedImage icon = null;
-        try{
+        try {
             File iconFile = new File(IconPath);
             icon = ImageIO.read(iconFile);
-        } 
-        catch (IOException e){
+        } catch (IOException e) {
             System.out.print("Image was not found");
         }
-        
+
         this.setIconImage(icon);
         // hide side panels
         sideMenu.setVisible(false);
@@ -348,55 +349,76 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_exitItemActionPerformed
 
     private void saveAsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsItemActionPerformed
-      JFileChooser fileChooser = new JFileChooser();  
-      int showOpenDialog = fileChooser.showSaveDialog(this);
+        JFileChooser fileChooser = new JFileChooser();
+        int showOpenDialog = fileChooser.showSaveDialog(this);
         selectedFile = fileChooser.getSelectedFile();
-        if(!selectedFile.exists())
-        {
+        if (!selectedFile.exists()) {
             selectedFile = new File(selectedFile.getAbsolutePath());
-            try
-            {
-            selectedFile.createNewFile();
-            }catch(IOException e)
-            {
+            try {
+                selectedFile.createNewFile();
+            } catch (IOException e) {
                 System.out.print("Chyba pri praci so suborom");
             }
         }
-        FileManager.CoBA_XMLManager newXML=new CoBA_XMLManager();
-        newXML.createPetriXML(p,selectedFile);
-        
-        if (showOpenDialog != JFileChooser.APPROVE_OPTION) return; 
+        if (g instanceof PetriNet) {
+            FileManager.XMLPetriManager newXML = new XMLPetriManager();
+            newXML.createPetriXML(g, selectedFile);
+            System.out.println("UKLADAM PN");
+        } else {
+            FileManager.XMLPrecedenceManager newXML = new XMLPrecedenceManager();
+            newXML.createPrecedenceXML(g, selectedFile);
+        }
+
+        if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
     }//GEN-LAST:event_saveAsItemActionPerformed
 
     private void newPetriNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPetriNetActionPerformed
-       
+
         //Create and display new panel
-         //Petri Net ukazka ************************************************
-        p=new PetriNet("Empty");        
-         //umele pridanie siete
-        Place a=new Place("a");a.setX(500);a.setY(400);a.setWidth(40);a.setHeight(40);
+        //Petri Net ukazka ************************************************
+        PetriNet p = new PetriNet("Empty");
+        //umele pridanie siete
+        Place a = new Place("a");
+        a.setX(500);
+        a.setY(400);
+        a.setWidth(40);
+        a.setHeight(40);
         //a.setDiagramElement(new DiagramElement(500, 400));
-        Transition b= new Transition("b");b.setX(100);b.setY(400);
+        Transition b = new Transition("b");
+        b.setX(100);
+        b.setY(400);
         //b.setDiagramElement(new DiagramElement(100, 400));
-        Arc c=new Arc("c", b, a);
-        Place p1=new Place("p1");p1.setX(300);p1.setY(200);
+        Arc c = new Arc("c", b, a);
+        Place p1 = new Place("p1");
+        p1.setX(300);
+        p1.setY(200);
         //p1.setDiagramElement(new DiagramElement(300, 200));
-        Place p2=new Place("p2");p2.setX(400);p2.setY(600);
+        Place p2 = new Place("p2");
+        p2.setX(400);
+        p2.setY(600);
         //p2.setDiagramElement(new DiagramElement(400, 600));
-        
-        Transition t1= new Transition("t1");t1.setX(500);t1.setY(200);
+
+        Transition t1 = new Transition("t1");
+        t1.setX(500);
+        t1.setY(200);
         //t1.setDiagramElement(new DiagramElement(500, 200));
-        Transition t2= new Transition("t2");t2.setX(500);t2.setY(600);
+        Transition t2 = new Transition("t2");
+        t2.setX(500);
+        t2.setY(600);
         //t2.setDiagramElement(new DiagramElement(500, 600));        
-        
-        Resource r1=new Resource("r1");r1.setX(100);r1.setY(100);
+
+        Resource r1 = new Resource("r1");
+        r1.setX(100);
+        r1.setY(100);
         //r1.setDiagramElement(new DiagramElement(100, 100));
-        Arc a2=new Arc("a2", t1, r1);
-        
+        Arc a2 = new Arc("a2", t1, r1);
+
         p.addResource(r1);
         p.addPlace(a);
         p.addTransition(b);
-        p.addArc(c);       
+        p.addArc(c);
         p.addArc(a2);
         p.addPlace(p1);
         p.addPlace(p2);
@@ -405,31 +427,31 @@ public class View extends javax.swing.JFrame {
         // koniec umele pridanie siete
         //*********************************************************** 
         /*
-        pg=new PrecedenceGraph("Test");
-        Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(4,2));
-        Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(4,4));
-        Node n3=new Node("n3"); n3.setDiagramElement(new DiagramElement(4,6));
+         pg=new PrecedenceGraph("Test");
+         Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(4,2));
+         Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(4,4));
+         Node n3=new Node("n3"); n3.setDiagramElement(new DiagramElement(4,6));
         
-        Arc a1=new Arc("a1", n2, n1);
-        Arc a2=new Arc("a2", n2, n3);
+         Arc a1=new Arc("a1", n2, n1);
+         Arc a2=new Arc("a2", n2, n3);
 
-        pg.addNode(n1);
-        pg.addNode(n2);
-        pg.addNode(n3);
-        pg.addArc(a1);
-        pg.addArc(a2);
+         pg.addNode(n1);
+         pg.addNode(n2);
+         pg.addNode(n3);
+         pg.addArc(a1);
+         pg.addArc(a2);
          
-        controller.setModel(pg);
-        this.diagramPanel   =   new DiagramPanel(pg);
-        */
-        
-        controller.setModel(p);
-        this.diagramPanel   =   new DiagramPanel(p);
-        
-     
-        
+         controller.setModel(pg);
+         this.diagramPanel   =   new DiagramPanel(pg);
+         */
+        g = p;
+        controller.setModel(g);
+        this.diagramPanel = new DiagramPanel(g);
+
+
+
         diagramScrollPane.setViewportView(this.diagramPanel);
-        
+
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
@@ -462,55 +484,56 @@ public class View extends javax.swing.JFrame {
         // TODO add your handling code here:
         JFileChooser jFileChooser = new JFileChooser();
         int openShowDialog = jFileChooser.showOpenDialog(this);
-        
+
         selectedFile = jFileChooser.getSelectedFile();
-        File inputFile=new File(selectedFile.getAbsolutePath());
-        FileManager.CoBA_XMLManager x = new CoBA_XMLManager();
+        File inputFile = new File(selectedFile.getAbsolutePath());
+        FileManager.XMLPetriManager x = new XMLPetriManager();
+
+        PetriNet p = x.getPetriNetFromXML(inputFile);
+
+        //FileManager.XMLPrecedenceManager l=new XMLPrecedenceManager();
+        //pg=l.getPrecedenceFromXML(inputFile);
+
         
-        p=x.getPetriNetFromXML(inputFile);
-        
-        controller.setModel(p);
-        this.diagramPanel   =   new DiagramPanel(p);
+        g=p;
+        controller.setModel(g);
+        this.diagramPanel = new DiagramPanel(g);
         diagramScrollPane.setViewportView(this.diagramPanel);
-        
+
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
-        
-         ///
+
+        ///
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
         // TODO add your handling code here:
-        FileManager.CoBA_XMLManager newXML=new CoBA_XMLManager();
-        if(selectedFile==null)
-        {
-            JFileChooser fileChooser = new JFileChooser();  
+        FileManager.XMLPetriManager newXML = new XMLPetriManager();
+        if (selectedFile == null) {
+            JFileChooser fileChooser = new JFileChooser();
             int showOpenDialog = fileChooser.showSaveDialog(this);
             selectedFile = fileChooser.getSelectedFile();
-            if(!selectedFile.exists())
-            {
+            if (!selectedFile.exists()) {
                 selectedFile = new File(selectedFile.getAbsolutePath());
-                try
-                {
+                try {
                     selectedFile.createNewFile();
-                }catch(IOException e)
-                {
+                } catch (IOException e) {
                     System.out.print("Chyba pri praci so suborom");
                 }
             }
-            newXML.createPetriXML(p,selectedFile);  
-            if (showOpenDialog != JFileChooser.APPROVE_OPTION) return; 
-        }
-        else
-        {    
-            newXML.createPetriXML(p,new File(selectedFile.getAbsolutePath()));
+            newXML.createPetriXML(g, selectedFile);
+            if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
+        } else {
+            newXML.createPetriXML(g, new File(selectedFile.getAbsolutePath()));
         }
     }//GEN-LAST:event_saveItemActionPerformed
 
     private void notesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_notesFocusLost
-       //currentElement.setNote(notes.getText());
-       // System.out.print("notes");
+        //currentElement.setNote(notes.getText());
+        // System.out.print("notes");
     }//GEN-LAST:event_notesFocusLost
 
     private void propertiesMenuFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_propertiesMenuFocusLost
@@ -529,58 +552,66 @@ public class View extends javax.swing.JFrame {
 
     private void newPrecedenceNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPrecedenceNetActionPerformed
         // TODO add your handling code here:
-        
-        pg=new PrecedenceGraph("Test");
-        Node n1=new Node("n1"); n1.setX(400);n1.setY(200);
-        Node n2=new Node("n2"); n2.setX(200);n2.setY(150);//n2.setDiagramElement(new DiagramElement(200,150));
-        Node n3=new Node("n3"); n3.setX(400);n3.setY(60);//n3.setDiagramElement(new DiagramElement(400,60));
-        
-        Arc a1=new Arc("a1", n2, n1);
-        Arc a2=new Arc("a2", n2, n3);
+
+        PrecedenceGraph pg = new PrecedenceGraph("Test");
+        //g=pg;
+        Node n1 = new Node("n1");
+        n1.setX(400);
+        n1.setY(200);
+        Node n2 = new Node("n2");
+        n2.setX(200);
+        n2.setY(150);//n2.setDiagramElement(new DiagramElement(200,150));
+        Node n3 = new Node("n3");
+        n3.setX(400);
+        n3.setY(60);//n3.setDiagramElement(new DiagramElement(400,60));
+
+        Arc a1 = new Arc("a1", n2, n1);
+        Arc a2 = new Arc("a2", n2, n3);
 
         pg.addNode(n1);
         pg.addNode(n2);
         pg.addNode(n3);
         pg.addArc(a1);
         pg.addArc(a2);
-         
-        controller.setModel(pg);
-        this.diagramPanel   =   new DiagramPanel(pg);                
-        diagramScrollPane.setViewportView(this.diagramPanel);       
+
+        g = pg;
+        controller.setModel(g);
+        this.diagramPanel = new DiagramPanel(g);
+        diagramScrollPane.setViewportView(this.diagramPanel);
         sideMenu.setVisible(true);
         // hide side menu
-        propertiesMenu.setVisible(false);             
+        propertiesMenu.setVisible(false);
     }//GEN-LAST:event_newPrecedenceNetActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
         // TODO add your handling code here:
-        PetriNet converted=pg.changePrecedenceGraphToPN();
+        PrecedenceGraph pg=(PrecedenceGraph) g;
+        PetriNet converted = pg.changePrecedenceGraphToPN();
+        g = converted;
         controller.setModel(converted);
-        this.diagramPanel   =   new DiagramPanel(converted);                
-        diagramScrollPane.setViewportView(this.diagramPanel);       
+        this.diagramPanel = new DiagramPanel(converted);
+        diagramScrollPane.setViewportView(this.diagramPanel);
         sideMenu.setVisible(true);
         // hide side menu
-        propertiesMenu.setVisible(false); 
+        propertiesMenu.setVisible(false);
     }//GEN-LAST:event_convertActionPerformed
 
     private void btnZoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomInActionPerformed
         /*diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]/2;
-        diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]/2;
-        repaint();*/
+         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]/2;
+         repaint();*/
         /*controller.setModel(pg);
-        this.diagramPanel   =   new DiagramPanel(pg);                
-        diagramScrollPane.setViewportView(this.diagramPanel);       
-        sideMenu.setVisible(true);
-        repaint();
-        diagramPanel.g2d.scale(0.8, 0.8);*/
+         this.diagramPanel   =   new DiagramPanel(pg);                
+         diagramScrollPane.setViewportView(this.diagramPanel);       
+         sideMenu.setVisible(true);
+         repaint();
+         diagramPanel.g2d.scale(0.8, 0.8);*/
         // hide side menu
         //propertiesMenu.setVisible(false);          
         //diagramPanel.g2d.scale(1,1);
         //diagramScrollPane.setViewportView(this.diagramPanel);               
         //repaint();
     }//GEN-LAST:event_btnZoomInActionPerformed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton btnZoomIn;
@@ -608,881 +639,820 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JPanel specificPropertiesMenu;
     private javax.swing.JMenuBar topMenu;
     // End of variables declaration//GEN-END:variables
-class DiagramPanel extends javax.swing.JPanel {
-    private DiagramMouseAdapter     mouseAdapter;    
-    
-    private Graph                   graph;
-    
-    private Graphics2D              g2d;
-    private ArrayList<Element>      selectedElements;
-    private Element                 draggedElement;
-    private Object                  draggedObject;
-    private Color                   draggedColor;
-    private double[]                scaleRatio;
-    /**
-     * Creates new form GraphPanel
-     */
-    
-    public DiagramPanel(Graph pa_graph) {  
-        super();
-        this.graph=pa_graph;
-        //this.g2d;//null;
-        this.scaleRatio=new double[]{1.0,1.0};
-        this.draggedObject=null;
-        this.draggedElement=null;
-        this.selectedElements=new ArrayList<Element>();
-        this.mouseAdapter   =   new DiagramMouseAdapter(); 
-                
-        // Click listener, drag listener
-        addMouseListener(mouseAdapter);
-        addMouseMotionListener(mouseAdapter);        
-   
-        // Max sirka,vyska = 1000x1000
-        setPreferredSize(new Dimension(1000, 1000));
-        setBackground(Color.WHITE);
-    }
-    
-    @Override
-    public void paint(Graphics g) 
-    {
-        
-        super.paint(g);
-        this.g2d = (Graphics2D) g;
-        g2d.scale(scaleRatio[0], scaleRatio[1]);
-        
-        /*
-        if (g2d==null)
+    class DiagramPanel extends javax.swing.JPanel {
+
+        private DiagramMouseAdapter mouseAdapter;
+        private Graph graph;
+        private Graphics2D g2d;
+        private ArrayList<Element> selectedElements;
+        private Element draggedElement;
+        private Object draggedObject;
+        private Color draggedColor;
+        private double[] scaleRatio;
+
+        /**
+         * Creates new form GraphPanel
+         */
+        public DiagramPanel(Graph pa_graph) {
+            super();
+            this.graph = pa_graph;
+            //this.g2d;//null;
+            this.scaleRatio = new double[]{1.0, 1.0};
+            this.draggedObject = null;
+            this.draggedElement = null;
+            this.selectedElements = new ArrayList<Element>();
+            this.mouseAdapter = new DiagramMouseAdapter();
+
+            // Click listener, drag listener
+            addMouseListener(mouseAdapter);
+            addMouseMotionListener(mouseAdapter);
+
+            // Max sirka,vyska = 1000x1000
+            setPreferredSize(new Dimension(1000, 1000));
+            setBackground(Color.WHITE);
+        }
+
+        @Override
+        public void paint(Graphics g) {
+
+            super.paint(g);
+            this.g2d = (Graphics2D) g;
+            g2d.scale(scaleRatio[0], scaleRatio[1]);
+
+            /*
+             if (g2d==null)
           
-        else
-            g=this.g2d;*/
-        drawGraph();
-        drawDraggedObject();
-        drawSelectedElements();
+             else
+             g=this.g2d;*/
+            drawGraph();
+            drawDraggedObject();
+            drawSelectedElements();
 
-    }
-   /*
-    public void drawPlace(int column,int row){
-        drawPlace(column, row, Color.BLACK, Color.WHITE);          
-    }
-    public void drawPlace(int column,int row,Color c1, Color c2){
-        // Place / Ring
-        g2d.setColor(c2);
-        g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
-        g2d.setColor(c1);    
-        g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
-    }*/
-    public void drawPlace(int column,int row,Color c1, Color c2,int width,int height,String name,int fontSize){
-        // Place / Ring
-        /*g2d.setColor(c2);
-        g2d.fill(new Ellipse2D.Double(column+5,row+5,width,height));        
-        g2d.setColor(c1);    
-        g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));   
-        */
-        g2d.setColor(c2);
-        g2d.fill(new Ellipse2D.Double(column,row,width,height));        
-        g2d.setColor(c1);    
-        g2d.draw(new Ellipse2D.Double(column,row,width,height));                        
-        
-        
-        // Remember old
-        Font oldFont=g2d.getFont();     
-        Font newFont=new Font("Times New Roman", Font.PLAIN, fontSize);
-        g2d.setFont(newFont);
-        
-        // Center string
-        // Find the size of string NAME in font FONT in the current Graphics context G2D
-        FontMetrics fm   = g2d.getFontMetrics(newFont);
-        java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
-
-        int textWidth  = (int)(rect.getWidth());       
-        int textHeight = (int)(rect.getHeight());         
-
-        // Center text horizontally and vertically
-        int x = (int)(column+width/2.0 - textWidth/2.0);
-        int y = (int)(row+height/2.0   - textHeight/2.0)+   fm.getAscent();
-
-        // Draw the string.                          
-        g2d.drawString(name, x,y);
-        
-        // Revert back
-        g2d.setFont(oldFont);
-        
-    }    
-    public void drawPlace(int column,int row,Color c1, Color c2,int width,int height,String name,int fontSize,int alpha){
-        /* Transparency */
-        Color c1alpha=c1;
-        Color c2alpha=c2;
-        for (int i=1;i<=alpha;i++)
-        {
-            c1alpha=c1alpha.brighter();
-            c2alpha=c2alpha.brighter();
         }
         /*
-        Color c1alpha=c1.brighter();
-        Color c2alpha=c2.brighter();*/
-        //c1alpha.seta
-                
-        /*
-        g2d.setColor(Color.GREEN);
-        g2d.fill(new Ellipse2D.Double(column,row,width,height));        
-        g2d.setColor(c1alpha);    
-        g2d.draw(new Ellipse2D.Double(column,row,width,height));      */
-        
-        drawPlace(column, row, c1alpha, c2alpha, width, height, name,fontSize);
-    }
-            
-    public void drawPlaceSelected(int column,int row,int width,int height){   
-        Color color=g2d.getColor();
-        Stroke _oldStroke=g2d.getStroke();
-        g2d.setColor(Color.GRAY);   
-        Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
-        g2d.setStroke(s);
-        //g2d.draw(new Ellipse2D.Double(column+5-10,row+5-10,40+20,40+20));  
-        int distance=10;
-        
-        g2d.draw(new Ellipse2D.Double(column-distance,row-distance,width+distance*2,height+distance*2));        
-        g2d.setColor(color);
-        g2d.setStroke(_oldStroke);
-    }
+         public void drawPlace(int column,int row){
+         drawPlace(column, row, Color.BLACK, Color.WHITE);          
+         }
+         public void drawPlace(int column,int row,Color c1, Color c2){
+         // Place / Ring
+         g2d.setColor(c2);
+         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
+         g2d.setColor(c1);    
+         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
+         }*/
 
-    /*public void drawResource(int column,int row){
-        drawPlace(column, row, Color.BLACK, Color.GRAY);          
-    }
-    public void drawResource(int column,int row,Color c1, Color c2){
-        // Place / Ring
-        g2d.setColor(c2); //white vypln
-        g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
-        g2d.setColor(c1); //black   
-        g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
-    }*/
-    public void drawResource(int column,int row,Color c1, Color c2,int width,int height,String name,int fontSize){
-        // Place / Ring
-        Stroke _oldStroke=g2d.getStroke();
-        
-        g2d.setColor(c2); //white vypln
-        g2d.fill(new Ellipse2D.Double(column,row,width,height));        
-        
-        // Border more width
-        g2d.setStroke(new BasicStroke(5));
-        g2d.setColor(c1); //black   
-        g2d.draw(new Ellipse2D.Double(column,row,width,height));                       
-        g2d.setStroke(_oldStroke);
-        
+        public void drawPlace(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
+            // Place / Ring
+        /*g2d.setColor(c2);
+             g2d.fill(new Ellipse2D.Double(column+5,row+5,width,height));        
+             g2d.setColor(c1);    
+             g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));   
+             */
+            g2d.setColor(c2);
+            g2d.fill(new Ellipse2D.Double(column, row, width, height));
+            g2d.setColor(c1);
+            g2d.draw(new Ellipse2D.Double(column, row, width, height));
+
+
+            // Remember old
+            Font oldFont = g2d.getFont();
+            Font newFont = new Font("Times New Roman", Font.PLAIN, fontSize);
+            g2d.setFont(newFont);
+
+            // Center string
+            // Find the size of string NAME in font FONT in the current Graphics context G2D
+            FontMetrics fm = g2d.getFontMetrics(newFont);
+            java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
+
+            int textWidth = (int) (rect.getWidth());
+            int textHeight = (int) (rect.getHeight());
+
+            // Center text horizontally and vertically
+            int x = (int) (column + width / 2.0 - textWidth / 2.0);
+            int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
+
+            // Draw the string.                          
+            g2d.drawString(name, x, y);
+
+            // Revert back
+            g2d.setFont(oldFont);
+
+        }
+
+        public void drawPlace(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize, int alpha) {
+            /* Transparency */
+            Color c1alpha = c1;
+            Color c2alpha = c2;
+            for (int i = 1; i <= alpha; i++) {
+                c1alpha = c1alpha.brighter();
+                c2alpha = c2alpha.brighter();
+            }
+            /*
+             Color c1alpha=c1.brighter();
+             Color c2alpha=c2.brighter();*/
+            //c1alpha.seta
+
+            /*
+             g2d.setColor(Color.GREEN);
+             g2d.fill(new Ellipse2D.Double(column,row,width,height));        
+             g2d.setColor(c1alpha);    
+             g2d.draw(new Ellipse2D.Double(column,row,width,height));      */
+
+            drawPlace(column, row, c1alpha, c2alpha, width, height, name, fontSize);
+        }
+
+        public void drawPlaceSelected(int column, int row, int width, int height) {
+            Color color = g2d.getColor();
+            Stroke _oldStroke = g2d.getStroke();
+            g2d.setColor(Color.GRAY);
+            Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
+            g2d.setStroke(s);
+            //g2d.draw(new Ellipse2D.Double(column+5-10,row+5-10,40+20,40+20));  
+            int distance = 10;
+
+            g2d.draw(new Ellipse2D.Double(column - distance, row - distance, width + distance * 2, height + distance * 2));
+            g2d.setColor(color);
+            g2d.setStroke(_oldStroke);
+        }
+
+        /*public void drawResource(int column,int row){
+         drawPlace(column, row, Color.BLACK, Color.GRAY);          
+         }
+         public void drawResource(int column,int row,Color c1, Color c2){
+         // Place / Ring
+         g2d.setColor(c2); //white vypln
+         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
+         g2d.setColor(c1); //black   
+         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
+         }*/
+        public void drawResource(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
+            // Place / Ring
+            Stroke _oldStroke = g2d.getStroke();
+
+            g2d.setColor(c2); //white vypln
+            g2d.fill(new Ellipse2D.Double(column, row, width, height));
+
+            // Border more width
+            g2d.setStroke(new BasicStroke(5));
+            g2d.setColor(c1); //black   
+            g2d.draw(new Ellipse2D.Double(column, row, width, height));
+            g2d.setStroke(_oldStroke);
+
 
 // Remember old
-        Font oldFont=g2d.getFont();     
-        Font newFont=new Font("Times New Roman", Font.PLAIN, fontSize);
-        g2d.setFont(newFont);
-        
-        // Center string
-        // Find the size of string NAME in font FONT in the current Graphics context G2D
-        FontMetrics fm   = g2d.getFontMetrics(newFont);
-        java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
+            Font oldFont = g2d.getFont();
+            Font newFont = new Font("Times New Roman", Font.PLAIN, fontSize);
+            g2d.setFont(newFont);
 
-        int textWidth  = (int)(rect.getWidth());       
-        int textHeight = (int)(rect.getHeight());         
+            // Center string
+            // Find the size of string NAME in font FONT in the current Graphics context G2D
+            FontMetrics fm = g2d.getFontMetrics(newFont);
+            java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
 
-        // Center text horizontally and vertically
-        int x = (int)(column+width/2.0 - textWidth/2.0);
-        int y = (int)(row+height/2.0   - textHeight/2.0)+   fm.getAscent();
+            int textWidth = (int) (rect.getWidth());
+            int textHeight = (int) (rect.getHeight());
 
-        // Draw the string.                          
-        g2d.drawString(name, x,y);
-        
-        // Revert back
-        g2d.setFont(oldFont);        
-    }
-    public void drawResource(int column,int row,Color c1, Color c2,int width,int height,String name,int fontSize,int alpha){
-        // Place / Ring
-        Color c1alpha=new Color(c1.getRed(),c1.getGreen(),c1.getBlue(),alpha);
-        Color c2alpha=new Color(c2.getRed(),c2.getGreen(),c2.getBlue(),alpha);      
-        drawResource(column, row, c1alpha, c2alpha, width, height, name,fontSize);
-    }    
-        
-    /*
-    public void drawTransition(int column,int row){
-        drawTransition(column, row ,Color.BLACK,Color.WHITE);
-    }
-    public void drawTransition(int column,int row,Color c1,Color c2){
-        // Transition / Rectangle
-        g2d.setColor(c2);
-        g2d.fill(new Rectangle2D.Float(column+12,row+5,25,40));                
-        g2d.setColor(c1);
-        g2d.draw(new Rectangle2D.Float(column+12,row+5,25,40));                        
-    }*/
-    public void drawTransition(int column,int row,Color c1,Color c2,int width,int height,String name,int fontSize){
-        // Transition / Rectangle                        
-        
-        g2d.setColor(c2);
-        g2d.fill(new Rectangle2D.Float(column,row,width,height));                
-        g2d.setColor(c1);
-        g2d.draw(new Rectangle2D.Float(column,row,width,height));                                                      
+            // Center text horizontally and vertically
+            int x = (int) (column + width / 2.0 - textWidth / 2.0);
+            int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
 
-        // Remember old
-        Font oldFont=g2d.getFont();     
-        Font newFont=new Font("Times New Roman", Font.PLAIN, fontSize);
-        g2d.setFont(newFont);
-        
-        // Center string
-        // Find the size of string NAME in font FONT in the current Graphics context G2D
-        FontMetrics fm   = g2d.getFontMetrics(newFont);
-        java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
+            // Draw the string.                          
+            g2d.drawString(name, x, y);
 
-        int textWidth  = (int)(rect.getWidth());       
-        int textHeight = (int)(rect.getHeight());         
-
-        // Center text horizontally and vertically
-        int x = (int)(column+width/2.0 - textWidth/2.0);
-        int y = (int)(row+height/2.0   - textHeight/2.0)+   fm.getAscent();
-
-        // Draw the string.                          
-        g2d.drawString(name, x,y);
-        
-        // Revert back
-        g2d.setFont(oldFont);        
-    }    
-    public void drawTransition(int column,int row,Color c1,Color c2,int width,int height,String name,int fontSize,int alpha){    
-        /* Transparency */
-        Color c1alpha=c1;
-        Color c2alpha=c2;
-        for (int i=1;i<=alpha;i++)
-        {
-            c1alpha=c1alpha.brighter();
-            c2alpha=c2alpha.brighter();
+            // Revert back
+            g2d.setFont(oldFont);
         }
-        
-        drawTransition(column, row, c1alpha, c2alpha, width, height, name,fontSize);
-    }
-    public void drawTransitionSelected(int column,int row,int width,int height){        
-        Color color=g2d.getColor();
-        g2d.setColor(Color.GRAY);   
-        Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
-        g2d.setStroke(s);
-        int distance=10;
-        g2d.draw(new Rectangle2D.Float(column-distance,row-distance,width+distance*2,height+distance*2));                        
-        
-        g2d.setColor(color);
-    }    
-    public void drawArrow(int x1, int y1, int x2, int y2, String type,String name,int fontSize) 
-    {
-         // Size of arrow in px
-         int ARR_SIZE=8;
 
-         double dx = x2 - x1;
-         double dy = y2 - y1;
-         double angle = Math.atan2(dy, dx);
-         int len = (int) Math.sqrt(dx*dx + dy*dy);
-         AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
-         at.concatenate(AffineTransform.getRotateInstance(angle));
+        public void drawResource(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize, int alpha) {
+            // Place / Ring
+            Color c1alpha = new Color(c1.getRed(), c1.getGreen(), c1.getBlue(), alpha);
+            Color c2alpha = new Color(c2.getRed(), c2.getGreen(), c2.getBlue(), alpha);
+            drawResource(column, row, c1alpha, c2alpha, width, height, name, fontSize);
+        }
 
-         // Save and Rotate
-         AffineTransform oldTransform = g2d.getTransform();
-         g2d.transform(at);                
-
-
-         // Draw horizontal arrow starting in (0, 0)
-         // Length decrease by X pixels if type of arrow is short
-         if ("short".equals(type))
-         {
-            // Add functionality
-            len=len-30;
+        /*
+         public void drawTransition(int column,int row){
+         drawTransition(column, row ,Color.BLACK,Color.WHITE);
          }
-         
-         g2d.drawLine(0, 0, len-5, 0);
-         g2d.fillPolygon(new int[]   {len, len-ARR_SIZE  , len-ARR_SIZE    , len},
-                         new int[]     {0  , -ARR_SIZE     , ARR_SIZE      , 0}, 4 );
-         // Retract old
-         g2d.setTransform(oldTransform);
-         
-         /*
-          * Add name and fontSize drawString
-          * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\    FILL   ///////////////////////////
-          */
-     }
+         public void drawTransition(int column,int row,Color c1,Color c2){
+         // Transition / Rectangle
+         g2d.setColor(c2);
+         g2d.fill(new Rectangle2D.Float(column+12,row+5,25,40));                
+         g2d.setColor(c1);
+         g2d.draw(new Rectangle2D.Float(column+12,row+5,25,40));                        
+         }*/
+        public void drawTransition(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
+            // Transition / Rectangle                        
 
-    public void drawArc(int column1,int row1,int width1,int height1,int column2,int row2, int width2,int height2,Color color,String name,int fontSize){        
-        // Arc / Arrow
-        //g2d.setColor(new Color(27,161,226)); // Windows8Blue
-        g2d.setColor(color);
-        g2d.setStroke(new BasicStroke(3));        
-        // Draw arrow        
-        drawArrow( column1+(int)(width1/2.0)  ,row1+(int)(height1/2.0),
-                   column2+(int)(width2/2.0),  row2+(int)(height2/2.0),"short",name,fontSize);
-    }    
-    public void drawArcSelected(int column1,int row1,int column2,int row2){        
-        /* Calculating */                
-        // Get line between 2 points
-        Line2D.Double ln = new Line2D.Double(column1+25,row1+25,column2+25,row2+25);
+            g2d.setColor(c2);
+            g2d.fill(new Rectangle2D.Float(column, row, width, height));
+            g2d.setColor(c1);
+            g2d.draw(new Rectangle2D.Float(column, row, width, height));
 
-        // Distance from central line
-        double indent = 10.0; 
-        double length = ln.getP1().distance(ln.getP2());
+            // Remember old
+            Font oldFont = g2d.getFont();
+            Font newFont = new Font("Times New Roman", Font.PLAIN, fontSize);
+            g2d.setFont(newFont);
 
-        double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
-        double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+            // Center string
+            // Find the size of string NAME in font FONT in the current Graphics context G2D
+            FontMetrics fm = g2d.getFontMetrics(newFont);
+            java.awt.geom.Rectangle2D rect = fm.getStringBounds(name, g2d);
 
-        // moved p1 point
-        //double p1X = ln.getX1() - dx_li;
-        //double p1Y = ln.getY1() - dy_li;
+            int textWidth = (int) (rect.getWidth());
+            int textHeight = (int) (rect.getHeight());
 
-        // line moved to the left
-        double lX1 = ln.getX1() - dy_li;
-        double lY1 = ln.getY1() + dx_li;
-        double lX2 = ln.getX2() - dy_li;
-        double lY2 = ln.getY2() + dx_li;
+            // Center text horizontally and vertically
+            int x = (int) (column + width / 2.0 - textWidth / 2.0);
+            int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
 
-        // moved p2 point
-        //double p2X = ln.getX2() + dx_li;
-        //double p2Y = ln.getY2() + dy_li;
+            // Draw the string.                          
+            g2d.drawString(name, x, y);
 
-        // line moved to the right
-        double rX1_ = ln.getX1() + dy_li;
-        double rY1 = ln.getY1() - dx_li;
-        double rX2 = ln.getX2() + dy_li;
-        double rY2 = ln.getY2() - dx_li;
+            // Revert back
+            g2d.setFont(oldFont);
+        }
 
-        Path2D path = new Path2D.Double();
-        path.moveTo(lX1, lY1);
-
-        path.lineTo(lX1, lY1);            
-        path.lineTo(lX2, lY2);
-        //path.lineTo(p2X, p2Y);
-        path.lineTo(rX2, rY2);
-        path.lineTo(rX1_, rY1);
-        //path.lineTo(p1X, p1Y);
-
-         // Add result
-        Area area = new Area();
-        area.add(new Area(path));
-        /* End calculating */
-        
-
-        // Arc / Arrow
-        g2d.setColor(Color.GRAY);   
-        Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
-        g2d.setStroke(s);
-        // Draw arrow        
-        //drawArrow( column1+25  ,row1+25,
-        //           column2+25,  row2+25,"short");   
-        // Draw dashed line around line
-        g2d.draw(area);                        
-    }        
-    
-   
-    public void drawGraph()                  
-    {
-        if (graph==null)
-            return;
-        if (graph instanceof PetriNet)
-        {
-            // Arcs , Places, Transitions
-            // Draw all arcs
-            for(Element e:((PetriNet)graph).getListOfArcs())
-            {     
-                Element in  =((Arc)e).getInElement();
-                Element out =((Arc)e).getOutElement();
-                Arc arc=(Arc)e;
-                
-                int width1=0,width2=0,height1=0,height2=0;
-
-                // In element
-                if (in instanceof Place || in instanceof Resource)
-                {
-                    width1  =((AbsPlace)in).getWidth();
-                    height1 =((AbsPlace)in).getHeight();
-                }   
-                else if (in instanceof Node)
-                {
-                    width1  =((Node)in).getWidth();
-                    height1 =((Node)in).getHeight();                    
-                }
-                else if (in instanceof Transition)
-                {
-                    width1  =((Transition)in).getWidth();
-                    height1 =((Transition)in).getHeight();                    
-                }                
-                
-                // Out element
-                if (out instanceof Place || out instanceof Resource)
-                {
-                    width2  =((AbsPlace)out).getWidth();
-                    height2 =((AbsPlace)out).getHeight();
-                }   
-                else if (out instanceof Node)
-                {
-                    width2  =((Node)out).getWidth();
-                    height2 =((Node)out).getHeight();                    
-                }    
-                else if (out instanceof Transition)
-                {
-                    width2  =((Transition)out).getWidth();
-                    height2 =((Transition)out).getHeight();                    
-                }                  
-                //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
-                drawArc(out.getX(),out.getY(),width1,height1,in.getX(),in.getY(),width2,height2,arc.getColor(),arc.getName(),arc.getFontSize());
-            }  
-
-            // Draw all places
-            for(Element e:((PetriNet)graph).getListOfPlaces())
-            {            
-                drawPlace(e.getX(), e.getY(),e.getColor(),e.getColor2(),((Place)e).getWidth(),((Place)e).getHeight(),e.getName(),e.getFontSize());
+        public void drawTransition(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize, int alpha) {
+            /* Transparency */
+            Color c1alpha = c1;
+            Color c2alpha = c2;
+            for (int i = 1; i <= alpha; i++) {
+                c1alpha = c1alpha.brighter();
+                c2alpha = c2alpha.brighter();
             }
-            
-            // Draw all resources
-            for(Element e:((PetriNet)graph).getListOfResources())
-            {            
-                drawResource(e.getX(), e.getY(),e.getColor(),e.getColor2(),((Resource)e).getWidth(),((Resource)e).getHeight(),e.getName(),e.getFontSize());
+
+            drawTransition(column, row, c1alpha, c2alpha, width, height, name, fontSize);
+        }
+
+        public void drawTransitionSelected(int column, int row, int width, int height) {
+            Color color = g2d.getColor();
+            g2d.setColor(Color.GRAY);
+            Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
+            g2d.setStroke(s);
+            int distance = 10;
+            g2d.draw(new Rectangle2D.Float(column - distance, row - distance, width + distance * 2, height + distance * 2));
+
+            g2d.setColor(color);
+        }
+
+        public void drawArrow(int x1, int y1, int x2, int y2, String type, String name, int fontSize) {
+            // Size of arrow in px
+            int ARR_SIZE = 8;
+
+            double dx = x2 - x1;
+            double dy = y2 - y1;
+            double angle = Math.atan2(dy, dx);
+            int len = (int) Math.sqrt(dx * dx + dy * dy);
+            AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
+            at.concatenate(AffineTransform.getRotateInstance(angle));
+
+            // Save and Rotate
+            AffineTransform oldTransform = g2d.getTransform();
+            g2d.transform(at);
+
+
+            // Draw horizontal arrow starting in (0, 0)
+            // Length decrease by X pixels if type of arrow is short
+            if ("short".equals(type)) {
+                // Add functionality
+                len = len - 30;
             }
-            
-            // Draw all transitions
-            for(Element e:((PetriNet)graph).getListOfTransitions())
-            {            
-                drawTransition(e.getX(), e.getY(),e.getColor(),e.getColor2(),((Transition)e).getWidth(),((Transition)e).getHeight(),e.getName(),e.getFontSize());
-            }      
-            
-            return;
-        }   // Koniec Petri net
 
-        if (graph instanceof PrecedenceGraph)
-        {
-            // Arcs, Nodes
-            
-            // Draw all arcs
-            for(Element e:((PrecedenceGraph)graph).getListOfArcs())
-            {     
-                Element in  =((Arc)e).getInElement();
-                Element out =((Arc)e).getOutElement();
-                Arc arc=(Arc)e;
-                
-                int width1=0,width2=0,height1=0,height2=0;
+            g2d.drawLine(0, 0, len - 5, 0);
+            g2d.fillPolygon(new int[]{len, len - ARR_SIZE, len - ARR_SIZE, len},
+                    new int[]{0, -ARR_SIZE, ARR_SIZE, 0}, 4);
+            // Retract old
+            g2d.setTransform(oldTransform);
 
-                // In element
-                if (in instanceof Place || in instanceof Resource)
-                {
-                    width1  =((AbsPlace)in).getWidth();
-                    height1 =((AbsPlace)in).getHeight();
-                }   
-                else if (in instanceof Node)
-                {
-                    width1  =((Node)in).getWidth();
-                    height1 =((Node)in).getHeight();                    
-                }
-                else if (in instanceof Transition)
-                {
-                    width1  =((Transition)in).getWidth();
-                    height1 =((Transition)in).getHeight();                    
-                }                    
-                
-                // Out element
-                if (out instanceof Place || out instanceof Resource)
-                {
-                    width2  =((AbsPlace)out).getWidth();
-                    height2 =((AbsPlace)out).getHeight();
-                }   
-                else if (out instanceof Node)
-                {
-                    width2  =((Node)out).getWidth();
-                    height2 =((Node)out).getHeight();                    
-                }    
-                else if (out instanceof Transition)
-                {
-                    width1  =((Transition)out).getWidth();
-                    height1 =((Transition)out).getHeight();                    
-                }                    
-                //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
-                drawArc(out.getX(),out.getY(),width1,height1,in.getX(),in.getY(),width2,height2,arc.getColor(),arc.getName(),arc.getFontSize());
-            }  
+            /*
+             * Add name and fontSize drawString
+             * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\    FILL   ///////////////////////////
+             */
+        }
 
-            // Draw all nodes
-            for(Element e:((PrecedenceGraph)graph).getListOfNodes())
-            {            
-                drawPlace(e.getX(), e.getY(),e.getColor(),e.getColor2(),((Node)e).getWidth(),((Node)e).getHeight(),e.getName(),e.getFontSize());
-            }  
-            
-            return;
-        }   // Koniec Precedence Graph
-        
-    }
-    
-    private void drawDraggedObject() {
-            // Nothing to draw
-            if (draggedObject==null && draggedElement==null)
+        public void drawArc(int column1, int row1, int width1, int height1, int column2, int row2, int width2, int height2, Color color, String name, int fontSize) {
+            // Arc / Arrow
+            //g2d.setColor(new Color(27,161,226)); // Windows8Blue
+            g2d.setColor(color);
+            g2d.setStroke(new BasicStroke(3));
+            // Draw arrow        
+            drawArrow(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0),
+                    column2 + (int) (width2 / 2.0), row2 + (int) (height2 / 2.0), "short", name, fontSize);
+        }
+
+        public void drawArcSelected(int column1, int row1, int column2, int row2) {
+            /* Calculating */
+            // Get line between 2 points
+            Line2D.Double ln = new Line2D.Double(column1 + 25, row1 + 25, column2 + 25, row2 + 25);
+
+            // Distance from central line
+            double indent = 10.0;
+            double length = ln.getP1().distance(ln.getP2());
+
+            double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+            double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+
+            // moved p1 point
+            //double p1X = ln.getX1() - dx_li;
+            //double p1Y = ln.getY1() - dy_li;
+
+            // line moved to the left
+            double lX1 = ln.getX1() - dy_li;
+            double lY1 = ln.getY1() + dx_li;
+            double lX2 = ln.getX2() - dy_li;
+            double lY2 = ln.getY2() + dx_li;
+
+            // moved p2 point
+            //double p2X = ln.getX2() + dx_li;
+            //double p2Y = ln.getY2() + dy_li;
+
+            // line moved to the right
+            double rX1_ = ln.getX1() + dy_li;
+            double rY1 = ln.getY1() - dx_li;
+            double rX2 = ln.getX2() + dy_li;
+            double rY2 = ln.getY2() - dx_li;
+
+            Path2D path = new Path2D.Double();
+            path.moveTo(lX1, lY1);
+
+            path.lineTo(lX1, lY1);
+            path.lineTo(lX2, lY2);
+            //path.lineTo(p2X, p2Y);
+            path.lineTo(rX2, rY2);
+            path.lineTo(rX1_, rY1);
+            //path.lineTo(p1X, p1Y);
+
+            // Add result
+            Area area = new Area();
+            area.add(new Area(path));
+            /* End calculating */
+
+
+            // Arc / Arrow
+            g2d.setColor(Color.GRAY);
+            Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
+            g2d.setStroke(s);
+            // Draw arrow        
+            //drawArrow( column1+25  ,row1+25,
+            //           column2+25,  row2+25,"short");   
+            // Draw dashed line around line
+            g2d.draw(area);
+        }
+
+        public void drawGraph() {
+            if (graph == null) {
                 return;
-            
+            }
+            if (graph instanceof PetriNet) {
+                // Arcs , Places, Transitions
+                // Draw all arcs
+                for (Element e : ((PetriNet) graph).getListOfArcs()) {
+                    Element in = ((Arc) e).getInElement();
+                    Element out = ((Arc) e).getOutElement();
+                    Arc arc = (Arc) e;
+
+                    int width1 = 0, width2 = 0, height1 = 0, height2 = 0;
+
+                    // In element
+                    if (in instanceof Place || in instanceof Resource) {
+                        width1 = ((AbsPlace) in).getWidth();
+                        height1 = ((AbsPlace) in).getHeight();
+                    } else if (in instanceof Node) {
+                        width1 = ((Node) in).getWidth();
+                        height1 = ((Node) in).getHeight();
+                    } else if (in instanceof Transition) {
+                        width1 = ((Transition) in).getWidth();
+                        height1 = ((Transition) in).getHeight();
+                    }
+
+                    // Out element
+                    if (out instanceof Place || out instanceof Resource) {
+                        width2 = ((AbsPlace) out).getWidth();
+                        height2 = ((AbsPlace) out).getHeight();
+                    } else if (out instanceof Node) {
+                        width2 = ((Node) out).getWidth();
+                        height2 = ((Node) out).getHeight();
+                    } else if (out instanceof Transition) {
+                        width2 = ((Transition) out).getWidth();
+                        height2 = ((Transition) out).getHeight();
+                    }
+                    //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
+                    drawArc(out.getX(), out.getY(), width1, height1, in.getX(), in.getY(), width2, height2, arc.getColor(), arc.getName(), arc.getFontSize());
+                }
+
+                // Draw all places
+                for (Element e : ((PetriNet) graph).getListOfPlaces()) {
+                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Place) e).getWidth(), ((Place) e).getHeight(), e.getName(), e.getFontSize());
+                }
+
+                // Draw all resources
+                for (Element e : ((PetriNet) graph).getListOfResources()) {
+                    drawResource(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Resource) e).getWidth(), ((Resource) e).getHeight(), e.getName(), e.getFontSize());
+                }
+
+                // Draw all transitions
+                for (Element e : ((PetriNet) graph).getListOfTransitions()) {
+                    drawTransition(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Transition) e).getWidth(), ((Transition) e).getHeight(), e.getName(), e.getFontSize());
+                }
+
+                return;
+            }   // Koniec Petri net
+
+            if (graph instanceof PrecedenceGraph) {
+                // Arcs, Nodes
+
+                // Draw all arcs
+                for (Element e : ((PrecedenceGraph) graph).getListOfArcs()) {
+                    Element in = ((Arc) e).getInElement();
+                    Element out = ((Arc) e).getOutElement();
+                    Arc arc = (Arc) e;
+
+                    int width1 = 0, width2 = 0, height1 = 0, height2 = 0;
+
+                    // In element
+                    if (in instanceof Place || in instanceof Resource) {
+                        width1 = ((AbsPlace) in).getWidth();
+                        height1 = ((AbsPlace) in).getHeight();
+                    } else if (in instanceof Node) {
+                        width1 = ((Node) in).getWidth();
+                        height1 = ((Node) in).getHeight();
+                    } else if (in instanceof Transition) {
+                        width1 = ((Transition) in).getWidth();
+                        height1 = ((Transition) in).getHeight();
+                    }
+
+                    // Out element
+                    if (out instanceof Place || out instanceof Resource) {
+                        width2 = ((AbsPlace) out).getWidth();
+                        height2 = ((AbsPlace) out).getHeight();
+                    } else if (out instanceof Node) {
+                        width2 = ((Node) out).getWidth();
+                        height2 = ((Node) out).getHeight();
+                    } else if (out instanceof Transition) {
+                        width1 = ((Transition) out).getWidth();
+                        height1 = ((Transition) out).getHeight();
+                    }
+                    //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
+                    drawArc(out.getX(), out.getY(), width1, height1, in.getX(), in.getY(), width2, height2, arc.getColor(), arc.getName(), arc.getFontSize());
+                }
+
+                // Draw all nodes
+                for (Element e : ((PrecedenceGraph) graph).getListOfNodes()) {
+                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Node) e).getWidth(), ((Node) e).getHeight(), e.getName(), e.getFontSize());
+                }
+
+                return;
+            }   // Koniec Precedence Graph
+
+        }
+
+        private void drawDraggedObject() {
+            // Nothing to draw
+            if (draggedObject == null && draggedElement == null) {
+                return;
+            }
+
             g2d.setColor(draggedColor);
-            
+
             // Rectangle 
-            if (draggedElement instanceof Transition)
-            {           
-                Transition t=(Transition)draggedElement;                
-                drawTransition(t.getX(), t.getY(),t.getColor(),t.getColor2(),t.getWidth(),t.getHeight(),t.getName(),t.getFontSize(),2);
+            if (draggedElement instanceof Transition) {
+                Transition t = (Transition) draggedElement;
+                drawTransition(t.getX(), t.getY(), t.getColor(), t.getColor2(), t.getWidth(), t.getHeight(), t.getName(), t.getFontSize(), 2);
                 //drawTransition(x, y, Color.GRAY, Color.WHITE);
                 //g2d.fill((Rectangle2D)draggedObject);
             }
 
             // Resource
-            if (draggedElement instanceof Resource)
-            {
-                Resource r=(Resource)draggedElement;
-                drawPlace(r.getX(), r.getY(),r.getColor(),r.getColor2(),r.getWidth(),r.getHeight(),r.getName(),r.getFontSize(),2);
+            if (draggedElement instanceof Resource) {
+                Resource r = (Resource) draggedElement;
+                drawPlace(r.getX(), r.getY(), r.getColor(), r.getColor2(), r.getWidth(), r.getHeight(), r.getName(), r.getFontSize(), 2);
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
-            
+
             // Place
-            if (draggedElement instanceof Place)
-            {
-                Place p=(Place)draggedElement;
-                drawPlace(p.getX(), p.getY(),p.getColor(),p.getColor2(),p.getWidth(),p.getHeight(),p.getName(),p.getFontSize(),2);
+            if (draggedElement instanceof Place) {
+                Place p = (Place) draggedElement;
+                drawPlace(p.getX(), p.getY(), p.getColor(), p.getColor2(), p.getWidth(), p.getHeight(), p.getName(), p.getFontSize(), 2);
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
             // Node
-            if (draggedElement instanceof Node)
-            {
-                Node n=(Node)draggedElement;
-                drawPlace(n.getX(), n.getY(),n.getColor(),n.getColor2(),n.getWidth(),n.getHeight(),n.getName(),n.getFontSize(),2);
+            if (draggedElement instanceof Node) {
+                Node n = (Node) draggedElement;
+                drawPlace(n.getX(), n.getY(), n.getColor(), n.getColor2(), n.getWidth(), n.getHeight(), n.getName(), n.getFontSize(), 2);
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
- 
+
 
 
             // Selected is 
-            if (draggedObject instanceof Line2D)
-            //if(lineButton.isSelected())
+            if (draggedObject instanceof Line2D) //if(lineButton.isSelected())
             {
-                int x1=(int)((Line2D)draggedObject).getX1();
-                int y1=(int)((Line2D)draggedObject).getY1();
-                int x2=(int)((Line2D)draggedObject).getX2();
-                int y2=(int)((Line2D)draggedObject).getY2();
-                
+                int x1 = (int) ((Line2D) draggedObject).getX1();
+                int y1 = (int) ((Line2D) draggedObject).getY1();
+                int x2 = (int) ((Line2D) draggedObject).getX2();
+                int y2 = (int) ((Line2D) draggedObject).getY2();
+
                 // Arc is selected when it is moving
                 //Arc _arc=(Arc)selectedElements.get(0); 
-                drawArrow(x1, y1, x2, y2,"long","",0);//_arc.getName(),_arc.getFontSize());
+                drawArrow(x1, y1, x2, y2, "long", "", 0);//_arc.getName(),_arc.getFontSize());
             }
-            
-        }    
+
+        }
+
         private void drawSelectedElements() {
             // Nothing to draw
-            if (selectedElements.isEmpty())
+            if (selectedElements.isEmpty()) {
                 return;
-            
-            Element e=selectedElements.get(0);     
+            }
+
+            Element e = selectedElements.get(0);
             // Ring
-            if(e instanceof Place)
-            {
-                Place p=(Place)e;
+            if (e instanceof Place) {
+                Place p = (Place) e;
                 //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-                drawPlaceSelected(p.getX(), p.getY(),p.getWidth(),p.getHeight());
+                drawPlaceSelected(p.getX(), p.getY(), p.getWidth(), p.getHeight());
             }
-            if(e instanceof Node)
-            {
-                Node n=(Node)e;
+            if (e instanceof Node) {
+                Node n = (Node) e;
                 //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-                drawPlaceSelected(n.getX(), n.getY(),n.getWidth(),n.getHeight());
-            }                
-            if(e instanceof Resource)
-            {
-                Resource r=(Resource)e;
+                drawPlaceSelected(n.getX(), n.getY(), n.getWidth(), n.getHeight());
+            }
+            if (e instanceof Resource) {
+                Resource r = (Resource) e;
                 //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-                drawPlaceSelected(r.getX(), r.getY(),r.getWidth(),r.getHeight());
-            }                
-            if(e instanceof Transition)
-            {
-                Transition t=(Transition)e;
+                drawPlaceSelected(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+            }
+            if (e instanceof Transition) {
+                Transition t = (Transition) e;
                 //drawTransitionSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());7
-                drawTransitionSelected(t.getX(), t.getY(),t.getWidth(),t.getHeight());
+                drawTransitionSelected(t.getX(), t.getY(), t.getWidth(), t.getHeight());
             }
-            if(e instanceof Arc)
-            {                
-             /*   DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
-                DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+            if (e instanceof Arc) {
+                /*   DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
+                 DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
 
-                drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());*/
-                Element  in =((Arc)e).getInElement();
-                Element out =((Arc)e).getOutElement();
-                drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());
+                 drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());*/
+                Element in = ((Arc) e).getInElement();
+                Element out = ((Arc) e).getOutElement();
+                drawArcSelected(out.getX(), out.getY(), in.getX(), in.getY());
             }
-            
-                        
+
+
         }
-    public void mouseLeftClick(int x, int y) {  
-        // Select 1 element
-        selectedElements.clear();
-        Element e=controller.getLocationElement(x,y);
-        Arc     a=controller.getLocationArc(x,y);
-        if (e!=null)
-            selectedElements.add(e);
-        else
-        if (a!=null)
-            selectedElements.add(a);
-        
-        // Create new
-        if (selectedElements.isEmpty())
-        {
-               this.draggedObject=null;               
-               
-               // Place / Node
-               if (ellipseButton.isSelected())
-               {        
-                   if (graph instanceof PetriNet)
-                       controller.addPlace("Place",x,y);
-                   if (graph instanceof PrecedenceGraph)
-                       controller.addNode("Node",x,y);
-               }    
-               // Resource
-               if (resuorceButton.isSelected())
-               {        
-                   if (graph instanceof PetriNet)
-                       controller.addResource("Resource",x,y);        
+
+        public void mouseLeftClick(int x, int y) {
+            // Select 1 element
+            selectedElements.clear();
+            Element e = controller.getLocationElement(x, y);
+            Arc a = controller.getLocationArc(x, y);
+            if (e != null) {
+                selectedElements.add(e);
+            } else if (a != null) {
+                selectedElements.add(a);
+            }
+
+            // Create new
+            if (selectedElements.isEmpty()) {
+                this.draggedObject = null;
+
+                // Place / Node
+                if (ellipseButton.isSelected()) {
+                    if (graph instanceof PetriNet) {
+                        controller.addPlace("Place", x, y);
+                    }
+                    if (graph instanceof PrecedenceGraph) {
+                        controller.addNode("Node", x, y);
+                    }
                 }
-               // Transition
-               if (rectangleButton.isSelected())
-               {        
-                   controller.addTransition("Transition", x, y);                   
-               }                             
-               
-        }
-        
-        // Dragging preparation & create new arc
-        //else 
-        if (selectedElements.size()==1)
-        {
-            Element currentElement=selectedElements.get(0);
-            
-            // Creat new Arc
-            if ((currentElement instanceof Transition || currentElement instanceof Place || currentElement instanceof Node || currentElement instanceof Resource)
-                    &&  lineButton.isSelected()  )
-            {
-                this.draggedColor=Color.GRAY;
-                this.draggedObject=new Line2D.Float(x,y,x,y);                
-            }               
-            else    
-            
-            // Place or Node or Resource or Transition
-            if (currentElement instanceof Place || currentElement instanceof Node || currentElement instanceof Resource || currentElement instanceof Transition)
-            {   
-                this.draggedElement=currentElement;
-                propertiesMenu.setVisible(true);
-            }            
+                // Resource
+                if (resuorceButton.isSelected()) {
+                    if (graph instanceof PetriNet) {
+                        controller.addResource("Resource", x, y);
+                    }
+                }
+                // Transition
+                if (rectangleButton.isSelected()) {
+                    controller.addTransition("Transition", x, y);
+                }
 
-            // Arc
-            if (currentElement instanceof Arc)
-            {
-                //this.draggedColor=Color.GRAY;
-                //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
-                propertiesMenu.setVisible(true);
             }
+
+            // Dragging preparation & create new arc
+            //else 
+            if (selectedElements.size() == 1) {
+                Element currentElement = selectedElements.get(0);
+
+                // Creat new Arc
+                if ((currentElement instanceof Transition || currentElement instanceof Place || currentElement instanceof Node || currentElement instanceof Resource)
+                        && lineButton.isSelected()) {
+                    this.draggedColor = Color.GRAY;
+                    this.draggedObject = new Line2D.Float(x, y, x, y);
+                } else // Place or Node or Resource or Transition
+                if (currentElement instanceof Place || currentElement instanceof Node || currentElement instanceof Resource || currentElement instanceof Transition) {
+                    this.draggedElement = currentElement;
+                    propertiesMenu.setVisible(true);
+                }
+
+                // Arc
+                if (currentElement instanceof Arc) {
+                    //this.draggedColor=Color.GRAY;
+                    //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
+                    propertiesMenu.setVisible(true);
+                }
+            }
+
+
+
+
+            if (selectedElements.isEmpty()) {
+                propertiesMenu.setVisible(false);
+            }
+            repaint();
         }
-        
-        
-        
-       
-        if (selectedElements.isEmpty())
-            propertiesMenu.setVisible(false);
-        repaint();    
-    }
-    
-    public void mouseRightClick(int x, int y) {  
-        // Create RED shadow line indicating deletion of arc        
-        controller.deleteElement(x,y);
-        controller.deleteArc(x,y);
-        repaint();
-        /*Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
-        if (currentElement!=null)
-            controller.deleteElement(x, y);*/
-        // Arc 
+
+        public void mouseRightClick(int x, int y) {
+            // Create RED shadow line indicating deletion of arc        
+            controller.deleteElement(x, y);
+            controller.deleteArc(x, y);
+            repaint();
+            /*Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
+             if (currentElement!=null)
+             controller.deleteElement(x, y);*/
+            // Arc 
         /*if (currentElement!=null)//  &&  lineButton.isSelected()  )
-        {
-            this.draggedColor=Color.RED;
-            this.draggedObject=new Line2D.Float(x,y,x,y);
-        }  */
-        
-        // Not reapinting ! Deleting single item
-        //repaint();
-    }
+             {
+             this.draggedColor=Color.RED;
+             this.draggedObject=new Line2D.Float(x,y,x,y);
+             }  */
 
-    private void mouseLeftDragged(int x, int y) {
-        // None element or arc
-        if (draggedObject==null && draggedElement==null)
-            return;        
-        // Element
-        if (draggedElement instanceof Place || draggedElement instanceof Node || draggedElement instanceof Resource ||
-                draggedElement instanceof Transition)
-        {
-            draggedElement.setX(x);
-            draggedElement.setY(y);            
+            // Not reapinting ! Deleting single item
+            //repaint();
         }
+
+        private void mouseLeftDragged(int x, int y) {
+            // None element or arc
+            if (draggedObject == null && draggedElement == null) {
+                return;
+            }
+            // Element
+            if (draggedElement instanceof Place || draggedElement instanceof Node || draggedElement instanceof Resource
+                    || draggedElement instanceof Transition) {
+                draggedElement.setX(x);
+                draggedElement.setY(y);
+            }
             //draggedObject=new Rectangle2D.Float(x, y, 25, 40);
-        
-        // Ellipse
+
+            // Ellipse
        /* if (draggedObject instanceof Ellipse2D)
-            draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
-        */
-        // Rectangle
+             draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
+             */
+            // Rectangle
         /*if (draggedObject instanceof Rectangle2D)
-            draggedObject=new Rectangle2D.Float(x, y, 25, 40);
+             draggedObject=new Rectangle2D.Float(x, y, 25, 40);
         
-        // Ellipse
-        if (draggedObject instanceof Ellipse2D)
-            draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
-        */
-        // Line
-        if (draggedObject instanceof Line2D)
-        {
-            int x1=(int)((Line2D)draggedObject).getX1();
-            int y1=(int)((Line2D)draggedObject).getY1();                
-            draggedObject=new Line2D.Float(x1,y1,x,y);
-        }            
+             // Ellipse
+             if (draggedObject instanceof Ellipse2D)
+             draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
+             */
+            // Line
+            if (draggedObject instanceof Line2D) {
+                int x1 = (int) ((Line2D) draggedObject).getX1();
+                int y1 = (int) ((Line2D) draggedObject).getY1();
+                draggedObject = new Line2D.Float(x1, y1, x, y);
+            }
 
-        repaint();
-    }
-      
-    private void mouseRightDragged(int x, int y) {
-        // Line
+            repaint();
+        }
+
+        private void mouseRightDragged(int x, int y) {
+            // Line
         /*if (draggedObject instanceof Line2D)
-        {
-            int x1=(int)((Line2D)draggedObject).getX1();
-            int y1=(int)((Line2D)draggedObject).getY1();                
-            draggedObject=new Line2D.Float(x1,y1,x,y);
-        }  
-        repaint();     */   
-    }    
-    
-    public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
-        // Old and current positions
-        
-        // Move place / transition
-        // && resource isSelected
-        if (!ellipseButton.isSelected() && !rectangleButton.isSelected() && !lineButton.isSelected())
-        {                    
-            controller.moveElement(x_old,y_old,x_new,y_new);
-        }   
-        
-        // Add arc
-        if (lineButton.isSelected() && draggedObject instanceof Line2D)
-        {
-            controller.addArc("Arc", x_old, y_old, x_new, y_new);
+             {
+             int x1=(int)((Line2D)draggedObject).getX1();
+             int y1=(int)((Line2D)draggedObject).getY1();                
+             draggedObject=new Line2D.Float(x1,y1,x,y);
+             }  
+             repaint();     */
         }
-        
-        draggedObject=null;
-        draggedElement=null;
-        repaint();
-    }
 
-    private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new)
-    {
-        /*
-        // Old and current positions
-        int x_old_location=x_old/elementWidth;
-        int y_old_location=y_old/elementWidth;            
-        int x_new_location=x_new/elementWidth;
-        int y_new_location=y_new/elementWidth;
-        
-        // Select existing 
-        // Same location - delete element
-        if (x_old_location == x_new_location && y_old_location == y_new_location)
-        {
-            controller.deleteElement(x_new_location,y_new_location);
-        }
-        
-        // Delete arc
-        {
-            //controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
-        }
-        draggedObject=null;
-        repaint();*/
-    }
+        public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
+            // Old and current positions
 
-        private void loadElementProperties(Element currentElement) 
-        {
+            // Move place / transition
+            // && resource isSelected
+            if (!ellipseButton.isSelected() && !rectangleButton.isSelected() && !lineButton.isSelected()) {
+                controller.moveElement(x_old, y_old, x_new, y_new);
+            }
+
+            // Add arc
+            if (lineButton.isSelected() && draggedObject instanceof Line2D) {
+                controller.addArc("Arc", x_old, y_old, x_new, y_new);
+            }
+
+            draggedObject = null;
+            draggedElement = null;
+            repaint();
+        }
+
+        private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new) {
+            /*
+             // Old and current positions
+             int x_old_location=x_old/elementWidth;
+             int y_old_location=y_old/elementWidth;            
+             int x_new_location=x_new/elementWidth;
+             int y_new_location=y_new/elementWidth;
+        
+             // Select existing 
+             // Same location - delete element
+             if (x_old_location == x_new_location && y_old_location == y_new_location)
+             {
+             controller.deleteElement(x_new_location,y_new_location);
+             }
+        
+             // Delete arc
+             {
+             //controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
+             }
+             draggedObject=null;
+             repaint();*/
+        }
+
+        private void loadElementProperties(Element currentElement) {
             generalProperties.loadProperties(currentElement);
             notes.setText(currentElement.getNote());
             /*
-            generalProperties.setElementName(currentElement.getName());
-            generalProperties.setElementFontSize(Integer.toString(currentElement.getFontSize()));
-            notes.setText(currentElement.getNote());
-            if(currentElement instanceof AbsPlace)
-            {
-                AbsPlace current= (AbsPlace) currentElement;
-                generalProperties.setElementWidth(Integer.toString(current.getWidth()));
-                generalProperties.setElementHeight(Integer.toString(current.getHeight()));
-            }
-            if(currentElement instanceof Transition)
-            {
-                Transition current= (Transition) currentElement;
-                generalProperties.setElementWidth(Integer.toString(current.getWidth()));
-                generalProperties.setElementHeight(Integer.toString(current.getHeight()));
-            }
-            */ 
+             generalProperties.setElementName(currentElement.getName());
+             generalProperties.setElementFontSize(Integer.toString(currentElement.getFontSize()));
+             notes.setText(currentElement.getNote());
+             if(currentElement instanceof AbsPlace)
+             {
+             AbsPlace current= (AbsPlace) currentElement;
+             generalProperties.setElementWidth(Integer.toString(current.getWidth()));
+             generalProperties.setElementHeight(Integer.toString(current.getHeight()));
+             }
+             if(currentElement instanceof Transition)
+             {
+             Transition current= (Transition) currentElement;
+             generalProperties.setElementWidth(Integer.toString(current.getWidth()));
+             generalProperties.setElementHeight(Integer.toString(current.getHeight()));
+             }
+             */
         }
-
-  
-
-        
-
-}
-
-
-public class DiagramMouseAdapter extends MouseAdapter 
-{
-    private int x;
-    private int y;
-
-    public DiagramMouseAdapter()    {}
-    
-    @Override
-    public void mousePressed(MouseEvent e) 
-    {
-      // Save current
-      x = e.getX();
-      y = e.getY();
-      
-      // Check for click button
-      if (SwingUtilities.isLeftMouseButton  (e) ) {
-        diagramPanel.mouseLeftClick(x,y);
-        }
-      if (SwingUtilities.isRightMouseButton   (e) ) {
-        diagramPanel.mouseRightClick(x,y);       
-        }
-      /*if (SwingUtilities.isMiddleMouseButton  (e) )
-          System.out.println("stredny "+x+" "+y);*/
     }
-    
-    @Override
-    public void mouseReleased(MouseEvent e)
-    {
-      // Old location is different from current        
-      //if (x != e.getX()   ||     y != e.getY())
-      if(true)
-      {
+
+    public class DiagramMouseAdapter extends MouseAdapter {
+
+        private int x;
+        private int y;
+
+        public DiagramMouseAdapter() {
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            // Save current
+            x = e.getX();
+            y = e.getY();
+
+            // Check for click button
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                diagramPanel.mouseLeftClick(x, y);
+            }
+            if (SwingUtilities.isRightMouseButton(e)) {
+                diagramPanel.mouseRightClick(x, y);
+            }
+            /*if (SwingUtilities.isMiddleMouseButton  (e) )
+             System.out.println("stredny "+x+" "+y);*/
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            // Old location is different from current        
+            //if (x != e.getX()   ||     y != e.getY())
+            if (true) {
+                // Left
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    diagramPanel.mouseLeftReleased(x, y, e.getX(), e.getY());
+                }
+                // Right
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    //diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
+                }
+            }
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent e) {
             // Left
-            if (SwingUtilities.isLeftMouseButton  (e) )
-            {
-                  diagramPanel.mouseLeftReleased(x,y,e.getX(),e.getY());
-            }      
-            // Right
-            if (SwingUtilities.isRightMouseButton(e) )
-            {
-                  //diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
-            }      
-      }
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                diagramPanel.mouseLeftDragged(e.getX(), e.getY());
+            }
+            // Right - but left functionality
+            if (SwingUtilities.isRightMouseButton(e)) {
+                //diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
+                diagramPanel.mouseRightDragged(e.getX(), e.getY());
+            }
+        }
     }
-    
-     
-    @Override
-    public void mouseDragged(MouseEvent e) 
-    {
-        // Left
-        if (SwingUtilities.isLeftMouseButton  (e) ) 
-        {
-            diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
-        }      
-        // Right - but left functionality
-        if (SwingUtilities.isRightMouseButton(e) ) 
-        {
-            //diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
-            diagramPanel.mouseRightDragged(e.getX(),e.getY());    
-        }                
-    }    
-  }
-
 }

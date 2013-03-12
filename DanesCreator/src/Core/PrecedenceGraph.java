@@ -48,22 +48,22 @@ public class PrecedenceGraph extends Graph {
         for (Node actNode : listOfNodes) {
             if (actNode.getName().equals(paName)) {
 
-        for (Arc actArc : actNode.getListOfInArcs()) {
-            Node temp = (Node) actArc.getOutElement();
-            temp.getListOfOutArcs().remove(actArc);
-            temp.getListOfOutNodes().remove(actNode);
-            listOfArcs.remove(actArc);
-        }
+                for (Arc actArc : actNode.getListOfInArcs()) {
+                    Node temp = (Node) actArc.getOutElement();
+                    temp.getListOfOutArcs().remove(actArc);
+                    temp.getListOfOutNodes().remove(actNode);
+                    listOfArcs.remove(actArc);
+                }
 
-        for (Arc actArc : actNode.getListOfOutArcs()) {
-            Node temp = (Node) actArc.getInElement();
-            temp.getListOfInArcs().remove(actArc);
-            temp.getListOfInNodes().remove(actNode);
-            listOfArcs.remove(actArc);
-        }
+                for (Arc actArc : actNode.getListOfOutArcs()) {
+                    Node temp = (Node) actArc.getInElement();
+                    temp.getListOfInArcs().remove(actArc);
+                    temp.getListOfInNodes().remove(actNode);
+                    listOfArcs.remove(actArc);
+                }
 
-        listOfNodes.remove(actNode);
-        return true;
+                listOfNodes.remove(actNode);
+                return true;
             }
         }
         return false;
@@ -129,6 +129,7 @@ public class PrecedenceGraph extends Graph {
     public void setName(String name) {
         this.name = name;
     }
+
     /**
      * @return the listOfArcs
      */
@@ -142,12 +143,22 @@ public class PrecedenceGraph extends Graph {
     public ArrayList<Core.Node> getListOfNodes() {
         return listOfNodes;
     }
-    
-    public PetriNet changePrecedenceGraphToPN(){
-        PetriNet pn=new PetriNet(this.getName());
-        
-        for(Node n: this.listOfNodes){
-            Transition tr=new Transition(n.getName());
+
+    public Node getNode(int x, int y) {
+        for (Node p : listOfNodes) {
+            //if ((p.getDiagramElement().getX() == x) && (p.getDiagramElement().getY() == y)) {
+            if ((p.getX() == x) && (p.getY() == y)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+    public PetriNet changePrecedenceGraphToPN() {
+        PetriNet pn = new PetriNet(this.getName());
+
+        for (Node n : this.listOfNodes) {
+            Transition tr = new Transition(n.getName());
             tr.setColor(n.getColor());
             tr.setFontSize(n.getFontSize());
             tr.setHeight(n.getHeight());
@@ -158,54 +169,53 @@ public class PrecedenceGraph extends Graph {
             //tr.setDiagramElement(new DiagramElement(n.getDiagramElement().getX(),n.getDiagramElement().getY()));
             pn.addTransition(tr);
         }
-        
-        int temp=0;
-        
-        for(Arc a: this.listOfArcs){
+
+        int temp = 0;
+
+        for (Arc a : this.listOfArcs) {
             Place pl = new Place(a.getName());
             pl.setCapacity(a.getCapacity());
             pn.addPlace(pl);
             //pl.setDiagramElement(new DiagramElement(5,6));
-           
+
             //vystupny prechod
             //int x1=a.getOutElement().getDiagramElement().getX();
             //int y1=a.getOutElement().getDiagramElement().getY();
-            int x1=a.getOutElement().getX();
-            int y1=a.getOutElement().getY();            
-            Transition tempTrIn=pn.getTransition(x1, y1);
+            int x1 = a.getOutElement().getX();
+            int y1 = a.getOutElement().getY();
+            Transition tempTrIn = pn.getTransition(x1, y1);
             tempTrIn.getListOfOutPlaces().add(pl);
             pl.getListOfInTransitions().add(tempTrIn);
-            Arc tempAr=new Arc("Arc"+temp,tempTrIn,pl);
+            Arc tempAr = new Arc("Arc" + temp, tempTrIn, pl);
             tempTrIn.getListOfOutArcs().add(tempAr);
             pl.getListOfInArcs().add(tempAr);
             pn.addArc(tempAr);
-            
+
             temp++;
-            
+
             //vystupny prechod
             //int x2=a.getInElement().getDiagramElement().getX();
             //int y2=a.getInElement().getDiagramElement().getY();
-            int x2=a.getInElement().getX();
-            int y2=a.getInElement().getY();            
-            Transition tempTrOut=pn.getTransition(x2, y2);
+            int x2 = a.getInElement().getX();
+            int y2 = a.getInElement().getY();
+            Transition tempTrOut = pn.getTransition(x2, y2);
             tempTrOut.getListOfInPlaces().add(pl);
             pl.getListOfOutTransitions().add(tempTrOut);
-            tempAr=new Arc("Arc"+temp,pl,tempTrOut);
+            tempAr = new Arc("Arc" + temp, pl, tempTrOut);
             tempTrOut.getListOfInArcs().add(tempAr);
             pl.getListOfOutArcs().add(tempAr);
             pn.addArc(tempAr);
-            
+
             temp++;
-            
+
             //nastav umiestnenie miesta
-            int x=(x1+x2)/2;
-            int y=(y1+y2)/2;
+            int x = (x1 + x2) / 2;
+            int y = (y1 + y2) / 2;
             pl.setX(x);
             pl.setY(y);
             //pl.setDiagramElement(new DiagramElement(x, y));
         }
-        
+
         return pn;
     }
-    
 }

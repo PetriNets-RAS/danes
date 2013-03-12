@@ -36,25 +36,26 @@ import org.xml.sax.SAXException;
  *
  * @author Atarin
  */
-public class CoBA_XMLManager {
+public class XMLPetriManager {
 
     DocumentBuilderFactory docFactory;
     DocumentBuilder docBuilder;
     Document doc;
 
-    public CoBA_XMLManager() {
+    public XMLPetriManager() {
 
         try {
             docFactory = DocumentBuilderFactory.newInstance();
             docBuilder = docFactory.newDocumentBuilder();
 
         } catch (ParserConfigurationException ex) {
-            Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XMLPetriManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public boolean createPetriXML(PetriNet pn, File outputFile) {
+    public boolean createPetriXML(Core.Graph g, File outputFile) {
         try {
+            PetriNet pn=(PetriNet) g;
             doc = (Document) docBuilder.newDocument();
             Element rootElement = doc.createElement("process");
             doc.appendChild(rootElement);
@@ -83,7 +84,7 @@ public class CoBA_XMLManager {
 
             return true;
         } catch (TransformerException ex) {
-            Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XMLPetriManager.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
@@ -106,7 +107,7 @@ public class CoBA_XMLManager {
 
             return pn;
         } catch (Exception ex) {
-            Logger.getLogger(CoBA_XMLManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(XMLPetriManager.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
