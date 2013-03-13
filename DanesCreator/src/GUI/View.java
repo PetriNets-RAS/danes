@@ -23,14 +23,20 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
 import java.awt.Stroke;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -39,6 +45,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 //import sun.org.mozilla.javascript.internal.xmlimpl.XML;
 
@@ -56,9 +63,11 @@ public class View extends javax.swing.JFrame {
     //private PetriNet p;
     //private PrecedenceGraph pg;
     private File selectedFile;
+    AffineTransform tx = new AffineTransform();
 
     public View(PetriNet pa_petriNet, Controller pa_controller) {
         super();
+       //this.setLocationRelativeTo(null);
         this.graph = pa_petriNet;
         this.controller = pa_controller;
         this.diagramPanel = null;
@@ -223,6 +232,14 @@ public class View extends javax.swing.JFrame {
 
         diagramScrollPane.setBorder(null);
         diagramScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        diagramScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                diagramScrollPaneMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                diagramScrollPaneMousePressed(evt);
+            }
+        });
 
         btnZoomIn.setText("Zoom in");
         btnZoomIn.addActionListener(new java.awt.event.ActionListener() {
@@ -494,8 +511,8 @@ public class View extends javax.swing.JFrame {
         //FileManager.XMLPrecedenceManager l=new XMLPrecedenceManager();
         //pg=l.getPrecedenceFromXML(inputFile);
 
-        
-        g=p;
+
+        g = p;
         controller.setModel(g);
         this.diagramPanel = new DiagramPanel(g);
         diagramScrollPane.setViewportView(this.diagramPanel);
@@ -585,7 +602,7 @@ public class View extends javax.swing.JFrame {
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
         // TODO add your handling code here:
-        PrecedenceGraph pg=(PrecedenceGraph) g;
+        PrecedenceGraph pg = (PrecedenceGraph) g;
         PetriNet converted = pg.changePrecedenceGraphToPN();
         g = converted;
         controller.setModel(converted);
@@ -612,6 +629,13 @@ public class View extends javax.swing.JFrame {
         //diagramScrollPane.setViewportView(this.diagramPanel);               
         //repaint();
     }//GEN-LAST:event_btnZoomInActionPerformed
+
+    private void diagramScrollPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseClicked
+    }//GEN-LAST:event_diagramScrollPaneMouseClicked
+
+    private void diagramScrollPaneMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMousePressed
+    }//GEN-LAST:event_diagramScrollPaneMousePressed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton btnZoomIn;
@@ -639,6 +663,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JPanel specificPropertiesMenu;
     private javax.swing.JMenuBar topMenu;
     // End of variables declaration//GEN-END:variables
+
     class DiagramPanel extends javax.swing.JPanel {
 
         private DiagramMouseAdapter mouseAdapter;
@@ -649,12 +674,15 @@ public class View extends javax.swing.JFrame {
         private Object draggedObject;
         private Color draggedColor;
         private double[] scaleRatio;
+        AffineTransform tx = new AffineTransform();
+        double scale = 1.0;
 
         /**
          * Creates new form GraphPanel
          */
         public DiagramPanel(Graph pa_graph) {
             super();
+            this.addMouseWheelListener(new DiagramPanel.ZoomHandler());
             this.graph = pa_graph;
             //this.g2d;//null;
             this.scaleRatio = new double[]{1.0, 1.0};
@@ -663,6 +691,7 @@ public class View extends javax.swing.JFrame {
             this.selectedElements = new ArrayList<Element>();
             this.mouseAdapter = new DiagramMouseAdapter();
 
+
             // Click listener, drag listener
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
@@ -670,6 +699,37 @@ public class View extends javax.swing.JFrame {
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(1000, 1000));
             setBackground(Color.WHITE);
+        }
+
+        private class ZoomHandler implements MouseWheelListener {
+
+            double scale = 1.0;
+
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+
+                    Point2D p1 = e.getPoint();
+                    Point2D p2 = null;
+                    try {
+                        p2 = tx.inverseTransform(p1, null);
+                    } catch (NoninvertibleTransformException ex) {
+                        // should not get here
+                        ex.printStackTrace();
+                        return;
+                    }
+                    scale -= (0.1 * e.getWheelRotation());
+                    scale = Math.max(0.1, scale);
+
+                    tx.setToIdentity();
+                    tx.translate(p1.getX(), p1.getY());
+                    tx.scale(scale, scale);
+                    tx.translate(-p2.getX(), -p2.getY());
+
+                    DiagramPanel.this.revalidate();
+                    DiagramPanel.this.repaint();
+                }
+            }
         }
 
         @Override
@@ -709,9 +769,11 @@ public class View extends javax.swing.JFrame {
              g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));   
              */
             g2d.setColor(c2);
-            g2d.fill(new Ellipse2D.Double(column, row, width, height));
+            //g2d.fill(new Ellipse2D.Double(column, row, width, height));
+            g2d.fill(tx.createTransformedShape(new Ellipse2D.Double(column, row, width, height)));
             g2d.setColor(c1);
             g2d.draw(new Ellipse2D.Double(column, row, width, height));
+            //g2d.draw(tx.createTransformedShape(new Ellipse2D.Double(column, row, width, height)));
 
 
             // Remember old
@@ -731,8 +793,14 @@ public class View extends javax.swing.JFrame {
             int x = (int) (column + width / 2.0 - textWidth / 2.0);
             int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
 
-            // Draw the string.                          
+            // Draw the string.        
+            Point po=new Point(0, 0);
+            Point po1=new Point(x, y);
+            tx.transform(po1, po);
+            //tx.translate(x,xa );
+            //tx.translate(y,ya );
             g2d.drawString(name, x, y);
+            //g2d.drawString(name, po.x, po.y);
 
             // Revert back
             g2d.setFont(oldFont);
@@ -771,6 +839,8 @@ public class View extends javax.swing.JFrame {
             int distance = 10;
 
             g2d.draw(new Ellipse2D.Double(column - distance, row - distance, width + distance * 2, height + distance * 2));
+            //g2d.draw(tx.createTransformedShape(new Ellipse2D.Double(column - distance, row - distance, width + distance * 2, height + distance * 2)));
+            
             g2d.setColor(color);
             g2d.setStroke(_oldStroke);
         }
@@ -791,11 +861,13 @@ public class View extends javax.swing.JFrame {
 
             g2d.setColor(c2); //white vypln
             g2d.fill(new Ellipse2D.Double(column, row, width, height));
+            //g2d.fill(tx.createTransformedShape(new Ellipse2D.Double(column, row, width, height)));
 
             // Border more width
             g2d.setStroke(new BasicStroke(5));
             g2d.setColor(c1); //black   
             g2d.draw(new Ellipse2D.Double(column, row, width, height));
+            //g2d.draw(tx.createTransformedShape(new Ellipse2D.Double(column, row, width, height)));
             g2d.setStroke(_oldStroke);
 
 
@@ -816,9 +888,13 @@ public class View extends javax.swing.JFrame {
             int x = (int) (column + width / 2.0 - textWidth / 2.0);
             int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
 
-            // Draw the string.                          
+            // Draw the string.             
+            Point po=new Point(0, 0);
+            Point po1=new Point(x, y);
+            tx.transform(po1, po);
+            
             g2d.drawString(name, x, y);
-
+            //g2d.drawString(name, po.x, po.y);
             // Revert back
             g2d.setFont(oldFont);
         }
@@ -846,8 +922,10 @@ public class View extends javax.swing.JFrame {
 
             g2d.setColor(c2);
             g2d.fill(new Rectangle2D.Float(column, row, width, height));
+            //g2d.fill(tx.createTransformedShape(new Rectangle2D.Float(column, row, width, height)));
             g2d.setColor(c1);
             g2d.draw(new Rectangle2D.Float(column, row, width, height));
+            //g2d.draw(tx.createTransformedShape(new Rectangle2D.Float(column, row, width, height)));
 
             // Remember old
             Font oldFont = g2d.getFont();
@@ -866,8 +944,14 @@ public class View extends javax.swing.JFrame {
             int x = (int) (column + width / 2.0 - textWidth / 2.0);
             int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
 
-            // Draw the string.                          
+            // Draw the string.   
+            
+            Point po=new Point(0, 0);
+            Point po1=new Point(x, y);
+            tx.transform(po1, po);
+            
             g2d.drawString(name, x, y);
+            //g2d.drawString(name, po.x, po.y);
 
             // Revert back
             g2d.setFont(oldFont);
@@ -891,7 +975,9 @@ public class View extends javax.swing.JFrame {
             Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
             g2d.setStroke(s);
             int distance = 10;
-            g2d.draw(new Rectangle2D.Float(column - distance, row - distance, width + distance * 2, height + distance * 2));
+           g2d.draw(new Rectangle2D.Float(column - distance, row - distance, width + distance * 2, height + distance * 2));
+
+           // g2d.draw(tx.createTransformedShape(new Rectangle2D.Float(column - distance, row - distance, width + distance * 2, height + distance * 2)));
 
             g2d.setColor(color);
         }
@@ -911,19 +997,27 @@ public class View extends javax.swing.JFrame {
             AffineTransform oldTransform = g2d.getTransform();
             g2d.transform(at);
 
-
             // Draw horizontal arrow starting in (0, 0)
             // Length decrease by X pixels if type of arrow is short
             if ("short".equals(type)) {
                 // Add functionality
                 len = len - 30;
             }
-
-            g2d.drawLine(0, 0, len - 5, 0);
+            
+            
+            //g2d.drawLine(0, 0, len - 5, 0);
+            g2d.draw(new Line2D.Double(0, 0, len - 5, 0));
+            //g2d.draw(tx.createTransformedShape(new Line2D.Double(0, 0, len - 5, 0)));
             g2d.fillPolygon(new int[]{len, len - ARR_SIZE, len - ARR_SIZE, len},
                     new int[]{0, -ARR_SIZE, ARR_SIZE, 0}, 4);
+//            g2d.fill(tx.createTransformedShape(new Polygon(new int[]{len, len - ARR_SIZE, len - ARR_SIZE, len},
+//                    new int[]{0, -ARR_SIZE, ARR_SIZE, 0}, 4)));
+            //g2d.fillPolygon(new int[]{len, len - ARR_SIZE, len - ARR_SIZE, len},
+            //        new int[]{0, -ARR_SIZE, ARR_SIZE, 0}, 4);
+            
             // Retract old
             g2d.setTransform(oldTransform);
+            //g2d.setTransform(tx);
 
             /*
              * Add name and fontSize drawString
@@ -997,7 +1091,8 @@ public class View extends javax.swing.JFrame {
             //drawArrow( column1+25  ,row1+25,
             //           column2+25,  row2+25,"short");   
             // Draw dashed line around line
-            g2d.draw(area);
+            //g2d.draw(area);
+            g2d.draw(tx.createTransformedShape(area));
         }
 
         public void drawGraph() {
@@ -1203,6 +1298,10 @@ public class View extends javax.swing.JFrame {
 
         public void mouseLeftClick(int x, int y) {
             // Select 1 element
+            //g2d.drawString(name, x, y);
+            //g2d.drawString(name, po.x, po.y);
+            
+            
             selectedElements.clear();
             Element e = controller.getLocationElement(x, y);
             Arc a = controller.getLocationArc(x, y);
