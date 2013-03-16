@@ -532,20 +532,11 @@ public class View extends javax.swing.JFrame {
         selectedFile = jFileChooser.getSelectedFile();
         File inputFile = new File(selectedFile.getAbsolutePath());
 
-        //PetriNet p = x.getPetriNetFromXML(inputFile);
-        
-        
-        //FileManager.XMLPrecedenceManager l=new XMLPrecedenceManager();
-        //pg=l.getPrecedenceFromXML(inputFile);
-        System.out.println(inputFile.getName());
-        System.out.println(inputFile.getName().substring(inputFile.getName().length() - 3));
         if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
-            System.out.println("NACITAVAM PN");
             FileManager.XMLPetriManager loader = new XMLPetriManager();
             PetriNet p = loader.getPetriNetFromXML(inputFile);
             g = p;
         } else {
-            System.out.println("NACITAVAM PG");
             FileManager.XMLPrecedenceManager loader=new XMLPrecedenceManager();
             PrecedenceGraph pg=loader.getPrecedenceFromXML(inputFile);
             g=pg;
@@ -598,23 +589,17 @@ public class View extends javax.swing.JFrame {
         if (g instanceof PetriNet) {
             sufix = ".dpn";
             FileManager.XMLPetriManager newXML = new XMLPetriManager();
-//            if((selectedFile.getName().length()>4)&&("dpg".equals(selectFile.getName().substring(selectedFile.getName().length() - 3)))){
-//                File temp=new File(selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().length()-3));
-//            }
+
             if ((selectedFile.getName().length() < 5) || (!"dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
                 File temp = selectedFile;
                 selectedFile = new File(selectedFile.getAbsolutePath() + sufix);
                 temp.delete();
             }
 
-            System.out.println(selectedFile.getAbsolutePath());
             newXML.createPetriXML(g, selectedFile);
             System.out.println("UKLADAM PN");
         } else {
             sufix = ".dpg";
-//            if("dpn".equals(selectFile.getName().substring(selectedFile.getName().length() - 3))){
-//                File temp=new File(selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().length()-3));
-//            }
 
             FileManager.XMLPrecedenceManager newXML = new XMLPrecedenceManager();
             if ((selectedFile.getName().length() < 5) || (!"dpg".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {

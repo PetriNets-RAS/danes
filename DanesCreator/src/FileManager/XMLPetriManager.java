@@ -168,31 +168,23 @@ public class XMLPetriManager {
 
                 if ("TP".equals(type)) {
                     Transition t = pn.getTransition(x2, y2);
-                    System.out.println(t.getName());
                     if ("".equals(resourceProfession)) {
                         p = pn.getPlace(x1, y1);
                         a = new Arc("ARC" + i, t, p);
-                        System.out.println(t.getName());
-                        System.out.println(p.getName());
 
                     } else {
                         r = pn.getResource(x1, y1);
                         a = new Arc("ARC" + i, t, r);
-                        System.out.println(r.getName());
-                        System.out.println(t.getName());
                     }
                 } else {
                     Transition t = pn.getTransition(x2, y2);
                     if ("".equals(resourceProfession)) {
                         p = pn.getPlace(x1, y1);
                         a = new Arc("ARC" + i, p, t);
-                        System.out.println(p.getName());
-                        System.out.println(t.getName());
+
                     } else {
                         r = pn.getResource(x1, y1);
                         a = new Arc("ARC" + i, r, t);
-                        System.out.println(r.getName());
-                        System.out.println(t.getName());
                     }
                 }
                 a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
