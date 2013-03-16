@@ -63,7 +63,6 @@ public class View extends javax.swing.JFrame {
     //private PetriNet p;
     //private PrecedenceGraph pg;
     private File selectedFile;
-    AffineTransform tx = new AffineTransform();
 
     public View(PetriNet pa_petriNet, Controller pa_controller) {
         super();
@@ -674,7 +673,6 @@ public class View extends javax.swing.JFrame {
         private Object draggedObject;
         private Color draggedColor;
         private double[] scaleRatio;
-        AffineTransform tx = new AffineTransform();
         double scale = 1.0;
 
         /**
@@ -682,7 +680,6 @@ public class View extends javax.swing.JFrame {
          */
         public DiagramPanel(Graph pa_graph) {
             super();
-            this.addMouseWheelListener(new DiagramPanel.ZoomHandler());
             this.graph = pa_graph;
             //this.g2d;//null;
             this.scaleRatio = new double[]{1.0, 1.0};
@@ -699,37 +696,6 @@ public class View extends javax.swing.JFrame {
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(1000, 1000));
             setBackground(Color.WHITE);
-        }
-
-        private class ZoomHandler implements MouseWheelListener {
-
-            double scale = 1.0;
-
-            @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-
-                    Point2D p1 = e.getPoint();
-                    Point2D p2 = null;
-                    try {
-                        p2 = tx.inverseTransform(p1, null);
-                    } catch (NoninvertibleTransformException ex) {
-                        // should not get here
-                        ex.printStackTrace();
-                        return;
-                    }
-                    scale -= (0.1 * e.getWheelRotation());
-                    scale = Math.max(0.1, scale);
-
-                    tx.setToIdentity();
-                    tx.translate(p1.getX(), p1.getY());
-                    tx.scale(scale, scale);
-                    tx.translate(-p2.getX(), -p2.getY());
-
-                    DiagramPanel.this.revalidate();
-                    DiagramPanel.this.repaint();
-                }
-            }
         }
 
         @Override
@@ -769,11 +735,9 @@ public class View extends javax.swing.JFrame {
              g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));   
              */
             g2d.setColor(c2);
-            //g2d.fill(new Ellipse2D.Double(column, row, width, height));
-            g2d.fill(tx.createTransformedShape(new Ellipse2D.Double(column, row, width, height)));
+            g2d.fill(new Ellipse2D.Double(column, row, width, height));
             g2d.setColor(c1);
             g2d.draw(new Ellipse2D.Double(column, row, width, height));
-            //g2d.draw(tx.createTransformedShape(new Ellipse2D.Double(column, row, width, height)));
 
 
             // Remember old
@@ -794,13 +758,8 @@ public class View extends javax.swing.JFrame {
             int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
 
             // Draw the string.        
-            Point po=new Point(0, 0);
-            Point po1=new Point(x, y);
-            tx.transform(po1, po);
-            //tx.translate(x,xa );
-            //tx.translate(y,ya );
+            
             g2d.drawString(name, x, y);
-            //g2d.drawString(name, po.x, po.y);
 
             // Revert back
             g2d.setFont(oldFont);
@@ -839,7 +798,6 @@ public class View extends javax.swing.JFrame {
             int distance = 10;
 
             g2d.draw(new Ellipse2D.Double(column - distance, row - distance, width + distance * 2, height + distance * 2));
-            //g2d.draw(tx.createTransformedShape(new Ellipse2D.Double(column - distance, row - distance, width + distance * 2, height + distance * 2)));
             
             g2d.setColor(color);
             g2d.setStroke(_oldStroke);
@@ -861,13 +819,11 @@ public class View extends javax.swing.JFrame {
 
             g2d.setColor(c2); //white vypln
             g2d.fill(new Ellipse2D.Double(column, row, width, height));
-            //g2d.fill(tx.createTransformedShape(new Ellipse2D.Double(column, row, width, height)));
-
+           
             // Border more width
             g2d.setStroke(new BasicStroke(5));
             g2d.setColor(c1); //black   
             g2d.draw(new Ellipse2D.Double(column, row, width, height));
-            //g2d.draw(tx.createTransformedShape(new Ellipse2D.Double(column, row, width, height)));
             g2d.setStroke(_oldStroke);
 
 
@@ -889,12 +845,7 @@ public class View extends javax.swing.JFrame {
             int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
 
             // Draw the string.             
-            Point po=new Point(0, 0);
-            Point po1=new Point(x, y);
-            tx.transform(po1, po);
-            
             g2d.drawString(name, x, y);
-            //g2d.drawString(name, po.x, po.y);
             // Revert back
             g2d.setFont(oldFont);
         }
@@ -922,11 +873,9 @@ public class View extends javax.swing.JFrame {
 
             g2d.setColor(c2);
             g2d.fill(new Rectangle2D.Float(column, row, width, height));
-            //g2d.fill(tx.createTransformedShape(new Rectangle2D.Float(column, row, width, height)));
             g2d.setColor(c1);
             g2d.draw(new Rectangle2D.Float(column, row, width, height));
-            //g2d.draw(tx.createTransformedShape(new Rectangle2D.Float(column, row, width, height)));
-
+            
             // Remember old
             Font oldFont = g2d.getFont();
             Font newFont = new Font("Times New Roman", Font.PLAIN, fontSize);
@@ -944,15 +893,8 @@ public class View extends javax.swing.JFrame {
             int x = (int) (column + width / 2.0 - textWidth / 2.0);
             int y = (int) (row + height / 2.0 - textHeight / 2.0) + fm.getAscent();
 
-            // Draw the string.   
-            
-            Point po=new Point(0, 0);
-            Point po1=new Point(x, y);
-            tx.transform(po1, po);
-            
+            // Draw the string.            
             g2d.drawString(name, x, y);
-            //g2d.drawString(name, po.x, po.y);
-
             // Revert back
             g2d.setFont(oldFont);
         }
@@ -976,9 +918,6 @@ public class View extends javax.swing.JFrame {
             g2d.setStroke(s);
             int distance = 10;
            g2d.draw(new Rectangle2D.Float(column - distance, row - distance, width + distance * 2, height + distance * 2));
-
-           // g2d.draw(tx.createTransformedShape(new Rectangle2D.Float(column - distance, row - distance, width + distance * 2, height + distance * 2)));
-
             g2d.setColor(color);
         }
 
@@ -1005,19 +944,11 @@ public class View extends javax.swing.JFrame {
             }
             
             
-            //g2d.drawLine(0, 0, len - 5, 0);
-            g2d.draw(new Line2D.Double(0, 0, len - 5, 0));
-            //g2d.draw(tx.createTransformedShape(new Line2D.Double(0, 0, len - 5, 0)));
+            g2d.drawLine(0, 0, len - 5, 0);
             g2d.fillPolygon(new int[]{len, len - ARR_SIZE, len - ARR_SIZE, len},
                     new int[]{0, -ARR_SIZE, ARR_SIZE, 0}, 4);
-//            g2d.fill(tx.createTransformedShape(new Polygon(new int[]{len, len - ARR_SIZE, len - ARR_SIZE, len},
-//                    new int[]{0, -ARR_SIZE, ARR_SIZE, 0}, 4)));
-            //g2d.fillPolygon(new int[]{len, len - ARR_SIZE, len - ARR_SIZE, len},
-            //        new int[]{0, -ARR_SIZE, ARR_SIZE, 0}, 4);
-            
             // Retract old
             g2d.setTransform(oldTransform);
-            //g2d.setTransform(tx);
 
             /*
              * Add name and fontSize drawString
@@ -1091,8 +1022,7 @@ public class View extends javax.swing.JFrame {
             //drawArrow( column1+25  ,row1+25,
             //           column2+25,  row2+25,"short");   
             // Draw dashed line around line
-            //g2d.draw(area);
-            g2d.draw(tx.createTransformedShape(area));
+            g2d.draw(area);
         }
 
         public void drawGraph() {

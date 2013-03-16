@@ -11,10 +11,10 @@ import java.util.ArrayList;
  * @author Atarin
  */
 public abstract class AbsPlace extends Element{
-    private int capacity;
+    private int initialMarking;
     private int width;
     private int height;
-    private int tokens;
+    //private int tokens;
     private ArrayList<Transition> listOfInTransitions;
     private ArrayList<Transition> listOfOutTransitions;
     private ArrayList<Arc> listOfInArcs;
@@ -45,17 +45,17 @@ public abstract class AbsPlace extends Element{
     }
 
     /**
-     * @return the capacity
+     * @return the initialMarking
      */
-    public int getCapacity() {
-        return capacity;
+    public int getInitialMarking() {
+        return initialMarking;
     }
 
     /**
-     * @param capacity the capacity to set
+     * @param initialMarking the initialMarking to set
      */
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public void setInitialMarking(int initialMarking) {
+        this.initialMarking = initialMarking;
     }
 
     /**
@@ -88,17 +88,17 @@ public abstract class AbsPlace extends Element{
 
     /**
      * @return the tokens
-     */
-    public int getTokens() {
-        return tokens;
-    }
-
-    /**
-     * @param tokens the tokens to set
-     */
-    public void setTokens(int tokens) {
-        this.tokens = tokens;
-    }
+//     */
+//    public int getTokens() {
+//        return tokens;
+//    }
+//
+//    /**
+//     * @param tokens the tokens to set
+//     */
+//    public void setTokens(int tokens) {
+//        this.tokens = tokens;
+//    }
 
     /**
      * @return the listOfInTransitions

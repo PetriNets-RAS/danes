@@ -9,6 +9,7 @@ import Core.PetriNet;
 import Core.Place;
 import Core.Resource;
 import Core.Transition;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -124,7 +125,17 @@ public class XMLPetriManager {
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
                 int quantity = Integer.parseInt(eElement.getAttribute("quantity"));
-                res.setCapacity(quantity);
+                //res.setWidth(Integer.parseInt(eElement.getAttribute("width")));
+                //res.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                res.setNote(eElement.getAttribute("note"));
+                res.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                res.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                                     Integer.parseInt(eElement.getAttribute("green1")),
+                                     Integer.parseInt(eElement.getAttribute("blue1"))));
+                res.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                                     Integer.parseInt(eElement.getAttribute("green2")),
+                                     Integer.parseInt(eElement.getAttribute("blue2"))));
+                res.setInitialMarking(quantity);
                 res.setX(x);
                 res.setY(y);
                 //res.setDiagramElement(new DiagramElement(x, y));
@@ -145,7 +156,7 @@ public class XMLPetriManager {
                 Place p;
                 Resource r;
                 Arc a;
-
+                
                 int x1 = Integer.parseInt(eElement.getAttribute("x1"));
                 int y1 = Integer.parseInt(eElement.getAttribute("y1"));
                 int x2 = Integer.parseInt(eElement.getAttribute("x2"));
@@ -184,10 +195,14 @@ public class XMLPetriManager {
                         System.out.println(t.getName());
                     }
                 }
-                System.out.println("-------------------------");
-                System.out.println(a.getName());
-                System.out.println(a.getOutElement().getName());
-                System.out.println(a.getInElement().getName());
+                a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                a.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                                     Integer.parseInt(eElement.getAttribute("green1")),
+                                     Integer.parseInt(eElement.getAttribute("blue1"))));
+                a.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                                     Integer.parseInt(eElement.getAttribute("green2")),
+                                     Integer.parseInt(eElement.getAttribute("blue2"))));
+
                 pn.addArc(a);
             }
         }
@@ -202,7 +217,7 @@ public class XMLPetriManager {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) nNode;
                 Place pl = new Place(eElement.getAttribute("name"));
-                int tokens = Integer.parseInt(eElement.getAttribute("tokens"));
+                int initialMarking = Integer.parseInt(eElement.getAttribute("tokens"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
 
@@ -217,10 +232,20 @@ public class XMLPetriManager {
                 } else {
                     pl.setEnd(false);
                 }
-
-                pl.setCapacity(tokens);
+                //pl.setWidth(Integer.parseInt(eElement.getAttribute("width")));
+                //pl.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                pl.setNote(eElement.getAttribute("note"));
+                pl.setInitialMarking(initialMarking);
                 pl.setX(x);
                 pl.setY(y);
+                pl.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                pl.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                                     Integer.parseInt(eElement.getAttribute("green1")),
+                                     Integer.parseInt(eElement.getAttribute("blue1"))));
+                pl.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                                     Integer.parseInt(eElement.getAttribute("green2")),
+                                     Integer.parseInt(eElement.getAttribute("blue2"))));
+                
                 //pl.setDiagramElement(new DiagramElement(x, y));
                 pn.addPlace(pl);
             }
@@ -238,8 +263,18 @@ public class XMLPetriManager {
                 Transition tr = new Transition(eElement.getAttribute("name"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
+                //tr.setWidth(Integer.parseInt(eElement.getAttribute("width")));
+                //tr.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                tr.setNote(eElement.getAttribute("note"));
                 tr.setX(x);
                 tr.setY(y);
+                tr.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                tr.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                                     Integer.parseInt(eElement.getAttribute("green1")),
+                                     Integer.parseInt(eElement.getAttribute("blue1"))));
+                tr.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                                     Integer.parseInt(eElement.getAttribute("green2")),
+                                     Integer.parseInt(eElement.getAttribute("blue2"))));
                 //tr.setDiagramElement(new DiagramElement(x, y));
                 pn.addTransition(tr);
             }
@@ -306,6 +341,35 @@ public class XMLPetriManager {
             //?????????????
             resourceProfession.setValue(resourceType);
             edge.setAttributeNode(resourceProfession);
+            
+            
+            Attr red1 = doc.createAttribute("red1");
+            red1.setValue(a.getColor().getRed()+"");
+            edge.setAttributeNode(red1);
+            
+            Attr green1 = doc.createAttribute("green1");
+            green1.setValue(a.getColor().getGreen()+"");
+            edge.setAttributeNode(green1);
+            
+            Attr blue1 = doc.createAttribute("blue1");
+            blue1.setValue(a.getColor().getBlue()+"");
+            edge.setAttributeNode(blue1);
+            
+            Attr green2 = doc.createAttribute("green2");
+            green2.setValue(a.getColor2().getGreen()+"");
+            edge.setAttributeNode(green2);
+            
+            Attr red2 = doc.createAttribute("red2");
+            red2.setValue(a.getColor2().getRed()+"");
+            edge.setAttributeNode(red2);
+            
+            Attr blue2 = doc.createAttribute("blue2");
+            blue2.setValue(a.getColor2().getBlue()+"");
+            edge.setAttributeNode(blue2);
+            
+            Attr fontSize = doc.createAttribute("fontSize");
+            fontSize.setValue(a.getFontSize()+"");
+            edge.setAttributeNode(fontSize);
 
             edges.appendChild(edge);
         }
@@ -323,19 +387,19 @@ public class XMLPetriManager {
             place.setAttributeNode(name);
 
             Attr X = doc.createAttribute("x");
-            //X.setValue(p.getDiagramElement().getX() + "");
+            //X.setValue(t.getDiagramElement().getX() + "");
             X.setValue(p.getX() + "");
             //X.setValue("");
             place.setAttributeNode(X);
 
             Attr Y = doc.createAttribute("y");
-            //Y.setValue(p.getDiagramElement().getY() + "");
+            //Y.setValue(t.getDiagramElement().getY() + "");
             Y.setValue(p.getY() + "");
             //Y.setValue("");
             place.setAttributeNode(Y);
 
             Attr tokens = doc.createAttribute("tokens");
-            tokens.setValue(p.getTokens() + "");
+            tokens.setValue(p.getInitialMarking() + "");
             place.setAttributeNode(tokens);
 
             Attr start = doc.createAttribute("start");
@@ -353,6 +417,46 @@ public class XMLPetriManager {
                 end.setValue("no");
             }
             place.setAttributeNode(end);
+            
+            Attr width = doc.createAttribute("width");
+            width.setValue(p.getWidth()+"");
+            place.setAttributeNode(width);
+            
+            Attr height = doc.createAttribute("height");
+            width.setValue(p.getHeight()+"");
+            place.setAttributeNode(height);
+            
+            Attr note = doc.createAttribute("note");
+            width.setValue(p.getNote());
+            place.setAttributeNode(note);
+            
+            Attr red1 = doc.createAttribute("red1");
+            red1.setValue(p.getColor().getRed()+"");
+            place.setAttributeNode(red1);
+            
+            Attr green1 = doc.createAttribute("green1");
+            green1.setValue(p.getColor().getGreen()+"");
+            place.setAttributeNode(green1);
+            
+            Attr blue1 = doc.createAttribute("blue1");
+            blue1.setValue(p.getColor().getBlue()+"");
+            place.setAttributeNode(blue1);
+            
+            Attr green2 = doc.createAttribute("green2");
+            green2.setValue(p.getColor2().getGreen()+"");
+            place.setAttributeNode(green2);
+            
+            Attr red2 = doc.createAttribute("red2");
+            red2.setValue(p.getColor2().getRed()+"");
+            place.setAttributeNode(red2);
+            
+            Attr blue2 = doc.createAttribute("blue2");
+            blue2.setValue(p.getColor2().getBlue()+"");
+            place.setAttributeNode(blue2);
+            
+            Attr fontSize = doc.createAttribute("fontSize");
+            fontSize.setValue(p.getFontSize()+"");
+            place.setAttributeNode(fontSize);
 
             places.appendChild(place);
         }
@@ -362,24 +466,64 @@ public class XMLPetriManager {
     private Element getTransationsElement(ArrayList<Transition> listOfTransitions, Document doc) {
         Element transitions = doc.createElement("transitions");
 
-        for (Transition p : listOfTransitions) {
+        for (Transition t : listOfTransitions) {
             Element transition = doc.createElement("transition");
 
             Attr name = doc.createAttribute("name");
-            name.setValue(p.getName());
+            name.setValue(t.getName());
             transition.setAttributeNode(name);
 
             Attr X = doc.createAttribute("x");
-            //X.setValue(p.getDiagramElement().getX() + "");
-            X.setValue(p.getX() + "");
+            //X.setValue(t.getDiagramElement().getX() + "");
+            X.setValue(t.getX() + "");
             //X.setValue("");
             transition.setAttributeNode(X);
 
             Attr Y = doc.createAttribute("y");
-            //Y.setValue(p.getDiagramElement().getY() + "");
-            Y.setValue(p.getY() + "");
+            //Y.setValue(t.getDiagramElement().getY() + "");
+            Y.setValue(t.getY() + "");
             //Y.setValue("");
             transition.setAttributeNode(Y);
+            
+            Attr width = doc.createAttribute("width");
+            width.setValue(t.getWidth()+"");
+            transition.setAttributeNode(width);
+            
+            Attr height = doc.createAttribute("height");
+            width.setValue(t.getHeight()+"");
+            transition.setAttributeNode(height);
+            
+            Attr note = doc.createAttribute("note");
+            width.setValue(t.getNote());
+            transition.setAttributeNode(note);
+            
+            Attr red1 = doc.createAttribute("red1");
+            red1.setValue(t.getColor().getRed()+"");
+            transition.setAttributeNode(red1);
+            
+            Attr green1 = doc.createAttribute("green1");
+            green1.setValue(t.getColor().getGreen()+"");
+            transition.setAttributeNode(green1);
+            
+            Attr blue1 = doc.createAttribute("blue1");
+            blue1.setValue(t.getColor().getBlue()+"");
+            transition.setAttributeNode(blue1);
+            
+            Attr green2 = doc.createAttribute("green2");
+            green2.setValue(t.getColor2().getGreen()+"");
+            transition.setAttributeNode(green2);
+            
+            Attr red2 = doc.createAttribute("red2");
+            red2.setValue(t.getColor2().getRed()+"");
+            transition.setAttributeNode(red2);
+            
+            Attr blue2 = doc.createAttribute("blue2");
+            blue2.setValue(t.getColor2().getBlue()+"");
+            transition.setAttributeNode(blue2);
+            
+            Attr fontSize = doc.createAttribute("fontSize");
+            fontSize.setValue(t.getFontSize()+"");
+            transition.setAttributeNode(fontSize);
 
             transitions.appendChild(transition);
         }
@@ -397,7 +541,7 @@ public class XMLPetriManager {
             resource.setAttributeNode(resName);
 
             Attr quantity = doc.createAttribute("quantity");
-            quantity.setValue(r.getCapacity() + "");
+            quantity.setValue(r.getInitialMarking() + "");
             resource.setAttributeNode(quantity);
 
             Attr resX = doc.createAttribute("x");
@@ -411,6 +555,47 @@ public class XMLPetriManager {
             resY.setValue(r.getY() + "");
             //resY.setValue("");
             resource.setAttributeNode(resY);
+            
+            Attr width = doc.createAttribute("width");
+            width.setValue(r.getWidth()+"");
+            resource.setAttributeNode(width);
+            
+            Attr height = doc.createAttribute("height");
+            width.setValue(r.getHeight()+"");
+            resource.setAttributeNode(height);
+            
+            Attr note = doc.createAttribute("note");
+            width.setValue(r.getNote());
+            resource.setAttributeNode(note);
+                              
+            Attr red1 = doc.createAttribute("red1");
+            red1.setValue(r.getColor().getRed()+"");
+            resource.setAttributeNode(red1);
+            
+            Attr green1 = doc.createAttribute("green1");
+            green1.setValue(r.getColor().getGreen()+"");
+            resource.setAttributeNode(green1);
+            
+            Attr blue1 = doc.createAttribute("blue1");
+            blue1.setValue(r.getColor().getBlue()+"");
+            resource.setAttributeNode(blue1);
+            
+            Attr green2 = doc.createAttribute("green2");
+            green2.setValue(r.getColor2().getGreen()+"");
+            resource.setAttributeNode(green2);
+            
+            Attr red2 = doc.createAttribute("red2");
+            red2.setValue(r.getColor2().getRed()+"");
+            resource.setAttributeNode(red2);
+            
+            Attr blue2 = doc.createAttribute("blue2");
+            blue2.setValue(r.getColor2().getBlue()+"");
+            resource.setAttributeNode(blue2);
+            
+            Attr fontSize = doc.createAttribute("fontSize");
+            fontSize.setValue(r.getFontSize()+"");
+            resource.setAttributeNode(fontSize);
+            
             resources.appendChild(resource);
         }
         return resources;

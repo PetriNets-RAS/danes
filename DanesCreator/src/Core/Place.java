@@ -14,30 +14,16 @@ import java.util.ArrayList;
  */
 public class Place extends AbsPlace{
 
-//    private int capacity;
-//    private int width;
-//    private int height;
+
     private boolean start;
-    private boolean end;
-//    private int tokens;
-//    private ArrayList<Transition> listOfInTransitions;
-//    private ArrayList<Transition> listOfOutTransitions;
-//    private ArrayList<Arc> listOfInArcs;
-//    private ArrayList<Arc> listOfOutArcs;    
+    private boolean end;  
      /**
      * @Class constructor.
      */
     public Place(String paName){       
         super(paName);
-//        listOfInArcs=new ArrayList<>();
-//        listOfOutArcs=new ArrayList<>();
-//        listOfInTransitions=new ArrayList<>();
-//        listOfOutTransitions=new ArrayList<>();
-//        this.width=50;
-//        this.height=35;
         start=false;
         end=false;
-//        tokens=0;
     }
 
     /**
