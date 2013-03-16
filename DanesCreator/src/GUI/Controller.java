@@ -314,11 +314,11 @@ public class Controller {
         
     }
 
-    public void deleteElement(int x, int y) {
+    public boolean deleteElement(int x, int y) {
         Element element=getLocationElement(x, y);
         if (element==null)
         {
-            return;
+            return false;
         }
         
         // Place
@@ -340,7 +340,9 @@ public class Controller {
         if (element instanceof Resource)
         {
             ((PetriNet)graph).deleteResource(((Resource)element).getName());
-        }        
+        }     
+        
+        return true;
     }            
 
     public void deleteArc(int x1,int y1,int x2,int y2)
@@ -378,10 +380,12 @@ public class Controller {
         }        
     }
 
-    public void deleteArc(double x, double y) {
+    public boolean deleteArc(double x, double y) {
         Arc arc=getLocationArc(x, y);
         if (arc==null)
-            return;
+        {
+            return false;
+        }
         if(graph instanceof PetriNet)
         {
             ((PetriNet)graph).deleteArc(arc.getName());
@@ -390,6 +394,7 @@ public class Controller {
         {
             ((PrecedenceGraph)graph).deleteArc(arc.getName());
         }
+        return true;
     }     
     public void setModel(Graph graph) {
         this.graph=graph;
@@ -477,7 +482,7 @@ public class Controller {
                 Path2D path = new Path2D.Double();
                 path.moveTo(lX1, lY1);
 
-                path.lineTo(lX1, lY1);            
+                path.lineTo(lX1, lY1);
                 path.lineTo(lX2, lY2);
                 //path.lineTo(p2X, p2Y);
                 path.lineTo(rX2, rY2);
@@ -604,5 +609,68 @@ public class Controller {
         // Nothing found
         return null;
         
+    }
+
+    public int[] getMinXYMaxXY() {
+        int minX=Integer.MAX_VALUE,minY=Integer.MAX_VALUE,maxX=Integer.MIN_VALUE,maxY=Integer.MIN_VALUE;
+        
+        if(graph instanceof PetriNet)
+        {
+            PetriNet pn=(PetriNet)graph;
+            for (Place p : pn.getListOfPlaces()) {
+                if (p.getX()<minX)
+                    minX=p.getX();
+                if (p.getX()+p.getWidth()>maxX)
+                    maxX=p.getX();
+
+                if (p.getY()<minY)
+                    minY=p.getY();
+                if (p.getY()+p.getHeight()>maxY)
+                    maxY=p.getY();                
+            }
+            for (Resource p : pn.getListOfResources()) {
+                if (p.getX()<minX)
+                    minX=p.getX();
+                if (p.getX()+p.getWidth()>maxX)
+                    maxX=p.getX();
+
+                if (p.getY()<minY)
+                    minY=p.getY();
+                if (p.getY()+p.getHeight()>maxY)
+                    maxY=p.getY();                
+            }
+            
+            for (Transition p : pn.getListOfTransitions()) {
+                if (p.getX()<minX)
+                    minX=p.getX();
+                if (p.getX()+p.getWidth()>maxX)
+                    maxX=p.getX();
+
+                if (p.getY()<minY)
+                    minY=p.getY();
+                if (p.getY()+p.getHeight()>maxY)
+                    maxY=p.getY();                
+            }            
+        }
+
+
+        if(graph instanceof PrecedenceGraph)
+        {
+            PrecedenceGraph pn=(PrecedenceGraph)graph;
+            for (Node p : pn.getListOfNodes()) {
+                if (p.getX()<minX)
+                    minX=p.getX();
+                if (p.getX()+p.getWidth()>maxX)
+                    maxX=p.getX();
+
+                if (p.getY()<minY)
+                    minY=p.getY();
+                if (p.getY()+p.getHeight()>maxY)
+                    maxY=p.getY();                
+            }    
+        }
+        if(minX==Integer.MAX_VALUE || minY==Integer.MAX_VALUE || maxX==Integer.MIN_VALUE || maxY==Integer.MIN_VALUE)
+            return new int[]{0,0,0,0};
+        return new int[]{minX,minY,maxX,maxY};        
     }
 }

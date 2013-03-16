@@ -86,10 +86,16 @@ public class View extends javax.swing.JFrame {
         // hide side panels
         sideMenu.setVisible(false);
         propertiesMenu.setVisible(false);
+        /* Hide zoom buttons */
+        btnZoomIn.setVisible(false);
+        btnZoomOut.setVisible(false);
+        btnZoomReset.setVisible(false);        
         // Custom init 
         setTitle("DANES Creator");
         //setSize(800, 600); 
         setVisible(true);
+
+        
     }
 
     /**
@@ -113,7 +119,8 @@ public class View extends javax.swing.JFrame {
         notes = new javax.swing.JTextArea();
         diagramScrollPane = new javax.swing.JScrollPane();
         btnZoomIn = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnZoomOut = new javax.swing.JButton();
+        btnZoomReset = new javax.swing.JButton();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newPetriNet = new javax.swing.JMenuItem();
@@ -247,7 +254,19 @@ public class View extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Zoom out");
+        btnZoomOut.setText("Zoom out");
+        btnZoomOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZoomOutActionPerformed(evt);
+            }
+        });
+
+        btnZoomReset.setText("Zoom reset");
+        btnZoomReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnZoomResetActionPerformed(evt);
+            }
+        });
 
         fileMenu.setText("File");
 
@@ -339,7 +358,9 @@ public class View extends javax.swing.JFrame {
                         .addGap(267, 267, 267)
                         .addComponent(btnZoomIn)
                         .addGap(29, 29, 29)
-                        .addComponent(jButton2)
+                        .addComponent(btnZoomOut)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnZoomReset)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -350,9 +371,11 @@ public class View extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnZoomIn)
-                            .addComponent(jButton2))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(btnZoomOut)
+                                .addComponent(btnZoomReset))
+                            .addComponent(btnZoomIn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(diagramScrollPane))))
         );
@@ -471,6 +494,11 @@ public class View extends javax.swing.JFrame {
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
+        
+        // Zoom
+        btnZoomIn.setVisible(true);
+        btnZoomOut.setVisible(true);
+        btnZoomReset.setVisible(true);
     }//GEN-LAST:event_newPetriNetActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
@@ -506,7 +534,8 @@ public class View extends javax.swing.JFrame {
         FileManager.XMLPetriManager x = new XMLPetriManager();
 
         PetriNet p = x.getPetriNetFromXML(inputFile);
-
+        
+        
         //FileManager.XMLPrecedenceManager l=new XMLPrecedenceManager();
         //pg=l.getPrecedenceFromXML(inputFile);
 
@@ -520,6 +549,10 @@ public class View extends javax.swing.JFrame {
         // hide side menu
         propertiesMenu.setVisible(false);
 
+        /* Show zoom buttos */
+        btnZoomIn.setVisible(true);
+        btnZoomOut.setVisible(true);
+        btnZoomReset.setVisible(true);        
         ///
     }//GEN-LAST:event_loadItemActionPerformed
 
@@ -597,6 +630,11 @@ public class View extends javax.swing.JFrame {
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
+        /* Hide zoom buttos */
+        btnZoomIn.setVisible(true);
+        btnZoomOut.setVisible(true);
+        btnZoomReset.setVisible(true);          
+        
     }//GEN-LAST:event_newPrecedenceNetActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
@@ -613,9 +651,9 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_convertActionPerformed
 
     private void btnZoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomInActionPerformed
-        /*diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]/2;
-         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]/2;
-         repaint();*/
+         diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]*2;
+         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]*2;
+         repaint();
         /*controller.setModel(pg);
          this.diagramPanel   =   new DiagramPanel(pg);                
          diagramScrollPane.setViewportView(this.diagramPanel);       
@@ -635,9 +673,24 @@ public class View extends javax.swing.JFrame {
     private void diagramScrollPaneMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMousePressed
     }//GEN-LAST:event_diagramScrollPaneMousePressed
 
+    private void btnZoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomOutActionPerformed
+         diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]/2;
+         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]/2;
+         repaint();
+    }//GEN-LAST:event_btnZoomOutActionPerformed
+
+    private void btnZoomResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomResetActionPerformed
+         //diagramPanel.setScaleRatioZoomAll(diagramScrollPane.getWidth(),diagramScrollPane.getHeight());
+         diagramPanel.scaleRatio[0]=1;
+         diagramPanel.scaleRatio[1]=1;
+         repaint();
+    }//GEN-LAST:event_btnZoomResetActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton btnZoomIn;
+    private javax.swing.JButton btnZoomOut;
+    private javax.swing.JButton btnZoomReset;
     private javax.swing.JMenuItem convert;
     private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenu;
@@ -646,7 +699,6 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JMenuItem export;
     private javax.swing.JMenu fileMenu;
     private GUI.PropertiesMenu generalProperties;
-    private javax.swing.JButton jButton2;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem loadItem;
     private javax.swing.JMenuItem newPetriNet;
@@ -969,6 +1021,7 @@ public class View extends javax.swing.JFrame {
         public void drawArcSelected(int column1, int row1, int column2, int row2) {
             /* Calculating */
             // Get line between 2 points
+            //Line2D.Double ln = new Line2D.Double(column1 + 25, row1 + 25, column2 + 25, row2 + 25);
             Line2D.Double ln = new Line2D.Double(column1 + 25, row1 + 25, column2 + 25, row2 + 25);
 
             // Distance from central line
@@ -1230,7 +1283,8 @@ public class View extends javax.swing.JFrame {
             // Select 1 element
             //g2d.drawString(name, x, y);
             //g2d.drawString(name, po.x, po.y);
-            
+            x=(int)(x/scaleRatio[0]);
+            y=(int)(y/scaleRatio[1]);
             
             selectedElements.clear();
             Element e = controller.getLocationElement(x, y);
@@ -1301,9 +1355,12 @@ public class View extends javax.swing.JFrame {
         }
 
         public void mouseRightClick(int x, int y) {
+            x=(int)(x/scaleRatio[0]);
+            y=(int)(y/scaleRatio[1]);
             // Create RED shadow line indicating deletion of arc        
             controller.deleteElement(x, y);
             controller.deleteArc(x, y);
+            selectedElements.clear();
             repaint();
             /*Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
              if (currentElement!=null)
@@ -1320,6 +1377,9 @@ public class View extends javax.swing.JFrame {
         }
 
         private void mouseLeftDragged(int x, int y) {
+            x=(int)(x/scaleRatio[0]);
+            y=(int)(y/scaleRatio[1]);
+            
             // None element or arc
             if (draggedObject == null && draggedElement == null) {
                 return;
@@ -1354,7 +1414,7 @@ public class View extends javax.swing.JFrame {
             repaint();
         }
 
-        private void mouseRightDragged(int x, int y) {
+        /*private void mouseRightDragged(int x, int y) {
             // Line
         /*if (draggedObject instanceof Line2D)
              {
@@ -1363,9 +1423,14 @@ public class View extends javax.swing.JFrame {
              draggedObject=new Line2D.Float(x1,y1,x,y);
              }  
              repaint();     */
-        }
+        //}
 
         public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
+            x_old=(int)(x_old/scaleRatio[0]);
+            x_new=(int)(x_new/scaleRatio[0]);            
+            y_old=(int)(y_old/scaleRatio[1]);
+            y_new=(int)(y_new/scaleRatio[1]);
+            
             // Old and current positions
 
             // Move place / transition
@@ -1384,7 +1449,7 @@ public class View extends javax.swing.JFrame {
             repaint();
         }
 
-        private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new) {
+        /*private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new) {
             /*
              // Old and current positions
              int x_old_location=x_old/elementWidth;
@@ -1405,7 +1470,7 @@ public class View extends javax.swing.JFrame {
              }
              draggedObject=null;
              repaint();*/
-        }
+        //}
 
         private void loadElementProperties(Element currentElement) {
             generalProperties.loadProperties(currentElement);
@@ -1428,6 +1493,24 @@ public class View extends javax.swing.JFrame {
              }
              */
         }
+
+        // Set Scale Ration depend on all items
+        private void setScaleRatioZoomAll(int width,int height) {
+            /*int [] minXYmaxXY=controller.getMinXYMaxXY();
+            if (minXYmaxXY[0]==0 && minXYmaxXY[1]==0 && minXYmaxXY[2]==0 && minXYmaxXY[3]==0 )
+                    return;
+            
+            /* Count nonempty net for width and height */
+            /*int minX=minXYmaxXY[0], minY=minXYmaxXY[1], maxX=minXYmaxXY[2], maxY=minXYmaxXY[3];
+            if ((maxX-minX)<width)
+            {
+            scaleRatio[0]=2;                                      
+            scaleRatio[1]=2;
+            }
+            scaleRatio[0]=2;
+            scaleRatio[1]=2;*/
+                        
+        }
     }
 
     public class DiagramMouseAdapter extends MouseAdapter {
@@ -1440,9 +1523,9 @@ public class View extends javax.swing.JFrame {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            // Save current
+            // Save current            
             x = e.getX();
-            y = e.getY();
+            y = e.getY();            
 
             // Check for click button
             if (SwingUtilities.isLeftMouseButton(e)) {
@@ -1454,7 +1537,20 @@ public class View extends javax.swing.JFrame {
             /*if (SwingUtilities.isMiddleMouseButton  (e) )
              System.out.println("stredny "+x+" "+y);*/
         }
-
+        
+        @Override
+        public void mouseDragged(MouseEvent e) {
+            // Left
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                diagramPanel.mouseLeftDragged(e.getX(), e.getY());
+            }
+            // Right - but left functionality
+            /*if (SwingUtilities.isRightMouseButton(e)) {
+                //diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
+                diagramPanel.mouseRightDragged(e.getX(), e.getY());
+            }*/
+        }
+        
         @Override
         public void mouseReleased(MouseEvent e) {
             // Old location is different from current        
@@ -1465,22 +1561,9 @@ public class View extends javax.swing.JFrame {
                     diagramPanel.mouseLeftReleased(x, y, e.getX(), e.getY());
                 }
                 // Right
-                if (SwingUtilities.isRightMouseButton(e)) {
+                /*if (SwingUtilities.isRightMouseButton(e)) {
                     //diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
-                }
-            }
-        }
-
-        @Override
-        public void mouseDragged(MouseEvent e) {
-            // Left
-            if (SwingUtilities.isLeftMouseButton(e)) {
-                diagramPanel.mouseLeftDragged(e.getX(), e.getY());
-            }
-            // Right - but left functionality
-            if (SwingUtilities.isRightMouseButton(e)) {
-                //diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
-                diagramPanel.mouseRightDragged(e.getX(), e.getY());
+                }*/
             }
         }
     }
