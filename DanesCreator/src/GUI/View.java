@@ -531,16 +531,26 @@ public class View extends javax.swing.JFrame {
 
         selectedFile = jFileChooser.getSelectedFile();
         File inputFile = new File(selectedFile.getAbsolutePath());
-        FileManager.XMLPetriManager x = new XMLPetriManager();
 
-        PetriNet p = x.getPetriNetFromXML(inputFile);
+        //PetriNet p = x.getPetriNetFromXML(inputFile);
         
         
         //FileManager.XMLPrecedenceManager l=new XMLPrecedenceManager();
         //pg=l.getPrecedenceFromXML(inputFile);
+        System.out.println(inputFile.getName());
+        System.out.println(inputFile.getName().substring(inputFile.getName().length() - 3));
+        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+            System.out.println("NACITAVAM PN");
+            FileManager.XMLPetriManager loader = new XMLPetriManager();
+            PetriNet p = loader.getPetriNetFromXML(inputFile);
+            g = p;
+        } else {
+            System.out.println("NACITAVAM PG");
+            FileManager.XMLPrecedenceManager loader=new XMLPrecedenceManager();
+            PrecedenceGraph pg=loader.getPrecedenceFromXML(inputFile);
+            g=pg;
+        }
 
-
-        g = p;
         controller.setModel(g);
         this.diagramPanel = new DiagramPanel(g);
         diagramScrollPane.setViewportView(this.diagramPanel);
@@ -571,15 +581,51 @@ public class View extends javax.swing.JFrame {
                     System.out.print("Chyba pri praci so suborom");
                 }
             }
-            newXML.createPetriXML(g, selectedFile);
             if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
                 return;
             }
+            checkAndSave(g, selectedFile);
+            //newXML.createPetriXML(g, selectedFile);
         } else {
-            newXML.createPetriXML(g, new File(selectedFile.getAbsolutePath()));
+            //newXML.createPetriXML(g, new File(selectedFile.getAbsolutePath()));
+            checkAndSave(g, selectedFile);
         }
     }//GEN-LAST:event_saveItemActionPerformed
 
+    
+    private void checkAndSave(Graph g, File selectFile) {
+        String sufix;
+        if (g instanceof PetriNet) {
+            sufix = ".dpn";
+            FileManager.XMLPetriManager newXML = new XMLPetriManager();
+//            if((selectedFile.getName().length()>4)&&("dpg".equals(selectFile.getName().substring(selectedFile.getName().length() - 3)))){
+//                File temp=new File(selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().length()-3));
+//            }
+            if ((selectedFile.getName().length() < 5) || (!"dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
+                File temp = selectedFile;
+                selectedFile = new File(selectedFile.getAbsolutePath() + sufix);
+                temp.delete();
+            }
+
+            System.out.println(selectedFile.getAbsolutePath());
+            newXML.createPetriXML(g, selectedFile);
+            System.out.println("UKLADAM PN");
+        } else {
+            sufix = ".dpg";
+//            if("dpn".equals(selectFile.getName().substring(selectedFile.getName().length() - 3))){
+//                File temp=new File(selectedFile.getAbsolutePath().substring(0, selectedFile.getAbsolutePath().length()-3));
+//            }
+
+            FileManager.XMLPrecedenceManager newXML = new XMLPrecedenceManager();
+            if ((selectedFile.getName().length() < 5) || (!"dpg".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
+                File temp = selectedFile;
+                selectedFile = new File(selectedFile.getAbsolutePath() + sufix);
+                temp.delete();
+            }
+            newXML.createPrecedenceXML(g, selectedFile);
+        }
+    }
+    
     private void notesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_notesFocusLost
         //currentElement.setNote(notes.getText());
         // System.out.print("notes");
