@@ -647,7 +647,7 @@ public class View extends javax.swing.JFrame {
 
     private void newPrecedenceNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPrecedenceNetActionPerformed
         // TODO add your handling code here:
-
+        selectedFile=null;
         PrecedenceGraph pg = new PrecedenceGraph("Test");
         //g=pg;
         Node n1 = new Node("n1");
