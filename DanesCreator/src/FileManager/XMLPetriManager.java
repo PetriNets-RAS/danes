@@ -263,8 +263,7 @@ public class XMLPetriManager {
                 Transition tr = new Transition(eElement.getAttribute("name"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-                //tr.setWidth(Integer.parseInt(eElement.getAttribute("width")));
-                //tr.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                
                 tr.setNote(eElement.getAttribute("note"));
                 tr.setX(x);
                 tr.setY(y);
@@ -275,6 +274,8 @@ public class XMLPetriManager {
                 tr.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
                                      Integer.parseInt(eElement.getAttribute("green2")),
                                      Integer.parseInt(eElement.getAttribute("blue2"))));
+                //tr.setWidth(Integer.parseInt(eElement.getAttribute("width")));
+                //tr.setHeight(Integer.parseInt(eElement.getAttribute("height")));
                 //tr.setDiagramElement(new DiagramElement(x, y));
                 pn.addTransition(tr);
             }

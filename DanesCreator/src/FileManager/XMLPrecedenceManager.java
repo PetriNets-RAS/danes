@@ -10,6 +10,7 @@ import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Resource;
 import Core.Transition;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -133,10 +134,13 @@ public class XMLPrecedenceManager {
                inNode.getListOfInArcs().add(a);
                inNode.getListOfInNodes().add(outNode);
 
-                System.out.println("-------------------------");
-                System.out.println(a.getName());
-                System.out.println(a.getOutElement().getName());
-                System.out.println(a.getInElement().getName());
+                a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                a.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                                     Integer.parseInt(eElement.getAttribute("green1")),
+                                     Integer.parseInt(eElement.getAttribute("blue1"))));
+                a.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                                     Integer.parseInt(eElement.getAttribute("green2")),
+                                     Integer.parseInt(eElement.getAttribute("blue2"))));
                 pg.addArc(a);
             }
         }
@@ -159,12 +163,15 @@ public class XMLPrecedenceManager {
                 nd.setX(x);
                 nd.setY(y);
                 
-                System.out.println("-------------------------");
-                System.out.println(nd.getName());
-                System.out.println(nd.getX());
-                System.out.println(nd.getY());
-                
-                //pl.setDiagramElement(new DiagramElement(x, y));
+                nd.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                nd.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                                     Integer.parseInt(eElement.getAttribute("green1")),
+                                     Integer.parseInt(eElement.getAttribute("blue1"))));
+                nd.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                                     Integer.parseInt(eElement.getAttribute("green2")),
+                                     Integer.parseInt(eElement.getAttribute("blue2"))));
+                //nd.setWidth(Integer.parseInt(eElement.getAttribute("width")));
+                //nd.setHeight(Integer.parseInt(eElement.getAttribute("height")));
                 pg.addNode(nd);
             }
         }
@@ -207,6 +214,34 @@ public class XMLPrecedenceManager {
             //?????????????
             resourceProfession.setValue(resourceType);
             edge.setAttributeNode(resourceProfession);
+            
+            Attr red1 = doc.createAttribute("red1");
+            red1.setValue(a.getColor().getRed()+"");
+            edge.setAttributeNode(red1);
+            
+            Attr green1 = doc.createAttribute("green1");
+            green1.setValue(a.getColor().getGreen()+"");
+            edge.setAttributeNode(green1);
+            
+            Attr blue1 = doc.createAttribute("blue1");
+            blue1.setValue(a.getColor().getBlue()+"");
+            edge.setAttributeNode(blue1);
+            
+            Attr green2 = doc.createAttribute("green2");
+            green2.setValue(a.getColor2().getGreen()+"");
+            edge.setAttributeNode(green2);
+            
+            Attr red2 = doc.createAttribute("red2");
+            red2.setValue(a.getColor2().getRed()+"");
+            edge.setAttributeNode(red2);
+            
+            Attr blue2 = doc.createAttribute("blue2");
+            blue2.setValue(a.getColor2().getBlue()+"");
+            edge.setAttributeNode(blue2);
+            
+            Attr fontSize = doc.createAttribute("fontSize");
+            fontSize.setValue(a.getFontSize()+"");
+            edge.setAttributeNode(fontSize);
 
             edges.appendChild(edge);
         }
@@ -239,22 +274,42 @@ public class XMLPrecedenceManager {
             Attr tokens = doc.createAttribute("tokens");
             tokens.setValue(p.getCapacity() + "");
             node.setAttributeNode(tokens);
-//
-//            Attr start = doc.createAttribute("start");
-//            if (p.isStart()) {
-//                start.setValue("yes");
-//            } else {
-//                start.setValue("no");
-//            }
-//            place.setAttributeNode(start);
-//
-//            Attr end = doc.createAttribute("end");
-//            if (p.isEnd()) {
-//                end.setValue("true");
-//            } else {
-//                end.setValue("no");
-//            }
-//            place.setAttributeNode(end);
+
+            Attr red1 = doc.createAttribute("red1");
+            red1.setValue(p.getColor().getRed()+"");
+            node.setAttributeNode(red1);
+            
+            Attr green1 = doc.createAttribute("green1");
+            green1.setValue(p.getColor().getGreen()+"");
+            node.setAttributeNode(green1);
+            
+            Attr blue1 = doc.createAttribute("blue1");
+            blue1.setValue(p.getColor().getBlue()+"");
+            node.setAttributeNode(blue1);
+            
+            Attr green2 = doc.createAttribute("green2");
+            green2.setValue(p.getColor2().getGreen()+"");
+            node.setAttributeNode(green2);
+            
+            Attr red2 = doc.createAttribute("red2");
+            red2.setValue(p.getColor2().getRed()+"");
+            node.setAttributeNode(red2);
+            
+            Attr blue2 = doc.createAttribute("blue2");
+            blue2.setValue(p.getColor2().getBlue()+"");
+            node.setAttributeNode(blue2);
+            
+            Attr fontSize = doc.createAttribute("fontSize");
+            fontSize.setValue(p.getFontSize()+"");
+            node.setAttributeNode(fontSize);
+            
+            Attr width = doc.createAttribute("width");
+            width.setValue(p.getWidth()+"");
+            node.setAttributeNode(width);
+            
+            Attr height = doc.createAttribute("height");
+            width.setValue(p.getHeight()+"");
+            node.setAttributeNode(height);
 
             nodes.appendChild(node);
         }
