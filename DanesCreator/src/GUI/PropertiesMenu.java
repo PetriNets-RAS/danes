@@ -7,6 +7,8 @@ package GUI;
 import Core.AbsPlace;
 import Core.Element;
 import Core.Transition;
+import java.awt.Color;
+import javax.swing.JColorChooser;
 
 
 /**
@@ -18,7 +20,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private String elementWidth;
     private String elementHeight;
     private String elementFontSize;
-    private String elementColor;
+    private Color elementColor;
     private Element element;
     /**
      * Creates new form PropertiesParentMenu
@@ -51,7 +53,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
         heightText = new javax.swing.JTextField();
         widthText = new javax.swing.JTextField();
         fontSizeText = new javax.swing.JTextField();
-        colorText = new javax.swing.JTextField();
+        colorLabel = new javax.swing.JLabel();
 
         label4.setName(""); // NOI18N
         label4.setText("Width");
@@ -82,6 +84,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
 
         label7.setName(""); // NOI18N
         label7.setText("Color");
+        label7.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                label7MouseClicked(evt);
+            }
+        });
 
         nameText.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -94,11 +101,20 @@ public class PropertiesMenu extends javax.swing.JPanel {
             }
         });
 
+        colorLabel.setBackground(new java.awt.Color(0, 0, 102));
+        colorLabel.setForeground(new java.awt.Color(255, 255, 255));
+        colorLabel.setOpaque(true);
+        colorLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                colorLabelMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(label5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
                     .addComponent(label3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -110,8 +126,10 @@ public class PropertiesMenu extends javax.swing.JPanel {
                     .addComponent(heightText)
                     .addComponent(nameText, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
                     .addComponent(widthText)
-                    .addComponent(colorText, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(fontSizeText))
+                    .addComponent(fontSizeText)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -132,16 +150,16 @@ public class PropertiesMenu extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(fontSizeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(label7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(colorText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 14, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(label7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(colorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void nameTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextActionPerformed
-        // TODO add your handling code here:
+        return;
     }//GEN-LAST:event_nameTextActionPerformed
 
     private void nameTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameTextFocusLost
@@ -150,12 +168,22 @@ public class PropertiesMenu extends javax.swing.JPanel {
     }//GEN-LAST:event_nameTextFocusLost
 
     private void formPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_formPropertyChange
-       // TODO add your handling code here:
-        // TODO add your handling code here:
+       return;
     }//GEN-LAST:event_formPropertyChange
 
+    private void label7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_label7MouseClicked
+     
+    }//GEN-LAST:event_label7MouseClicked
+
+    private void colorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorLabelMouseClicked
+        JColorChooser colorChooser = new JColorChooser();
+        elementColor = JColorChooser.showDialog(this, "Vyberte farbu", Color.yellow);
+        //colorLabel.setBackground(elementColor);
+        element.setColor(elementColor);
+    }//GEN-LAST:event_colorLabelMouseClicked
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField colorText;
+    private javax.swing.JLabel colorLabel;
     private javax.swing.JTextField fontSizeText;
     private javax.swing.JTextField heightText;
     private javax.swing.JButton jButton4;
@@ -222,16 +250,16 @@ public class PropertiesMenu extends javax.swing.JPanel {
     /**
      * @return the elementColor
      */
-    public String getElementColor() {
+    public Color getElementColor() {
         return elementColor;
     }
 
     /**
      * @param elementColor the elementColor to set
      */
-    public void setElementColor(String elementColor) {
-        //this.elementColor = elementColor;
-        this.colorText.setText(elementColor);
+    public void setElementColor(Color elementColor) {
+        this.elementColor = elementColor;
+        //this.colorText.setText(elementColor);
     }
 
     /**
@@ -252,6 +280,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
     public void loadProperties(Element currentElement) {
         element = currentElement;
         setElementName(currentElement.getName());
+        setElementColor(currentElement.getColor());
+        colorLabel.setBackground(currentElement.getColor());
             setElementFontSize(Integer.toString(currentElement.getFontSize()));
             //notes.setText(currentElement.getNote());
             if(currentElement instanceof AbsPlace)
@@ -266,6 +296,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
                 setElementWidth(Integer.toString(current.getWidth()));
                 setElementHeight(Integer.toString(current.getHeight()));
             }
+            revalidate();
+            validate();
     }
 
 }

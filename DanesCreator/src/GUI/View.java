@@ -54,7 +54,9 @@ import javax.swing.SwingUtilities;
  * @author marek
  */
 public class View extends javax.swing.JFrame {
-
+    private static final String APP_NAME = "Danes Creator";
+    private static final String PETRI_NAME = "Petri net";
+    private static final String PRECEDENCE_GRAPH = "Precedence graph";
     private Graph graph;
     private DiagramPanel diagramPanel;
     private Controller controller;
@@ -63,7 +65,8 @@ public class View extends javax.swing.JFrame {
     //private PetriNet p;
     //private PrecedenceGraph pg;
     private File selectedFile;
-
+    private String selectedFileName;
+    private String selectedFilePath;
     public View(PetriNet pa_petriNet, Controller pa_controller) {
         super();
        //this.setLocationRelativeTo(null);
@@ -117,6 +120,7 @@ public class View extends javax.swing.JFrame {
         propertiesTab = new javax.swing.JTabbedPane();
         generalProperties = new GUI.PropertiesMenu();
         notes = new javax.swing.JTextArea();
+        modelInfo = new javax.swing.JLabel();
         diagramScrollPane = new javax.swing.JScrollPane();
         btnZoomIn = new javax.swing.JButton();
         btnZoomOut = new javax.swing.JButton();
@@ -146,7 +150,7 @@ public class View extends javax.swing.JFrame {
                 ellipseButtonActionPerformed(evt);
             }
         });
-        sideMenu.add(ellipseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 82, 23));
+        sideMenu.add(ellipseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 70, 82, 23));
 
         rectangleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/RectangleIcon.png"))); // NOI18N
         rectangleButton.setToolTipText("pridate priechod");
@@ -155,7 +159,7 @@ public class View extends javax.swing.JFrame {
                 rectangleButtonActionPerformed(evt);
             }
         });
-        sideMenu.add(rectangleButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, 82, 23));
+        sideMenu.add(rectangleButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, 82, 23));
 
         lineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/lineIcon.png"))); // NOI18N
         lineButton.addActionListener(new java.awt.event.ActionListener() {
@@ -163,7 +167,7 @@ public class View extends javax.swing.JFrame {
                 lineButtonActionPerformed(evt);
             }
         });
-        sideMenu.add(lineButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 82, 24));
+        sideMenu.add(lineButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 82, 24));
 
         resuorceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Resources.png"))); // NOI18N
         resuorceButton.addActionListener(new java.awt.event.ActionListener() {
@@ -171,7 +175,7 @@ public class View extends javax.swing.JFrame {
                 resuorceButtonActionPerformed(evt);
             }
         });
-        sideMenu.add(resuorceButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 40, 80, -1));
+        sideMenu.add(resuorceButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 70, 80, -1));
 
         propertiesMenu.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
@@ -235,6 +239,7 @@ public class View extends javax.swing.JFrame {
         propertiesTab.getAccessibleContext().setAccessibleName("Properties");
 
         sideMenu.add(propertiesMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 105, 240, -1));
+        sideMenu.add(modelInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 170, 20));
 
         diagramScrollPane.setBorder(null);
         diagramScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
@@ -399,6 +404,8 @@ public class View extends javax.swing.JFrame {
                 System.out.print("Chyba pri praci so suborom");
             }
         }
+        getInfoAboutFile(selectedFile);
+        /*
         if (g instanceof PetriNet) {
             FileManager.XMLPetriManager newXML = new XMLPetriManager();
             newXML.createPetriXML(g, selectedFile);
@@ -407,12 +414,29 @@ public class View extends javax.swing.JFrame {
             FileManager.XMLPrecedenceManager newXML = new XMLPrecedenceManager();
             newXML.createPrecedenceXML(g, selectedFile);
         }
-
+       */
         if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
             return;
         }
+        checkAndSave(g, selectedFile);
     }//GEN-LAST:event_saveAsItemActionPerformed
 
+        private void getInfoAboutFile(File file)
+    {
+        selectedFileName = file.getName();
+        selectedFilePath= file.getPath();
+        this.setTitle(APP_NAME + " - "+ selectedFileName);
+    }
+    
+    private void getInfoAboutModel(Graph g)
+    {
+        if (g instanceof PetriNet) {
+            modelInfo.setText(PETRI_NAME);
+        } else {
+            modelInfo.setText(PRECEDENCE_GRAPH);
+        }
+    }
+    
     private void newPetriNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPetriNetActionPerformed
 
         //Create and display new panel
@@ -499,6 +523,7 @@ public class View extends javax.swing.JFrame {
         btnZoomIn.setVisible(true);
         btnZoomOut.setVisible(true);
         btnZoomReset.setVisible(true);
+        getInfoAboutModel(g);
     }//GEN-LAST:event_newPetriNetActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
@@ -541,7 +566,7 @@ public class View extends javax.swing.JFrame {
             PrecedenceGraph pg=loader.getPrecedenceFromXML(inputFile);
             g=pg;
         }
-
+        getInfoAboutFile(inputFile);
         controller.setModel(g);
         this.diagramPanel = new DiagramPanel(g);
         diagramScrollPane.setViewportView(this.diagramPanel);
@@ -555,6 +580,7 @@ public class View extends javax.swing.JFrame {
         btnZoomOut.setVisible(true);
         btnZoomReset.setVisible(true);        
         ///
+        getInfoAboutModel(g);
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
@@ -581,6 +607,7 @@ public class View extends javax.swing.JFrame {
             //newXML.createPetriXML(g, new File(selectedFile.getAbsolutePath()));
             checkAndSave(g, selectedFile);
         }
+        getInfoAboutFile(selectedFile);
     }//GEN-LAST:event_saveItemActionPerformed
 
     
@@ -609,6 +636,7 @@ public class View extends javax.swing.JFrame {
             }
             newXML.createPrecedenceXML(g, selectedFile);
         }
+        getInfoAboutFile(selectFile);
     }
     
     private void notesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_notesFocusLost
@@ -665,11 +693,11 @@ public class View extends javax.swing.JFrame {
         btnZoomIn.setVisible(true);
         btnZoomOut.setVisible(true);
         btnZoomReset.setVisible(true);          
-        
+        getInfoAboutModel(g);
     }//GEN-LAST:event_newPrecedenceNetActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-        // TODO add your handling code here:
+        // eTODO add your handling code here:
         PrecedenceGraph pg = (PrecedenceGraph) g;
         PetriNet converted = pg.changePrecedenceGraphToPN();
         g = converted;
@@ -679,6 +707,7 @@ public class View extends javax.swing.JFrame {
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
+        getInfoAboutModel(g);
     }//GEN-LAST:event_convertActionPerformed
 
     private void btnZoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomInActionPerformed
@@ -732,6 +761,7 @@ public class View extends javax.swing.JFrame {
     private GUI.PropertiesMenu generalProperties;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem loadItem;
+    private javax.swing.JLabel modelInfo;
     private javax.swing.JMenuItem newPetriNet;
     private javax.swing.JMenuItem newPrecedenceNet;
     private javax.swing.JTextArea notes;
@@ -1322,8 +1352,10 @@ public class View extends javax.swing.JFrame {
             Arc a = controller.getLocationArc(x, y);
             if (e != null) {
                 selectedElements.add(e);
+                loadElementProperties(e);
             } else if (a != null) {
                 selectedElements.add(a);
+                loadElementProperties(a);
             }
 
             // Create new
