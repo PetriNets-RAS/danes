@@ -163,11 +163,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
     }//GEN-LAST:event_nameTextActionPerformed
 
     private void nameTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameTextFocusLost
-        String text=nameText.getText();
-        if(Core.Logic.checkNumbString(text)){
+
             element.setName(nameText.getText());
-        }
-        
         
     }//GEN-LAST:event_nameTextFocusLost
 
