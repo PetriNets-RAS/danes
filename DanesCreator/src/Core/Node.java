@@ -103,4 +103,11 @@ public class Node extends Element{
         this.capacity = capacity;
     }
     
+   /* Autosize */
+   @Override
+   public void setName(String name) {
+        super.setName(name);
+        this.width=-1;
+        this.height=-1;
+    }        
 }

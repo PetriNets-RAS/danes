@@ -4,6 +4,7 @@
  */
 package Core;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 /**
@@ -101,4 +102,12 @@ public class Transition extends Element {
         }
 
     }
+       
+   /* Autosize */
+   @Override
+   public void setName(String name) {
+        super.setName(name);
+        this.width=-1;
+        this.height=-1;     
+    }    
 }

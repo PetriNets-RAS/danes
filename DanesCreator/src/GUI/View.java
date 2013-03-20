@@ -823,6 +823,7 @@ public class View extends javax.swing.JFrame {
           
              else
              g=this.g2d;*/
+            autosetWidthHeight();
             drawGraph();
             drawDraggedObject();
             drawSelectedElements();
@@ -1574,8 +1575,98 @@ public class View extends javax.swing.JFrame {
             scaleRatio[1]=2;*/
                         
         }
-    }
 
+        private void autosetWidthHeight() 
+        {
+            int marginWidth     =20;
+            int marginHeight    =20;            
+            Font oldfont=g2d.getFont();
+            g2d.scale(1, 1); 
+            
+            // Petri net
+            if (graph instanceof PetriNet)
+            {
+              for (Place p : ((PetriNet)graph).getListOfPlaces() ) 
+              {
+                  if (p.getWidth()==-1 && p.getHeight()==-1)
+                  {                                                             
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, p.getFontSize());                    
+                    g2d.setFont(newFont);
+            
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(p.getName(), g2d);
+
+                    int textWidth = (int) (rect.getWidth());
+                    int textHeight = (int) (rect.getHeight());     
+
+                    p.setWidth(textWidth+marginWidth);
+                    p.setHeight(textHeight+marginHeight);                    
+                  }
+              }
+            for (Transition t : ((PetriNet)graph).getListOfTransitions() ) 
+              {
+                  if (t.getWidth()==-1 && t.getHeight()==-1)
+                  {                                                             
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, t.getFontSize());                    
+                    g2d.setFont(newFont);
+            
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(t.getName(), g2d);
+
+                    int textWidth = (int) (rect.getWidth());
+                    int textHeight = (int) (rect.getHeight());     
+
+                    t.setWidth(textWidth+marginWidth);
+                    t.setHeight(textHeight+marginHeight);                    
+                  }
+              }
+            
+            for (Resource r : ((PetriNet)graph).getListOfResources() ) 
+              {
+                  if (r.getWidth()==-1 && r.getHeight()==-1)
+                  {                                                             
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, r.getFontSize());                    
+                    g2d.setFont(newFont);
+            
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(r.getName(), g2d);
+
+                    int textWidth = (int) (rect.getWidth());
+                    int textHeight = (int) (rect.getHeight());     
+
+                    r.setWidth(textWidth+marginWidth);
+                    r.setHeight(textHeight+marginHeight);                    
+                  }
+              }   
+          }
+
+        // Precedence graph
+        if (graph instanceof PrecedenceGraph)
+            {
+            for (Node n : ((PrecedenceGraph)graph).getListOfNodes() ) 
+              {
+                  if (n.getWidth()==-1 && n.getHeight()==-1)
+                  {                                                             
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, n.getFontSize());                    
+                    g2d.setFont(newFont);
+            
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(n.getName(), g2d);
+
+                    int textWidth = (int) (rect.getWidth());
+                    int textHeight = (int) (rect.getHeight());     
+
+                    n.setWidth(textWidth+marginWidth);
+                    n.setHeight(textHeight+marginHeight);                    
+                  }
+              }   
+          }            
+          // Revert settings
+          g2d.scale(scaleRatio[0], scaleRatio[1]);                    
+          g2d.setFont(oldfont);            
+        } // Function end
+    
+    }
     public class DiagramMouseAdapter extends MouseAdapter {
 
         private int x;

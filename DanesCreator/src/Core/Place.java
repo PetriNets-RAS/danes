@@ -53,5 +53,4 @@ public class Place extends AbsPlace{
     public void setEnd(boolean end) {
         this.end = end;
     }
-    
 }

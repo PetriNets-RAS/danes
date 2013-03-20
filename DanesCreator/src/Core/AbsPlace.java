@@ -156,5 +156,11 @@ public abstract class AbsPlace extends Element{
         this.listOfOutArcs = listOfOutArcs;
     }
     
-    
+   /* Autosize */
+   @Override
+   public void setName(String name) {
+        super.setName(name);
+        this.width=-1;
+        this.height=-1;
+    }        
 }
