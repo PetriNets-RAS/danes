@@ -108,6 +108,6 @@ public class Transition extends Element {
    public void setName(String name) {
         super.setName(name);
         this.width=-1;
-        this.height=-1;     
+        this.height=-1;   
     }    
 }
