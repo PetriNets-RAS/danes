@@ -711,8 +711,8 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_convertActionPerformed
 
     private void btnZoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomInActionPerformed
-         diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]*2;
-         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]*2;
+         diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]*1.1;
+         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]*1.1;
          repaint();
         /*controller.setModel(pg);
          this.diagramPanel   =   new DiagramPanel(pg);                
@@ -734,8 +734,8 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_diagramScrollPaneMousePressed
 
     private void btnZoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomOutActionPerformed
-         diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]/2;
-         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]/2;
+         diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]/1.1;
+         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]/1.1;
          repaint();
     }//GEN-LAST:event_btnZoomOutActionPerformed
 

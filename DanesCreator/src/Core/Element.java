@@ -17,8 +17,8 @@ public class Element{
     private String note="unset";
     private Color color =   new Color(10,10,10);
     private Color color2=   new Color(100,100,150);
-    private int x=50;
-    private int y=50;
+    private int x=-1;
+    private int y=-1;
     private int fontSize=16;
         
      /**

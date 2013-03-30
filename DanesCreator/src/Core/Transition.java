@@ -13,8 +13,8 @@ import java.util.ArrayList;
  */
 public class Transition extends Element {
 
-    private int width;
-    private int height;
+    private int width=-1;
+    private int height=-1;
     private ArrayList<AbsPlace> listOfInPlaces;
     private ArrayList<AbsPlace> listOfOutPlaces;
     private ArrayList<Arc> listOfInArcs;
@@ -28,9 +28,7 @@ public class Transition extends Element {
         listOfInArcs=new ArrayList<Arc>();
         listOfOutArcs=new ArrayList<Arc>();
         listOfInPlaces=new ArrayList<AbsPlace>();
-        listOfOutPlaces=new ArrayList<AbsPlace>();
-        width = 45;
-        height = 25;
+        listOfOutPlaces=new ArrayList<AbsPlace>();     
     }
 
     /**

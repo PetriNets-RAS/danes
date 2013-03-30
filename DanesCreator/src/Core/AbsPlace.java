@@ -12,8 +12,8 @@ import java.util.ArrayList;
  */
 public abstract class AbsPlace extends Element{
     private int initialMarking;
-    private int width;
-    private int height;
+    private int width=-1;
+    private int height=-1;
     //private int tokens;
     private ArrayList<Transition> listOfInTransitions;
     private ArrayList<Transition> listOfOutTransitions;
@@ -25,9 +25,7 @@ public abstract class AbsPlace extends Element{
         listOfInArcs=new ArrayList<Arc>();
         listOfOutArcs=new ArrayList<Arc>();
         listOfInTransitions=new ArrayList<Transition>();
-        listOfOutTransitions=new ArrayList<Transition>();
-        this.width=50;
-        this.height=35;
+        listOfOutTransitions=new ArrayList<Transition>();        
     }
     
     public void delete() {

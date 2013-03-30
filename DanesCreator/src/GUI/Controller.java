@@ -84,11 +84,13 @@ public class Controller {
             {            
 
                 // Generate text name until it is unique
+                int _offset=1;
                 do
                 {
-                    place=new Place("Place"+Math.random());
+                    place=new Place("Place"+(((PetriNet)graph).getListOfPlaces().size()+_offset));
                     place.setX(x);
                     place.setY(y);
+                    _offset++;
                 }
                 while 
                 (!((PetriNet)graph).addPlace(place));
@@ -114,11 +116,13 @@ public class Controller {
             {            
 
                 // Generate text name until it is unique
+                int _offset=1;
                 do
                 {
-                    resource=new Resource("Resource"+Math.random());
+                    resource=new Resource("Resource"+(((PetriNet)graph).getListOfResources().size()+_offset));
                     resource.setX(x);
                     resource.setY(y);
+                    _offset++;
                     //resource.setDiagramElement(new DiagramElement(x, y));                
                 }
                 while 
@@ -147,11 +151,13 @@ public class Controller {
             if (name.equals("Transition"))
             {   
                 // Generate text name until it is unique
+                int _offset=1;
                 do
                 {
-                    transition=new Transition("Transition"+Math.random());
+                    transition=new Transition("Transition"+(((PetriNet)graph).getListOfTransitions().size()+_offset));                    
                     transition.setX(x);
                     transition.setY(y);
+                    _offset++;
                     //transition.setDiagramElement(new DiagramElement(x, y));                
                 }
                 while      
@@ -186,12 +192,15 @@ public class Controller {
             if (name.equals("Arc"))
             {   
                 // Generate text name until it is unique
+                int _offset=1;
                 do
                 {
-                    arc=new Arc("Arc"+Math.random(),out,in);
+                    int prefix=(((PetriNet)graph).getListOfArcs().size()+_offset);
+                    arc=new Arc("Arc"+prefix,out,in);
                     if(!log.checkArc(arc,graph)) {
                         break;
                     }           
+                    _offset++;
                 }
                 while                       
                    (!((PetriNet)graph).addArc(arc));
@@ -202,7 +211,7 @@ public class Controller {
                 ((PetriNet)graph).addArc(arc);
         
             }   
-        }// Konice Petri Net
+        }// Koniec Petri Net
         if (graph instanceof PrecedenceGraph)
         {        
             Arc arc;
@@ -210,12 +219,15 @@ public class Controller {
             if (name.equals("Arc"))
             {   
                 // Generate text name until it is unique
+                int _offset=1;
                 do
                 {
-                    arc=new Arc("Arc"+Math.random(),out,in);
+                    int prefix=(((PetriNet)graph).getListOfArcs().size()+_offset);
+                    arc=new Arc("Arc"+prefix,out,in);
                     if(!log.checkArc(arc,graph)) {
-                        break;
+                        break;                        
                     }
+                    _offset++;
                 }
                 while                       
                    (!((PrecedenceGraph)graph).addArc(arc));
@@ -411,11 +423,14 @@ public class Controller {
             if(name.equals("Node"))
             {            
                 // Generate text name until it is unique
+                int _offset=1;
                 do
                 {
-                    node=new Node("Node"+Math.random());
+                    int prefix=(((PetriNet)graph).getListOfArcs().size()+_offset);                    
+                    node=new Node("Node"+prefix);
                     node.setX(x);
                     node.setY(y);
+                    _offset++;
                     //node.setDiagramElement(new DiagramElement(x, y));                
                 }
                 while 
