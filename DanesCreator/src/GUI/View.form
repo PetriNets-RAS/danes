@@ -11,7 +11,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="newPetriNet">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Petri net"/>
+                <Property name="text" type="java.lang.String" value="New Petri net"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newPetriNetActionPerformed"/>
@@ -19,7 +19,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="newPrecedenceNet">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Precedence graph"/>
+                <Property name="text" type="java.lang.String" value="New graph"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="newPrecedenceNetActionPerformed"/>

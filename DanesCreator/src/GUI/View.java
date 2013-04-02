@@ -309,7 +309,7 @@ public class View extends javax.swing.JFrame{
 
         fileMenu.setText("File");
 
-        newPetriNet.setText("Petri net");
+        newPetriNet.setText("New Petri net");
         newPetriNet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newPetriNetActionPerformed(evt);
@@ -317,7 +317,7 @@ public class View extends javax.swing.JFrame{
         });
         fileMenu.add(newPetriNet);
 
-        newPrecedenceNet.setText("Precedence graph");
+        newPrecedenceNet.setText("New graph");
         newPrecedenceNet.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newPrecedenceNetActionPerformed(evt);
