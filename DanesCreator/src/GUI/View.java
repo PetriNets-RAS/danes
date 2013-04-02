@@ -23,20 +23,16 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Stroke;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -44,8 +40,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 //import sun.org.mozilla.javascript.internal.xmlimpl.XML;
 
@@ -53,12 +47,13 @@ import javax.swing.SwingUtilities;
  *
  * @author marek
  */
-public class View extends javax.swing.JFrame {
+public class View extends javax.swing.JFrame{
     private static final String APP_NAME = "Danes Creator";
     private static final String PETRI_NAME = "Petri net";
     private static final String PRECEDENCE_GRAPH = "Precedence graph";
     private Graph graph;
     private DiagramPanel diagramPanel;
+    private DiagramKeyListener diagramKeyListener;
     private Controller controller;
     private AboutUs about;
     private Graph g;
@@ -92,13 +87,20 @@ public class View extends javax.swing.JFrame {
         /* Hide zoom buttons */
         btnZoomIn.setVisible(false);
         btnZoomOut.setVisible(false);
-        btnZoomReset.setVisible(false);        
+        btnZoomReset.setVisible(false);  
+        /* Hide align buttons */
+        btnAlignLeft.setVisible(false);
+        btnAlignRight.setVisible(false);
+        btnAlignTop.setVisible(false);
+        btnAlignBottom.setVisible(false);
         // Custom init 
         setTitle("DANES Creator");
         //setSize(800, 600); 
         setVisible(true);
 
-        
+        diagramKeyListener=new DiagramKeyListener();
+        setFocusable(true);
+        addKeyListener(diagramKeyListener);
     }
 
     /**
@@ -125,6 +127,10 @@ public class View extends javax.swing.JFrame {
         btnZoomIn = new javax.swing.JButton();
         btnZoomOut = new javax.swing.JButton();
         btnZoomReset = new javax.swing.JButton();
+        btnAlignLeft = new javax.swing.JButton();
+        btnAlignRight = new javax.swing.JButton();
+        btnAlignTop = new javax.swing.JButton();
+        btnAlignBottom = new javax.swing.JButton();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newPetriNet = new javax.swing.JMenuItem();
@@ -273,6 +279,34 @@ public class View extends javax.swing.JFrame {
             }
         });
 
+        btnAlignLeft.setText("a:left");
+        btnAlignLeft.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlignLeftActionPerformed(evt);
+            }
+        });
+
+        btnAlignRight.setText("a:right");
+        btnAlignRight.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlignRightActionPerformed(evt);
+            }
+        });
+
+        btnAlignTop.setText("a:top");
+        btnAlignTop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlignTopActionPerformed(evt);
+            }
+        });
+
+        btnAlignBottom.setText("a:bottom");
+        btnAlignBottom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlignBottomActionPerformed(evt);
+            }
+        });
+
         fileMenu.setText("File");
 
         newPetriNet.setText("Petri net");
@@ -357,32 +391,52 @@ public class View extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+                        .addComponent(diagramScrollPane)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(267, 267, 267)
+                        .addGap(65, 65, 65)
+                        .addComponent(btnAlignLeft)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnAlignBottom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAlignTop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAlignRight)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 192, Short.MAX_VALUE)
                         .addComponent(btnZoomIn)
-                        .addGap(29, 29, 29)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnZoomOut)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnZoomReset)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(14, 14, 14)))
                 .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
+                .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 697, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnAlignLeft)
+                        .addGap(26, 26, 26))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(btnZoomOut)
-                                .addComponent(btnZoomReset))
-                            .addComponent(btnZoomIn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(diagramScrollPane))))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(btnAlignTop)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnAlignBottom))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnAlignRight)
+                                    .addComponent(btnZoomOut)
+                                    .addComponent(btnZoomReset)
+                                    .addComponent(btnZoomIn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)))
+                .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 669, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -523,6 +577,11 @@ public class View extends javax.swing.JFrame {
         btnZoomIn.setVisible(true);
         btnZoomOut.setVisible(true);
         btnZoomReset.setVisible(true);
+        /* Show align buttons */
+        btnAlignLeft.setVisible(true);
+        btnAlignRight.setVisible(true);
+        btnAlignTop.setVisible(true);
+        btnAlignBottom.setVisible(true);
         getInfoAboutModel(g);
     }//GEN-LAST:event_newPetriNetActionPerformed
 
@@ -579,6 +638,12 @@ public class View extends javax.swing.JFrame {
         btnZoomIn.setVisible(true);
         btnZoomOut.setVisible(true);
         btnZoomReset.setVisible(true);        
+        /* Show align buttons */
+        btnAlignLeft.setVisible(true);
+        btnAlignRight.setVisible(true);
+        btnAlignTop.setVisible(true);
+        btnAlignBottom.setVisible(true);        
+        
         ///
         getInfoAboutModel(g);
     }//GEN-LAST:event_loadItemActionPerformed
@@ -692,7 +757,12 @@ public class View extends javax.swing.JFrame {
         /* Hide zoom buttos */
         btnZoomIn.setVisible(true);
         btnZoomOut.setVisible(true);
-        btnZoomReset.setVisible(true);          
+        btnZoomReset.setVisible(true);   
+        /* Show align buttons */
+        btnAlignLeft.setVisible(true);
+        btnAlignRight.setVisible(true);
+        btnAlignTop.setVisible(true);
+        btnAlignBottom.setVisible(true);        
         getInfoAboutModel(g);
     }//GEN-LAST:event_newPrecedenceNetActionPerformed
 
@@ -746,8 +816,32 @@ public class View extends javax.swing.JFrame {
          repaint();
     }//GEN-LAST:event_btnZoomResetActionPerformed
 
+    private void btnAlignTopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlignTopActionPerformed
+        controller.alignTop(diagramPanel.selectedElements);
+        repaint();
+    }//GEN-LAST:event_btnAlignTopActionPerformed
+
+    private void btnAlignLeftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlignLeftActionPerformed
+        controller.alignLeft(diagramPanel.selectedElements);
+        repaint();
+    }//GEN-LAST:event_btnAlignLeftActionPerformed
+
+    private void btnAlignRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlignRightActionPerformed
+        controller.alignRight(diagramPanel.selectedElements);
+        repaint();
+    }//GEN-LAST:event_btnAlignRightActionPerformed
+
+    private void btnAlignBottomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlignBottomActionPerformed
+        controller.alignBottom(diagramPanel.selectedElements);
+        repaint();
+    }//GEN-LAST:event_btnAlignBottomActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
+    private javax.swing.JButton btnAlignBottom;
+    private javax.swing.JButton btnAlignLeft;
+    private javax.swing.JButton btnAlignRight;
+    private javax.swing.JButton btnAlignTop;
     private javax.swing.JButton btnZoomIn;
     private javax.swing.JButton btnZoomOut;
     private javax.swing.JButton btnZoomReset;
@@ -776,6 +870,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JMenuBar topMenu;
     // End of variables declaration//GEN-END:variables
 
+
     class DiagramPanel extends javax.swing.JPanel {
 
         private DiagramMouseAdapter mouseAdapter;
@@ -787,7 +882,8 @@ public class View extends javax.swing.JFrame {
         private Color draggedColor;
         private double[] scaleRatio;
         double scale = 1.0;
-
+        boolean isCTRLdown=false;
+        
         /**
          * Creates new form GraphPanel
          */
@@ -801,11 +897,9 @@ public class View extends javax.swing.JFrame {
             this.selectedElements = new ArrayList<Element>();
             this.mouseAdapter = new DiagramMouseAdapter();
 
-
             // Click listener, drag listener
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
-
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(1000, 1000));
             setBackground(Color.WHITE);
@@ -1301,44 +1395,41 @@ public class View extends javax.swing.JFrame {
         }
 
         private void drawSelectedElements() {
-            // Nothing to draw
-            if (selectedElements.isEmpty()) {
-                return;
-            }
+            /* Drah all elements */            
+            for(Element e : selectedElements)
+            {
+                // Ring
+                if (e instanceof Place) {
+                    Place p = (Place) e;
+                    //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                    drawPlaceSelected(p.getX(), p.getY(), p.getWidth(), p.getHeight());
+                }
+                if (e instanceof Node) {
+                    Node n = (Node) e;
+                    //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                    drawPlaceSelected(n.getX(), n.getY(), n.getWidth(), n.getHeight());
+                }
+                if (e instanceof Resource) {
+                    Resource r = (Resource) e;
+                    //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
+                    drawPlaceSelected(r.getX(), r.getY(), r.getWidth(), r.getHeight());
+                }
+                if (e instanceof Transition) {
+                    Transition t = (Transition) e;
+                    //drawTransitionSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());7
+                    drawTransitionSelected(t.getX(), t.getY(), t.getWidth(), t.getHeight());
+                }
+                if (e instanceof Arc) {
+                    /*   DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
+                     DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
 
-            Element e = selectedElements.get(0);
-            // Ring
-            if (e instanceof Place) {
-                Place p = (Place) e;
-                //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-                drawPlaceSelected(p.getX(), p.getY(), p.getWidth(), p.getHeight());
-            }
-            if (e instanceof Node) {
-                Node n = (Node) e;
-                //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-                drawPlaceSelected(n.getX(), n.getY(), n.getWidth(), n.getHeight());
-            }
-            if (e instanceof Resource) {
-                Resource r = (Resource) e;
-                //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
-                drawPlaceSelected(r.getX(), r.getY(), r.getWidth(), r.getHeight());
-            }
-            if (e instanceof Transition) {
-                Transition t = (Transition) e;
-                //drawTransitionSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());7
-                drawTransitionSelected(t.getX(), t.getY(), t.getWidth(), t.getHeight());
-            }
-            if (e instanceof Arc) {
-                /*   DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
-                 DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
+                     drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());*/
+                    Element in = ((Arc) e).getInElement();
+                    Element out = ((Arc) e).getOutElement();
+                    drawArcSelected(out.getX(), out.getY(), in.getX(), in.getY());
+                }
 
-                 drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());*/
-                Element in = ((Arc) e).getInElement();
-                Element out = ((Arc) e).getOutElement();
-                drawArcSelected(out.getX(), out.getY(), in.getX(), in.getY());
             }
-
-
         }
 
         public void mouseLeftClick(int x, int y) {
@@ -1348,7 +1439,10 @@ public class View extends javax.swing.JFrame {
             x=(int)(x/scaleRatio[0]);
             y=(int)(y/scaleRatio[1]);
             
-            selectedElements.clear();
+            /* If CTRL is pressed, dont clear list, just add item */
+            if (!isCTRLdown)
+                selectedElements.clear();
+            
             Element e = controller.getLocationElement(x, y);
             Arc a = controller.getLocationArc(x, y);
             if (e != null) {
@@ -1665,8 +1759,27 @@ public class View extends javax.swing.JFrame {
           g2d.scale(scaleRatio[0], scaleRatio[1]);                    
           g2d.setFont(oldfont);            
         } // Function end
+    }
+    public class DiagramKeyListener implements KeyListener{
+
+        @Override
+        public void keyTyped(KeyEvent ke) {
+            diagramPanel.isCTRLdown=ke.isControlDown();            
+        }
+
+        @Override
+        public void keyPressed(KeyEvent ke) {
+            diagramPanel.isCTRLdown=ke.isControlDown();            
+        }
+
+        @Override
+        public void keyReleased(KeyEvent ke) {
+            //diagramPanel.isCTRLdown=ke.isControlDown();
+            diagramPanel.isCTRLdown=false;
+        }
     
     }
+    
     public class DiagramMouseAdapter extends MouseAdapter {
 
         private int x;

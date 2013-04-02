@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import Core.AbsPlace;
 import Core.Arc;
 import Core.Element;
 import Core.Graph;
@@ -18,6 +19,7 @@ import java.awt.Polygon;
 import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
 
 /**
  *
@@ -688,4 +690,125 @@ public class Controller {
             return new int[]{0,0,0,0};
         return new int[]{minX,minY,maxX,maxY};        
     }
+
+    public void alignTop(ArrayList<Element> selectedElements) {
+        /* Most higher - value 0 */
+        int minTop=Integer.MAX_VALUE;
+        for(Element e : selectedElements)
+        {
+            if (e.getY() <minTop)
+                minTop=e.getY();
+            // Arc is nothing //
+        }
+        for(Element e:selectedElements)
+        {
+            e.setY(minTop);
+        }
+    }    
+    public void alignLeft(ArrayList<Element> selectedElements) {
+        /* Most higher - value 0 */
+        int minLeft=Integer.MAX_VALUE;
+        for(Element e : selectedElements)
+        {
+            if (e.getX() <minLeft)
+                minLeft=e.getX();
+            // Arc is nothing //
+        }
+        for(Element e:selectedElements)
+        {
+            e.setX(minLeft);
+        }
+    }        
+    public void alignRight(ArrayList<Element> selectedElements) {
+        /* Most higher - value 0 */
+        int maxRight=Integer.MIN_VALUE;
+        int currentRight=0;
+        for(Element e : selectedElements)
+        {
+            if (e instanceof AbsPlace)
+            {
+                AbsPlace a=(AbsPlace)e;
+                currentRight=a.getX()+a.getWidth();
+            }
+            if (e instanceof Node)
+            {
+                Node n=(Node)e;
+                currentRight=n.getX()+n.getWidth();                
+            }
+            if (e instanceof Transition)
+            {
+                Transition t=(Transition)e;
+                currentRight=t.getX()+t.getWidth();
+            }
+            
+            if(currentRight>maxRight)
+                maxRight=currentRight;
+            // Arc is nothing //
+        }
+        for(Element e : selectedElements)
+        {
+            if (e instanceof AbsPlace)
+            {
+                AbsPlace a=(AbsPlace)e;
+                a.setX(maxRight-a.getWidth());
+            }
+            if (e instanceof Node)
+            {
+                Node n=(Node)e;
+                n.setX(maxRight-n.getWidth());                
+            }
+            if (e instanceof Transition)
+            {
+                Transition t=(Transition)e;
+                t.setX(maxRight-t.getWidth()); 
+            }            
+            // Arc is nothing //
+        }
+    }     
+    public void alignBottom(ArrayList<Element> selectedElements) {
+        /* Most lowest */
+        int minBottom=Integer.MIN_VALUE;
+        int currentBottom=0;
+        for(Element e : selectedElements)
+        {
+            if (e instanceof AbsPlace)
+            {
+                AbsPlace a=(AbsPlace)e;
+                currentBottom=a.getY()+a.getHeight();
+            }
+            if (e instanceof Node)
+            {
+                Node n=(Node)e;
+                currentBottom=n.getY()+n.getHeight();             
+            }
+            if (e instanceof Transition)
+            {
+                Transition t=(Transition)e;
+                currentBottom=t.getY()+t.getHeight();
+            }
+            
+            if(currentBottom>minBottom)
+                minBottom=currentBottom;
+            // Arc is nothing //
+        }
+        for(Element e : selectedElements)
+        {
+            if (e instanceof AbsPlace)
+            {
+                AbsPlace a=(AbsPlace)e;
+                a.setY(minBottom-a.getHeight());
+            }
+            if (e instanceof Node)
+            {
+                Node n=(Node)e;
+                n.setY(minBottom-n.getHeight());           
+            }
+            if (e instanceof Transition)
+            {
+                Transition t=(Transition)e;
+                t.setY(minBottom-t.getHeight());           
+            }            
+            // Arc is nothing //
+        }
+    }     
 }
