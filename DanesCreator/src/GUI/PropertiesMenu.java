@@ -44,16 +44,18 @@ public class PropertiesMenu extends javax.swing.JPanel {
         label6 = new java.awt.Label();
         jButton6 = new javax.swing.JButton();
         jTextField6 = new javax.swing.JTextField();
-        label1 = new java.awt.Label();
-        label2 = new java.awt.Label();
-        label3 = new java.awt.Label();
-        label5 = new java.awt.Label();
-        label7 = new java.awt.Label();
+        jLabel1 = new javax.swing.JLabel();
         nameText = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
         heightText = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
         widthText = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
         fontSizeText = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
         colorLabel = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        fontColorLabel = new javax.swing.JLabel();
 
         label4.setName(""); // NOI18N
         label4.setText("Width");
@@ -65,41 +67,44 @@ public class PropertiesMenu extends javax.swing.JPanel {
 
         jButton6.setText("Ok");
 
-        addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+        jLabel1.setText("Name");
+        jLabel1.setToolTipText("Name of element");
+
+        nameText.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                formPropertyChange(evt);
+                nameTextPropertyChange(evt);
             }
         });
 
-        label1.setText("Name");
+        jLabel2.setText("Height");
+        jLabel2.setToolTipText("GUI height of element");
 
-        label2.setName("labell"); // NOI18N
-        label2.setText("Height");
-
-        label3.setName(""); // NOI18N
-        label3.setText("Width");
-
-        label5.setName(""); // NOI18N
-        label5.setText("Font size");
-
-        label7.setName(""); // NOI18N
-        label7.setText("Color");
-        label7.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                label7MouseClicked(evt);
+        heightText.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                heightTextPropertyChange(evt);
             }
         });
 
-        nameText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameTextActionPerformed(evt);
+        jLabel3.setText("Width");
+        jLabel3.setToolTipText("GUI width of element");
+
+        widthText.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                widthTextPropertyChange(evt);
             }
         });
-        nameText.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                nameTextFocusLost(evt);
+
+        jLabel4.setText("Font Size");
+        jLabel4.setToolTipText("Font Size");
+
+        fontSizeText.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                fontSizeTextPropertyChange(evt);
             }
         });
+
+        jLabel5.setText("Color");
+        jLabel5.setToolTipText("color of element");
 
         colorLabel.setBackground(new java.awt.Color(0, 0, 102));
         colorLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -110,71 +115,79 @@ public class PropertiesMenu extends javax.swing.JPanel {
             }
         });
 
+        jLabel6.setText("Font color");
+        jLabel6.setToolTipText("color of element");
+
+        fontColorLabel.setBackground(new java.awt.Color(0, 0, 102));
+        fontColorLabel.setForeground(new java.awt.Color(255, 255, 255));
+        fontColorLabel.setOpaque(true);
+        fontColorLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                fontColorLabelMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(label5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 66, Short.MAX_VALUE)
-                    .addComponent(label3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(label2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(label1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(label7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(heightText)
-                    .addComponent(nameText, javax.swing.GroupLayout.DEFAULT_SIZE, 91, Short.MAX_VALUE)
-                    .addComponent(widthText)
-                    .addComponent(fontSizeText)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(heightText)
+                            .addComponent(nameText, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                            .addComponent(widthText)
+                            .addComponent(fontSizeText)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fontColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(nameText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(nameText)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(heightText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(heightText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(widthText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(13, 13, 13)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(fontSizeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(widthText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(fontSizeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(label7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(colorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(38, Short.MAX_VALUE))
+                    .addComponent(colorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(fontColorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void nameTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameTextActionPerformed
-        return;
-    }//GEN-LAST:event_nameTextActionPerformed
-
-    private void nameTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameTextFocusLost
-
-            element.setName(nameText.getText());
-        
-    }//GEN-LAST:event_nameTextFocusLost
-
-    private void formPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_formPropertyChange
-       return;
-    }//GEN-LAST:event_formPropertyChange
-
-    private void label7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_label7MouseClicked
-     
-    }//GEN-LAST:event_label7MouseClicked
 
     private void colorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorLabelMouseClicked
         JColorChooser colorChooser = new JColorChooser();
@@ -182,22 +195,72 @@ public class PropertiesMenu extends javax.swing.JPanel {
         //colorLabel.setBackground(elementColor);
         element.setColor(elementColor);
     }//GEN-LAST:event_colorLabelMouseClicked
+
+    private void nameTextPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_nameTextPropertyChange
+           // element.setName(nameText.getText());
+    }//GEN-LAST:event_nameTextPropertyChange
+
+    private void heightTextPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_heightTextPropertyChange
+        if(!heightText.getText().equals(""))
+        {
+            if(element instanceof AbsPlace)
+            {
+                AbsPlace abs = (AbsPlace)element;
+                abs.setHeight(Integer.parseInt(heightText.getText()));
+            }
+            if(element instanceof Transition)
+            {
+                Transition abs = (Transition)element;
+                abs.setHeight(Integer.parseInt(heightText.getText()));
+            }
+        }
+    }//GEN-LAST:event_heightTextPropertyChange
+
+    private void widthTextPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_widthTextPropertyChange
+        if(!widthText.getText().equals(""))
+        {
+            if(element instanceof AbsPlace)
+            {
+                AbsPlace abs = (AbsPlace)element;
+                abs.setWidth(Integer.parseInt(widthText.getText()));
+            }
+            if(element instanceof Transition)
+            {
+                Transition abs = (Transition)element;
+                abs.setWidth(Integer.parseInt(widthText.getText()));
+            }
+        }
+    }//GEN-LAST:event_widthTextPropertyChange
+
+    private void fontSizeTextPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_fontSizeTextPropertyChange
+        if(!fontSizeText.getText().equals(""))
+            element.setFontSize(Integer.parseInt(fontSizeText.getText()));
+    }//GEN-LAST:event_fontSizeTextPropertyChange
+
+    private void fontColorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontColorLabelMouseClicked
+        JColorChooser colorChooser = new JColorChooser();
+        elementColor = JColorChooser.showDialog(this, "Vyberte farbu", Color.yellow);
+        //colorLabel.setBackground(elementColor);
+        element.setColor2(elementColor);
+    }//GEN-LAST:event_fontColorLabelMouseClicked
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel colorLabel;
+    private javax.swing.JLabel fontColorLabel;
     private javax.swing.JTextField fontSizeText;
     private javax.swing.JTextField heightText;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton6;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField6;
-    private java.awt.Label label1;
-    private java.awt.Label label2;
-    private java.awt.Label label3;
     private java.awt.Label label4;
-    private java.awt.Label label5;
     private java.awt.Label label6;
-    private java.awt.Label label7;
     private javax.swing.JTextField nameText;
     private javax.swing.JTextField widthText;
     // End of variables declaration//GEN-END:variables
@@ -282,8 +345,9 @@ public class PropertiesMenu extends javax.swing.JPanel {
     public void loadProperties(Element currentElement) {
         element = currentElement;
         setElementName(currentElement.getName());
-        setElementColor(currentElement.getColor());
+        setElementColor(currentElement.getColor());      
         colorLabel.setBackground(currentElement.getColor());
+        fontColorLabel.setBackground(currentElement.getColor2());
             setElementFontSize(Integer.toString(currentElement.getFontSize()));
             //notes.setText(currentElement.getNote());
             if(currentElement instanceof AbsPlace)
