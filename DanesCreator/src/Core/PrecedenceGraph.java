@@ -174,7 +174,7 @@ public class PrecedenceGraph extends Graph {
 
         for (Arc a : this.listOfArcs) {
             Place pl = new Place(a.getName());
-            pl.setInitialMarking(a.getCapacity());
+            pl.setMarking(a.getCapacity());
             pn.addPlace(pl);
             //pl.setDiagramElement(new DiagramElement(5,6));
 

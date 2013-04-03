@@ -135,7 +135,7 @@ public class XMLPetriManager {
                 res.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
                                      Integer.parseInt(eElement.getAttribute("green2")),
                                      Integer.parseInt(eElement.getAttribute("blue2"))));
-                res.setInitialMarking(quantity);
+                res.setMarking(quantity);
                 res.setX(x);
                 res.setY(y);
                 //res.setDiagramElement(new DiagramElement(x, y));
@@ -227,7 +227,7 @@ public class XMLPetriManager {
                 pl.setWidth(Integer.parseInt(eElement.getAttribute("width")));
                 pl.setHeight(Integer.parseInt(eElement.getAttribute("height")));
                 pl.setNote(eElement.getAttribute("note"));
-                pl.setInitialMarking(initialMarking);
+                pl.setMarking(initialMarking);
                 pl.setX(x);
                 pl.setY(y);
                 pl.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
@@ -392,7 +392,7 @@ public class XMLPetriManager {
             place.setAttributeNode(Y);
 
             Attr tokens = doc.createAttribute("tokens");
-            tokens.setValue(p.getInitialMarking() + "");
+            tokens.setValue(p.getMarking() + "");
             place.setAttributeNode(tokens);
 
             Attr start = doc.createAttribute("start");
@@ -534,7 +534,7 @@ public class XMLPetriManager {
             resource.setAttributeNode(resName);
 
             Attr quantity = doc.createAttribute("quantity");
-            quantity.setValue(r.getInitialMarking() + "");
+            quantity.setValue(r.getMarking() + "");
             resource.setAttributeNode(quantity);
 
             Attr resX = doc.createAttribute("x");

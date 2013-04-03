@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * @author Atarin
  */
 public abstract class AbsPlace extends Element{
-    private int initialMarking;
+    private int marking;
     private int width=-1;
     private int height=-1;
     //private int tokens;
@@ -45,15 +45,15 @@ public abstract class AbsPlace extends Element{
     /**
      * @return the initialMarking
      */
-    public int getInitialMarking() {
-        return initialMarking;
+    public int getMarking() {
+        return marking;
     }
 
     /**
      * @param initialMarking the initialMarking to set
      */
-    public void setInitialMarking(int initialMarking) {
-        this.initialMarking = initialMarking;
+    public void setMarking(int initialMarking) {
+        this.marking = initialMarking;
     }
 
     /**
