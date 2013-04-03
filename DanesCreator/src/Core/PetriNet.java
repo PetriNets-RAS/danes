@@ -314,4 +314,18 @@ public class PetriNet extends Graph {
     public void setListOfResources(ArrayList<Resource> listOfResources) {
         this.listOfResources = listOfResources;
     }
+    
+    public int[] getState(){
+        int[] vector=new int[listOfPlaces.size()+listOfResources.size()];
+        for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++){
+            if(i<listOfPlaces.size()){
+                vector[i]=listOfPlaces.get(i).getMarking();
+            }else{
+                vector[i]=listOfResources.get(i).getMarking();
+            }
+        }
+        return vector;
+    }
+    
+    
 }
