@@ -183,12 +183,6 @@ public class View extends javax.swing.JFrame{
         });
         sideMenu.add(resuorceButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 70, 80, -1));
 
-        propertiesMenu.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                propertiesMenuFocusLost(evt);
-            }
-        });
-
         javax.swing.GroupLayout specificPropertiesMenuLayout = new javax.swing.GroupLayout(specificPropertiesMenu);
         specificPropertiesMenu.setLayout(specificPropertiesMenuLayout);
         specificPropertiesMenuLayout.setHorizontalGroup(
@@ -205,11 +199,6 @@ public class View extends javax.swing.JFrame{
         generalProperties.setFocusCycleRoot(true);
         generalProperties.setFocusTraversalPolicyProvider(true);
         generalProperties.setName(""); // NOI18N
-        generalProperties.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                generalPropertiesFocusLost(evt);
-            }
-        });
         propertiesTab.addTab("Properties", generalProperties);
 
         notes.setColumns(20);
@@ -708,14 +697,6 @@ public class View extends javax.swing.JFrame{
         //currentElement.setNote(notes.getText());
         // System.out.print("notes");
     }//GEN-LAST:event_notesFocusLost
-
-    private void propertiesMenuFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_propertiesMenuFocusLost
-        System.out.print("properties");        // TODO add your handling code here:
-    }//GEN-LAST:event_propertiesMenuFocusLost
-
-    private void generalPropertiesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_generalPropertiesFocusLost
-        System.out.print("properties");        // TODO add your handling code here:
-    }//GEN-LAST:event_generalPropertiesFocusLost
 
     private void resuorceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resuorceButtonActionPerformed
         lineButton.setSelected(false);

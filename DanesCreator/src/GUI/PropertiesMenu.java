@@ -70,40 +70,40 @@ public class PropertiesMenu extends javax.swing.JPanel {
         jLabel1.setText("Name");
         jLabel1.setToolTipText("Name of element");
 
-        nameText.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                nameTextPropertyChange(evt);
+        nameText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                nameTextKeyReleased(evt);
             }
         });
 
         jLabel2.setText("Height");
         jLabel2.setToolTipText("GUI height of element");
 
-        heightText.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                heightTextPropertyChange(evt);
+        heightText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                heightTextKeyReleased(evt);
             }
         });
 
         jLabel3.setText("Width");
         jLabel3.setToolTipText("GUI width of element");
 
-        widthText.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                widthTextPropertyChange(evt);
+        widthText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                widthTextKeyReleased(evt);
             }
         });
 
         jLabel4.setText("Font Size");
         jLabel4.setToolTipText("Font Size");
 
-        fontSizeText.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
-            public void propertyChange(java.beans.PropertyChangeEvent evt) {
-                fontSizeTextPropertyChange(evt);
+        fontSizeText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                fontSizeTextKeyReleased(evt);
             }
         });
 
-        jLabel5.setText("Color");
+        jLabel5.setText("Font color");
         jLabel5.setToolTipText("color of element");
 
         colorLabel.setBackground(new java.awt.Color(0, 0, 102));
@@ -115,7 +115,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
             }
         });
 
-        jLabel6.setText("Font color");
+        jLabel6.setText("Color");
         jLabel6.setToolTipText("color of element");
 
         fontColorLabel.setBackground(new java.awt.Color(0, 0, 102));
@@ -196,11 +196,19 @@ public class PropertiesMenu extends javax.swing.JPanel {
         element.setColor(elementColor);
     }//GEN-LAST:event_colorLabelMouseClicked
 
-    private void nameTextPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_nameTextPropertyChange
-           // element.setName(nameText.getText());
-    }//GEN-LAST:event_nameTextPropertyChange
+    private void fontColorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontColorLabelMouseClicked
+        JColorChooser colorChooser = new JColorChooser();
+        elementColor = JColorChooser.showDialog(this, "Vyberte farbu", Color.yellow);
+        //colorLabel.setBackground(elementColor);
+        element.setColor2(elementColor);
+    }//GEN-LAST:event_fontColorLabelMouseClicked
 
-    private void heightTextPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_heightTextPropertyChange
+    private void nameTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameTextKeyReleased
+        if(!nameText.getText().equals(""))   
+            element.setName(nameText.getText());
+    }//GEN-LAST:event_nameTextKeyReleased
+
+    private void heightTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_heightTextKeyReleased
         if(!heightText.getText().equals(""))
         {
             if(element instanceof AbsPlace)
@@ -214,9 +222,9 @@ public class PropertiesMenu extends javax.swing.JPanel {
                 abs.setHeight(Integer.parseInt(heightText.getText()));
             }
         }
-    }//GEN-LAST:event_heightTextPropertyChange
+    }//GEN-LAST:event_heightTextKeyReleased
 
-    private void widthTextPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_widthTextPropertyChange
+    private void widthTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_widthTextKeyReleased
         if(!widthText.getText().equals(""))
         {
             if(element instanceof AbsPlace)
@@ -230,19 +238,12 @@ public class PropertiesMenu extends javax.swing.JPanel {
                 abs.setWidth(Integer.parseInt(widthText.getText()));
             }
         }
-    }//GEN-LAST:event_widthTextPropertyChange
+    }//GEN-LAST:event_widthTextKeyReleased
 
-    private void fontSizeTextPropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_fontSizeTextPropertyChange
+    private void fontSizeTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fontSizeTextKeyReleased
         if(!fontSizeText.getText().equals(""))
             element.setFontSize(Integer.parseInt(fontSizeText.getText()));
-    }//GEN-LAST:event_fontSizeTextPropertyChange
-
-    private void fontColorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontColorLabelMouseClicked
-        JColorChooser colorChooser = new JColorChooser();
-        elementColor = JColorChooser.showDialog(this, "Vyberte farbu", Color.yellow);
-        //colorLabel.setBackground(elementColor);
-        element.setColor2(elementColor);
-    }//GEN-LAST:event_fontColorLabelMouseClicked
+    }//GEN-LAST:event_fontSizeTextKeyReleased
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel colorLabel;
@@ -362,8 +363,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
                 setElementWidth(Integer.toString(current.getWidth()));
                 setElementHeight(Integer.toString(current.getHeight()));
             }
-            revalidate();
-            validate();
+            this.revalidate();
+            this.validate();
     }
 
 }
