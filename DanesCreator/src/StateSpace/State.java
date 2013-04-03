@@ -13,26 +13,44 @@ import java.util.ArrayList;
  */
 public class State {
     
-    private int[] stateMarkingArr;
+    private int[] markingField;
     private ArrayList<StateItem> listStateItems;
-    public State(PetriNet pPetriNet){
-        int count = pPetriNet.getListOfPlaces().size()+pPetriNet.getListOfResources().size();
-        this.stateMarkingArr = new int[count];
+    private int lastMarkedItem;
+    private State parent;
+    
+    public State(int[] pMarkigField, int pLastMarkedItem, State pParent){
+        int count = pMarkigField.length;
+        this.markingField = new int[count];
+        this.lastMarkedItem = pLastMarkedItem;
+        this.parent = pParent;
         this.listStateItems = new ArrayList<StateItem>();
     }
     
     public int[] getMarkingField(){
-        return null;
+        return markingField;
+    }
+    
+     /**
+     * @param markingField the markingField to set
+     */
+    public void setMarkingField(int[] markingField) {
+        this.markingField = markingField;
+    }
+    
+     /**
+     * @return the listStateItems
+     */
+    public ArrayList<StateItem> getListStateItems() {
+        return listStateItems;
     }
     
     @Override
     public String toString()
     {
         StringBuilder stateName = new StringBuilder();
-        for (int i = 0; i < this.stateMarkingArr.length; i++) {
-            stateName.append(this.stateMarkingArr[0]);
+        for (int i = 0; i < this.markingField.length; i++) {
+            stateName.append(this.markingField[i]);
         }
         return stateName.toString();
-    }
-    
+    }    
 }
