@@ -4,6 +4,7 @@
  */
 package Core;
 
+import StateSpace.State;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -325,6 +326,16 @@ public class PetriNet extends Graph {
             }
         }
         return vector;
+    }
+    
+    public void setState(State state){
+        for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++){
+            if(i<listOfPlaces.size()){
+                listOfPlaces.get(i).setMarking(state.getMarkingField()[i]);           
+            }else{
+                listOfResources.get(i).setMarking(state.getMarkingField()[i]);
+            }
+        }      
     }
     
     
