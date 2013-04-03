@@ -224,7 +224,7 @@ public class Controller {
                 int _offset=1;
                 do
                 {
-                    int prefix=(((PetriNet)graph).getListOfArcs().size()+_offset);
+                    int prefix=(((PrecedenceGraph)graph).getListOfArcs().size()+_offset);
                     arc=new Arc("Arc"+prefix,out,in);
                     if(!log.checkArc(arc,graph)) {
                         break;                        
@@ -428,7 +428,7 @@ public class Controller {
                 int _offset=1;
                 do
                 {
-                    int prefix=(((PetriNet)graph).getListOfArcs().size()+_offset);                    
+                    int prefix=(((PrecedenceGraph)graph).getListOfArcs().size()+_offset);                    
                     node=new Node("Node"+prefix);
                     node.setX(x);
                     node.setY(y);
