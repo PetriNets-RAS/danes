@@ -4,6 +4,7 @@
  */
 package StateSpace.Trie;
 
+import StateSpace.State;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -15,7 +16,7 @@ public class Node {
     char content;
     boolean marker;
     Collection<Node> child;
-    int data;
+    State data;
 
     public Node(char c) {
         child = new LinkedList<Node>();
