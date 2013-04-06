@@ -16,6 +16,7 @@ import Core.Resource;
 import Core.Transition;
 import FileManager.XMLPetriManager;
 import FileManager.XMLPrecedenceManager;
+import StateSpace.StateSpaceCalculator;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -56,7 +57,7 @@ public class View extends javax.swing.JFrame{
     private DiagramKeyListener diagramKeyListener;
     private Controller controller;
     private AboutUs about;
-    private Graph g;
+    //private Graph g;
     //private PetriNet p;
     //private PrecedenceGraph pg;
     private File selectedFile;
@@ -142,6 +143,7 @@ public class View extends javax.swing.JFrame{
         editMenu = new javax.swing.JMenu();
         convert = new javax.swing.JMenuItem();
         export = new javax.swing.JMenuItem();
+        create_state_diagram = new javax.swing.JMenuItem();
         aboutUs = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -361,6 +363,14 @@ public class View extends javax.swing.JFrame{
         export.setText("Export");
         editMenu.add(export);
 
+        create_state_diagram.setText("Create state diagram");
+        create_state_diagram.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                create_state_diagramActionPerformed(evt);
+            }
+        });
+        editMenu.add(create_state_diagram);
+
         topMenu.add(editMenu);
 
         aboutUs.setText("About us");
@@ -461,7 +471,7 @@ public class View extends javax.swing.JFrame{
         if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
             return;
         }
-        checkAndSave(g, selectedFile);
+        checkAndSave(graph, selectedFile);
     }//GEN-LAST:event_saveAsItemActionPerformed
 
         private void getInfoAboutFile(File file)
@@ -484,9 +494,9 @@ public class View extends javax.swing.JFrame{
 
         //Create and display new panel
         //Petri Net ukazka ************************************************
-        PetriNet p = new PetriNet("Empty");
+        PetriNet p = new PetriNet("New petri net");
         //umele pridanie siete
-        Place a = new Place("a");
+        /*Place a = new Place("a");
         a.setX(500);
         a.setY(400);
         a.setWidth(40);
@@ -529,7 +539,7 @@ public class View extends javax.swing.JFrame{
         p.addPlace(p1);
         p.addPlace(p2);
         p.addTransition(t1);
-        p.addTransition(t2);
+        p.addTransition(t2);*/
         // koniec umele pridanie siete
         //*********************************************************** 
         /*
@@ -550,9 +560,9 @@ public class View extends javax.swing.JFrame{
          controller.setModel(pg);
          this.diagramPanel   =   new DiagramPanel(pg);
          */
-        g = p;
-        controller.setModel(g);
-        this.diagramPanel = new DiagramPanel(g);
+        graph = p;
+        controller.setModel(graph);
+        this.diagramPanel = new DiagramPanel(graph);
 
 
 
@@ -571,7 +581,7 @@ public class View extends javax.swing.JFrame{
         btnAlignRight.setVisible(true);
         btnAlignTop.setVisible(true);
         btnAlignBottom.setVisible(true);
-        getInfoAboutModel(g);
+        getInfoAboutModel(graph);
     }//GEN-LAST:event_newPetriNetActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
@@ -608,15 +618,15 @@ public class View extends javax.swing.JFrame{
         if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
             FileManager.XMLPetriManager loader = new XMLPetriManager();
             PetriNet p = loader.getPetriNetFromXML(inputFile);
-            g = p;
+            graph = p;
         } else {
             FileManager.XMLPrecedenceManager loader=new XMLPrecedenceManager();
             PrecedenceGraph pg=loader.getPrecedenceFromXML(inputFile);
-            g=pg;
+            graph=pg;
         }
         getInfoAboutFile(inputFile);
-        controller.setModel(g);
-        this.diagramPanel = new DiagramPanel(g);
+        controller.setModel(graph);
+        this.diagramPanel = new DiagramPanel(graph);
         diagramScrollPane.setViewportView(this.diagramPanel);
 
         sideMenu.setVisible(true);
@@ -634,7 +644,7 @@ public class View extends javax.swing.JFrame{
         btnAlignBottom.setVisible(true);        
         
         ///
-        getInfoAboutModel(g);
+        getInfoAboutModel(graph);
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
@@ -655,11 +665,11 @@ public class View extends javax.swing.JFrame{
             if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
                 return;
             }
-            checkAndSave(g, selectedFile);
+            checkAndSave(graph, selectedFile);
             //newXML.createPetriXML(g, selectedFile);
         } else {
             //newXML.createPetriXML(g, new File(selectedFile.getAbsolutePath()));
-            checkAndSave(g, selectedFile);
+            checkAndSave(graph, selectedFile);
         }
         getInfoAboutFile(selectedFile);
     }//GEN-LAST:event_saveItemActionPerformed
@@ -707,18 +717,24 @@ public class View extends javax.swing.JFrame{
     private void newPrecedenceNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPrecedenceNetActionPerformed
         // TODO add your handling code here:
         selectedFile=null;
-        PrecedenceGraph pg = new PrecedenceGraph("Test");
+        PrecedenceGraph pg = new PrecedenceGraph("New precedence graph");
         //g=pg;
-        Node n1 = new Node("n1");
+        /*Node n1 = new Node("n1");
         n1.setX(400);
         n1.setY(200);
+        n1.setWidth(200);        
+        n1.setHeight(200);
         Node n2 = new Node("n2");
         n2.setX(200);
-        n2.setY(150);//n2.setDiagramElement(new DiagramElement(200,150));
+        n2.setY(150);//n2.setDiagramElement(new DiagramElement(200,150));        
+        n2.setHeight(170);
+        n2.setWidth(170);
         Node n3 = new Node("n3");
         n3.setX(400);
         n3.setY(60);//n3.setDiagramElement(new DiagramElement(400,60));
-
+        n3.setWidth(100);
+        n3.setHeight(100);
+        
         Arc a1 = new Arc("a1", n2, n1);
         Arc a2 = new Arc("a2", n2, n3);
 
@@ -727,10 +743,10 @@ public class View extends javax.swing.JFrame{
         pg.addNode(n3);
         pg.addArc(a1);
         pg.addArc(a2);
-
-        g = pg;
-        controller.setModel(g);
-        this.diagramPanel = new DiagramPanel(g);
+*/
+        graph = pg;
+        controller.setModel(graph);
+        this.diagramPanel = new DiagramPanel(graph);
         diagramScrollPane.setViewportView(this.diagramPanel);
         sideMenu.setVisible(true);
         // hide side menu
@@ -744,26 +760,26 @@ public class View extends javax.swing.JFrame{
         btnAlignRight.setVisible(true);
         btnAlignTop.setVisible(true);
         btnAlignBottom.setVisible(true);        
-        getInfoAboutModel(g);
+        getInfoAboutModel(graph);
     }//GEN-LAST:event_newPrecedenceNetActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
         // eTODO add your handling code here:
-        PrecedenceGraph pg = (PrecedenceGraph) g;
+        PrecedenceGraph pg = (PrecedenceGraph) graph;
         PetriNet converted = pg.changePrecedenceGraphToPN();
-        g = converted;
+        graph = converted;
         controller.setModel(converted);
         this.diagramPanel = new DiagramPanel(converted);
         diagramScrollPane.setViewportView(this.diagramPanel);
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
-        getInfoAboutModel(g);
+        getInfoAboutModel(graph);
     }//GEN-LAST:event_convertActionPerformed
 
     private void btnZoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomInActionPerformed
-         diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]*1.1;
-         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]*1.1;
+         diagramPanel.scaleRatio[0]+=0.1;
+         diagramPanel.scaleRatio[1]+=0.1;
          repaint();
         /*controller.setModel(pg);
          this.diagramPanel   =   new DiagramPanel(pg);                
@@ -785,8 +801,8 @@ public class View extends javax.swing.JFrame{
     }//GEN-LAST:event_diagramScrollPaneMousePressed
 
     private void btnZoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomOutActionPerformed
-         diagramPanel.scaleRatio[0]=diagramPanel.scaleRatio[0]/1.1;
-         diagramPanel.scaleRatio[1]=diagramPanel.scaleRatio[1]/1.1;
+         diagramPanel.scaleRatio[0]-=0.1;
+         diagramPanel.scaleRatio[1]-=0.1;
          repaint();
     }//GEN-LAST:event_btnZoomOutActionPerformed
 
@@ -817,6 +833,20 @@ public class View extends javax.swing.JFrame{
         repaint();
     }//GEN-LAST:event_btnAlignBottomActionPerformed
 
+    private void create_state_diagramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_create_state_diagramActionPerformed
+        if (graph==null)
+            return;
+        
+        PetriNet ssPetriNet=null;
+        if(graph instanceof PetriNet)
+            ssPetriNet=(PetriNet)graph;
+        if(graph instanceof PrecedenceGraph)
+            ssPetriNet=((PrecedenceGraph)graph).changePrecedenceGraphToPN();
+        
+        StateSpaceCalculator ssCalc=new StateSpaceCalculator(ssPetriNet);
+        ssCalc.calculateStateSpace();
+    }//GEN-LAST:event_create_state_diagramActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton btnAlignBottom;
@@ -827,6 +857,7 @@ public class View extends javax.swing.JFrame{
     private javax.swing.JButton btnZoomOut;
     private javax.swing.JButton btnZoomReset;
     private javax.swing.JMenuItem convert;
+    private javax.swing.JMenuItem create_state_diagram;
     private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenu;
     private javax.swing.JToggleButton ellipseButton;
@@ -902,7 +933,6 @@ public class View extends javax.swing.JFrame{
             drawGraph();
             drawDraggedObject();
             drawSelectedElements();
-
         }
         /*
          public void drawPlace(int column,int row){
@@ -1277,7 +1307,7 @@ public class View extends javax.swing.JFrame{
             if (graph instanceof PrecedenceGraph) {
                 // Arcs, Nodes
 
-                // Draw all arcs
+                                // Draw all arcs
                 for (Element e : ((PrecedenceGraph) graph).getListOfArcs()) {
                     Element in = ((Arc) e).getInElement();
                     Element out = ((Arc) e).getOutElement();
@@ -1286,27 +1316,15 @@ public class View extends javax.swing.JFrame{
                     int width1 = 0, width2 = 0, height1 = 0, height2 = 0;
 
                     // In element
-                    if (in instanceof Place || in instanceof Resource) {
-                        width1 = ((AbsPlace) in).getWidth();
-                        height1 = ((AbsPlace) in).getHeight();
-                    } else if (in instanceof Node) {
+                    if (in instanceof Node){
                         width1 = ((Node) in).getWidth();
-                        height1 = ((Node) in).getHeight();
-                    } else if (in instanceof Transition) {
-                        width1 = ((Transition) in).getWidth();
-                        height1 = ((Transition) in).getHeight();
+                        height1 = ((Node) in).getHeight();                    
                     }
 
                     // Out element
-                    if (out instanceof Place || out instanceof Resource) {
-                        width2 = ((AbsPlace) out).getWidth();
-                        height2 = ((AbsPlace) out).getHeight();
-                    } else if (out instanceof Node) {
+                    if (out instanceof Node) {
                         width2 = ((Node) out).getWidth();
-                        height2 = ((Node) out).getHeight();
-                    } else if (out instanceof Transition) {
-                        width1 = ((Transition) out).getWidth();
-                        height1 = ((Transition) out).getHeight();
+                        height2 = ((Node) out).getHeight();                    
                     }
                     //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
                     drawArc(out.getX(), out.getY(), width1, height1, in.getX(), in.getY(), width2, height2, arc.getColor(), arc.getName(), arc.getFontSize());
@@ -1417,8 +1435,8 @@ public class View extends javax.swing.JFrame{
             // Select 1 element
             //g2d.drawString(name, x, y);
             //g2d.drawString(name, po.x, po.y);
-            x=(int)(x/scaleRatio[0]);
-            y=(int)(y/scaleRatio[1]);
+            x=(int)(x/scaleRatio[0]);// +(1-scaleRatio[0])*(x-0));// --scaleRatio[0])*x/2);
+            y=(int)(y/scaleRatio[1]);// +(1-scaleRatio[1])*(y-0));// -(1-scaleRatio[1])*y/2);
             
             /* If CTRL is pressed, dont clear list, just add item */
             if (!isCTRLdown)
