@@ -24,7 +24,11 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Stroke;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -40,7 +44,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFileChooser;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 //import sun.org.mozilla.javascript.internal.xmlimpl.XML;
 
@@ -54,7 +61,7 @@ public class View extends javax.swing.JFrame{
     private static final String PRECEDENCE_GRAPH = "Precedence graph";
     private Graph graph;
     private DiagramPanel diagramPanel;
-    private DiagramKeyListener diagramKeyListener;
+    //private DiagramKeyListener diagramKeyListener;
     private Controller controller;
     private AboutUs about;
     //private Graph g;
@@ -63,6 +70,9 @@ public class View extends javax.swing.JFrame{
     private File selectedFile;
     private String selectedFileName;
     private String selectedFilePath;
+        
+    
+    
     public View(PetriNet pa_petriNet, Controller pa_controller) {
         super();
        //this.setLocationRelativeTo(null);
@@ -98,10 +108,31 @@ public class View extends javax.swing.JFrame{
         setTitle("DANES Creator");
         //setSize(800, 600); 
         setVisible(true);
+        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(new ViewKeyEventDispatcher());
 
-        diagramKeyListener=new DiagramKeyListener();
         setFocusable(true);
-        addKeyListener(diagramKeyListener);
+        setFocusableWindowState(true);
+        //addKeyListener(diagramKeyListener);
+       
+
+    }
+    /* Class for keyMapping */
+    private class ViewKeyEventDispatcher implements KeyEventDispatcher {
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent e) {
+            /* React only to CTRL */
+            if(diagramPanel!=null)
+            if (KeyEvent.VK_CONTROL == e.getKeyCode())
+            if (e.getID() == KeyEvent.KEY_PRESSED) {
+                diagramPanel.isCTRLdown=true;
+            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
+                diagramPanel.isCTRLdown=false;
+            } else if (e.getID() == KeyEvent.KEY_TYPED) {
+                //diagramPanel.isCTRLdown=true;
+            }
+            return false;
+        }
     }
 
     /**
@@ -808,8 +839,8 @@ public class View extends javax.swing.JFrame{
 
     private void btnZoomResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnZoomResetActionPerformed
          //diagramPanel.setScaleRatioZoomAll(diagramScrollPane.getWidth(),diagramScrollPane.getHeight());
-         diagramPanel.scaleRatio[0]=1;
-         diagramPanel.scaleRatio[1]=1;
+         diagramPanel.scaleRatio[0]=100;
+         diagramPanel.scaleRatio[1]=100;
          repaint();
     }//GEN-LAST:event_btnZoomResetActionPerformed
 
@@ -893,7 +924,7 @@ public class View extends javax.swing.JFrame{
         private Object draggedObject;
         private Color draggedColor;
         private double[] scaleRatio;
-        double scale = 1.0;
+        
         boolean isCTRLdown=false;
         
         /**
@@ -901,6 +932,9 @@ public class View extends javax.swing.JFrame{
          */
         public DiagramPanel(Graph pa_graph) {
             super();
+            setFocusable(true);
+            //addKeyListener(new DiagramKeyAdapter());*/
+  
             this.graph = pa_graph;
             //this.g2d;//null;
             this.scaleRatio = new double[]{1.0, 1.0};
@@ -908,20 +942,42 @@ public class View extends javax.swing.JFrame{
             this.draggedElement = null;
             this.selectedElements = new ArrayList<Element>();
             this.mouseAdapter = new DiagramMouseAdapter();
-
+          
+          
+        /*    Action _ctrlAction = new AbstractAction() {
+                @Override
+                    public void actionPerformed(ActionEvent e) {
+                        isCTRLdown=true;
+                        System.out.println("ctrl pressed");
+                    }
+                };
+            getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.CTRL_DOWN_MASK,1,tru),"ctrlPressed");
+            getActionMap().put("ctrlPressed",                _ctrlAction);
+*/
+            
             // Click listener, drag listener
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
             // Max sirka,vyska = 1000x1000
-            setPreferredSize(new Dimension(1000, 1000));
+            setPreferredSize(new Dimension(10000, 10000));
             setBackground(Color.WHITE);
+            /* Key */
+            addKeyListener(new KeyAdapter() {
+            public void keyPressed(KeyEvent event) {
+            if (KeyEvent.VK_ENTER == event.getKeyCode()) 
+                setVisible(true);
+            }
         }
-
+        );            
+        }
+        
+      
+        
         @Override
         public void paint(Graphics g) {
 
             super.paint(g);
-            this.g2d = (Graphics2D) g;
+            this.g2d = (Graphics2D) g;            
             g2d.scale(scaleRatio[0], scaleRatio[1]);
 
             /*
@@ -1439,7 +1495,7 @@ public class View extends javax.swing.JFrame{
             y=(int)(y/scaleRatio[1]);// +(1-scaleRatio[1])*(y-0));// -(1-scaleRatio[1])*y/2);
             
             /* If CTRL is pressed, dont clear list, just add item */
-            if (!isCTRLdown)
+            if (isCTRLdown==false)
                 selectedElements.clear();
             
             Element e = controller.getLocationElement(x, y);
@@ -1583,10 +1639,10 @@ public class View extends javax.swing.JFrame{
         //}
 
         public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
-            x_old=(int)(x_old/scaleRatio[0]);
-            x_new=(int)(x_new/scaleRatio[0]);            
-            y_old=(int)(y_old/scaleRatio[1]);
-            y_new=(int)(y_new/scaleRatio[1]);
+            x_old=(int)(x_old*scaleRatio[0]);
+            x_new=(int)(x_new*scaleRatio[0]);            
+            y_old=(int)(y_old*scaleRatio[1]);
+            y_new=(int)(y_new*scaleRatio[1]);
             
             // Old and current positions
 
@@ -1652,7 +1708,7 @@ public class View extends javax.swing.JFrame{
         }
 
         // Set Scale Ration depend on all items
-        private void setScaleRatioZoomAll(int width,int height) {
+       // private void setScaleRatioZoomAll(int width,int height) {
             /*int [] minXYmaxXY=controller.getMinXYMaxXY();
             if (minXYmaxXY[0]==0 && minXYmaxXY[1]==0 && minXYmaxXY[2]==0 && minXYmaxXY[3]==0 )
                     return;
@@ -1667,7 +1723,7 @@ public class View extends javax.swing.JFrame{
             scaleRatio[0]=2;
             scaleRatio[1]=2;*/
                         
-        }
+       // }
 
         private void autosetWidthHeight() 
         {
@@ -1759,25 +1815,25 @@ public class View extends javax.swing.JFrame{
           g2d.setFont(oldfont);            
         } // Function end
     }
-    public class DiagramKeyListener implements KeyListener{
+   public class DiagramKeyAdapter extends KeyAdapter{//implements KeyListener{
 
-        @Override
+        //@Override
         public void keyTyped(KeyEvent ke) {
-            diagramPanel.isCTRLdown=ke.isControlDown();            
+            //diagramPanel.isCTRLdown=ke.isControlDown();            
         }
 
-        @Override
+       // @Override
         public void keyPressed(KeyEvent ke) {
             diagramPanel.isCTRLdown=ke.isControlDown();            
         }
 
-        @Override
+        //@Override
         public void keyReleased(KeyEvent ke) {
             //diagramPanel.isCTRLdown=ke.isControlDown();
             diagramPanel.isCTRLdown=false;
-        }
-    
+        }    
     }
+    
     
     public class DiagramMouseAdapter extends MouseAdapter {
 
