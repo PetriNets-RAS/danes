@@ -12,7 +12,7 @@ import java.util.ArrayList;
  *
  * @author Michal Skovajsa
  */
-public class Place extends AbsPlace{
+public class Place extends AbsPlace {
 
 
     private boolean start;
@@ -25,6 +25,7 @@ public class Place extends AbsPlace{
         start=false;
         end=false;
     }
+
 
     /**
      * @return the start

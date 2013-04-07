@@ -22,6 +22,7 @@ public class Arc extends Element {
         //this.setName(paName);
         this.outElement=paOutElement;
         this.inElement=paInElement;
+        this.capacity=1;
     }
 
     /**

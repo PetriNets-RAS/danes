@@ -80,15 +80,15 @@ public class Trie {
     }
 
     public void levelOrder() {
+        System.out.println("Lever order :");
         Queue q = new LinkedList();
         if (root != null);
         q.add(root);
 
         while (!q.isEmpty()) {
-
             TrieNode temp = (TrieNode) q.remove();
             if (temp.marker) {
-                System.out.print(temp.data + " ");
+                System.out.println(temp.data + " ");
             }
             for (TrieNode eachChild : temp.child) {
                 q.add(eachChild);

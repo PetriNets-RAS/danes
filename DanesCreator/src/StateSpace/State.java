@@ -14,16 +14,17 @@ import java.util.ArrayList;
 public class State {
     
     private int[] markingField;
-    private ArrayList<StateItem> listStateItems;
+    private ArrayList<StateItem> childs;
     private int lastMarkedItem;
     private State parent;
     
     public State(int[] pMarkigField, int pLastMarkedItem, State pParent){
         int count = pMarkigField.length;
         this.markingField = new int[count];
+        this.markingField=pMarkigField.clone();
         this.lastMarkedItem = pLastMarkedItem;
         this.parent = pParent;
-        this.listStateItems = new ArrayList<StateItem>();
+        this.childs = new ArrayList<StateItem>();
     }
     
     public int[] getMarkingField(){
@@ -40,8 +41,13 @@ public class State {
      /**
      * @return the listStateItems
      */
-    public ArrayList<StateItem> getListStateItems() {
-        return listStateItems;
+    public ArrayList<StateItem> getChilds() {
+        return childs;
+    }
+    
+    public void addChild(StateItem s)
+    {
+        this.childs.add(s);
     }
     
     @Override
@@ -53,4 +59,19 @@ public class State {
         }
         return stateName.toString();
     }    
+
+    public int getLastMarkedItem() {
+        return lastMarkedItem;
+    }
+
+    public void increaseLastMarkedItem() {
+        this.lastMarkedItem += 1;
+    }
+
+    public State getParent() {
+        return parent;
+    }
+ 
+    
+    
 }

@@ -1344,12 +1344,12 @@ public class View extends javax.swing.JFrame{
 
                 // Draw all places
                 for (Element e : ((PetriNet) graph).getListOfPlaces()) {
-                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Place) e).getWidth(), ((Place) e).getHeight(), e.getName(), e.getFontSize());
+                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Place) e).getWidth(), ((Place) e).getHeight(), e.getName()+" :"+((Place)e).getMarking(), e.getFontSize());
                 }
 
                 // Draw all resources
                 for (Element e : ((PetriNet) graph).getListOfResources()) {
-                    drawResource(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Resource) e).getWidth(), ((Resource) e).getHeight(), e.getName(), e.getFontSize());
+                    drawResource(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Resource) e).getWidth(), ((Resource) e).getHeight(), e.getName()+" :"+((Resource)e).getMarking(), e.getFontSize());
                 }
 
                 // Draw all transitions
@@ -1388,7 +1388,7 @@ public class View extends javax.swing.JFrame{
 
                 // Draw all nodes
                 for (Element e : ((PrecedenceGraph) graph).getListOfNodes()) {
-                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Node) e).getWidth(), ((Node) e).getHeight(), e.getName(), e.getFontSize());
+                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Node) e).getWidth(), ((Node) e).getHeight(), e.getName()+" :"+((Node)e).getCapacity(), e.getFontSize());
                 }
 
                 return;
@@ -1415,20 +1415,20 @@ public class View extends javax.swing.JFrame{
             // Resource
             if (draggedElement instanceof Resource) {
                 Resource r = (Resource) draggedElement;
-                drawPlace(r.getX(), r.getY(), r.getColor(), r.getColor2(), r.getWidth(), r.getHeight(), r.getName(), r.getFontSize(), 2);
+                drawPlace(r.getX(), r.getY(), r.getColor(), r.getColor2(), r.getWidth(), r.getHeight(), r.getName()+" :"+r.getMarking(), r.getFontSize(), 2);
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
 
             // Place
             if (draggedElement instanceof Place) {
                 Place p = (Place) draggedElement;
-                drawPlace(p.getX(), p.getY(), p.getColor(), p.getColor2(), p.getWidth(), p.getHeight(), p.getName(), p.getFontSize(), 2);
+                drawPlace(p.getX(), p.getY(), p.getColor(), p.getColor2(), p.getWidth(), p.getHeight(), p.getName()+" :"+p.getMarking(), p.getFontSize(), 2);
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
             // Node
             if (draggedElement instanceof Node) {
                 Node n = (Node) draggedElement;
-                drawPlace(n.getX(), n.getY(), n.getColor(), n.getColor2(), n.getWidth(), n.getHeight(), n.getName(), n.getFontSize(), 2);
+                drawPlace(n.getX(), n.getY(), n.getColor(), n.getColor2(), n.getWidth(), n.getHeight(), n.getName()+" :"+n.getCapacity(), n.getFontSize(), 2);
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
 
@@ -1743,7 +1743,7 @@ public class View extends javax.swing.JFrame{
                     g2d.setFont(newFont);
             
                     FontMetrics fm = g2d.getFontMetrics(newFont);
-                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(p.getName(), g2d);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(p.getName()+" :"+p.getMarking(), g2d);
 
                     int textWidth = (int) (rect.getWidth());
                     int textHeight = (int) (rect.getHeight());     
@@ -1778,7 +1778,7 @@ public class View extends javax.swing.JFrame{
                     g2d.setFont(newFont);
             
                     FontMetrics fm = g2d.getFontMetrics(newFont);
-                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(r.getName(), g2d);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(r.getName()+" :"+r.getMarking(), g2d);
 
                     int textWidth = (int) (rect.getWidth());
                     int textHeight = (int) (rect.getHeight());     
@@ -1800,7 +1800,7 @@ public class View extends javax.swing.JFrame{
                     g2d.setFont(newFont);
             
                     FontMetrics fm = g2d.getFontMetrics(newFont);
-                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(n.getName(), g2d);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(n.getName()+" :"+n.getCapacity(), g2d);
 
                     int textWidth = (int) (rect.getWidth());
                     int textHeight = (int) (rect.getHeight());     
