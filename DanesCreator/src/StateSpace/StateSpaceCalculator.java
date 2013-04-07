@@ -22,58 +22,56 @@ public class StateSpaceCalculator {
     /* Calculate whole stateSpace */
     public void calculateStateSpace()
     {
-        /* Inicializacia */
-        Trie _znakovyStrom=new Trie();
+        /* Initialization */
         PetriNet _net=petriNet;
-        State _stav;
-        State intialState=new State(_net.getState(), 0, null);
+        State _intialState=new State(_net.getState(), 0, null);
+        State _currentState;
+        Trie _stateSpace=new Trie();
         
-        _stav=new State(_net.getState(), 0, null);
-        _znakovyStrom.insert(_stav.toString(), _stav);
+        _currentState=new State(_net.getState(), 0, null);
+        _stateSpace.insert(_currentState.toString(), _currentState);
         
-        /* Vypocet */        
-        while(_stav!=null)
+        /* Calculation */        
+        while(_currentState!=null)
         {    
-            /* Pridaj k sucasnemu stavu jeho childy, ak ma aktivovane prechody */
+            /* Add child states if transitions is activate */
             for(Transition t : _net.getListOfTransitions())
             {
-                /* Nejaky prechod sa da vykonat v stave parenta*/
-                _net.setState(_stav);
+                _net.setState(_currentState);
                 if (t.isActive())
                 {
-                    /* Zisti do akeho stavu sa mozem dostat */
+                    /* Simulate execution of transition */
                     t.executeTransition();
-                    /* Ak je child stav, v ktorom som uz bol, doslo by k cyklu */
-                    /* Pridaj do doprednej hviezdy a do stromu len take, ktore este v strome nie su */
-                    State _childStav=new State(_net.getState(),0, _stav);
-                    if (_znakovyStrom.search(_childStav.toString())==null)
-                    {
-                        //System.out.println("Vlozil som child stav: "+_childStav.toString());                                               
-                        /* Unikatny stav pridaj k detom, a pridaj aj do stromu */
-                        _znakovyStrom.insert(_childStav.toString(), _childStav);
-                        _stav.addChild(new StateItem(_childStav,t));                
+                    /* If child state already exists in stateSpace , do nothing */
+                    /* else add to parent's childs & add to stateSpace */
+                    State _childState=new State(_net.getState(),0, _currentState);
+                    if (_stateSpace.search(_childState.toString())==null)
+                    {                                           
+                        /* Unique state add to childs and stateSpaces */
+                        _stateSpace.insert(_childState.toString(), _childState);
+                        _currentState.addChild(new StateItem(_childState,t));                
                     }
                 }
             }
 
-            /* Mozem vykonat nejaky child prechod? */
-            if (_stav.getLastMarkedItem()<_stav.getChilds().size())
+            /* Can I execute any child? */
+            if (_currentState.getLastMarkedItem()<_currentState.getChilds().size())
             {           
-                State _novyStav=_stav.getChilds().get(_stav.getLastMarkedItem()).getState();            
-                _stav.increaseLastMarkedItem();
-                _stav=_novyStav;
+                State _newState=_currentState.getChilds().get(_currentState.getLastMarkedItem()).getState();            
+                _currentState.increaseLastMarkedItem();
+                _currentState=_newState;
             }
-            /* Nemam kam ist, idem k parentovi */
+            /* No child, go to parent */
             else
             {
-                _stav=_stav.getParent();
+                _currentState=_currentState.getParent();
             }
-        // Koniec while (_stav!=null)
+        // End while (_currentState!=null)
         }
         
-        /* Vypis , vrat siet do povodneho znacenia*/
-        _znakovyStrom.levelOrder();                        
-        _net.setState(intialState);
+        /* Write results and revert back original net markings */
+        _stateSpace.levelOrder();                        
+        _net.setState(_intialState);
     }
     
 }
