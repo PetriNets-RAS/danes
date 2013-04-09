@@ -178,6 +178,11 @@ public class View extends javax.swing.JFrame{
         aboutUs = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         sideMenu.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         sideMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -790,7 +795,9 @@ public class View extends javax.swing.JFrame{
         btnAlignLeft.setVisible(true);
         btnAlignRight.setVisible(true);
         btnAlignTop.setVisible(true);
-        btnAlignBottom.setVisible(true);        
+        btnAlignBottom.setVisible(true);
+        rectangleButton.setVisible(false);
+        resuorceButton.setVisible(false);
         getInfoAboutModel(graph);
     }//GEN-LAST:event_newPrecedenceNetActionPerformed
 
@@ -877,6 +884,12 @@ public class View extends javax.swing.JFrame{
         StateSpaceCalculator ssCalc=new StateSpaceCalculator(ssPetriNet);
         ssCalc.calculateStateSpace();
     }//GEN-LAST:event_create_state_diagramActionPerformed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            this.resetForm();
+        }
+    }//GEN-LAST:event_formKeyPressed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
@@ -1686,7 +1699,7 @@ public class View extends javax.swing.JFrame{
         //}
 
         private void loadElementProperties(Element currentElement) {
-            generalProperties.loadProperties(currentElement);
+            generalProperties.loadProperties(currentElement,graph, this);
             notes.setText(currentElement.getNote());
             /*
              generalProperties.setElementName(currentElement.getName());
@@ -1888,5 +1901,17 @@ public class View extends javax.swing.JFrame{
                 }*/
             }
         }
+    }
+    
+    private void resetForm()
+    {
+        ellipseButton.setSelected(false);
+        rectangleButton.setSelected(false);
+        resuorceButton.setSelected(false);
+        rectangleButton.setSelected(false);
+        lineButton.setSelected(false);
+        propertiesMenu.setVisible(false);
+        this.revalidate();
+        this.repaint();
     }
 }

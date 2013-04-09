@@ -6,8 +6,11 @@ package GUI;
 
 import Core.AbsPlace;
 import Core.Element;
+import Core.Graph;
 import Core.Transition;
+import GUI.View.DiagramPanel;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import javax.swing.JColorChooser;
 
 
@@ -20,8 +23,14 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private String elementWidth;
     private String elementHeight;
     private String elementFontSize;
+    private String elementMarking;
+    private boolean elementStart;
+    private boolean elementEnd;
     private Color elementColor;
+    private Graph graph;
+    private DiagramPanel window;
     private Element element;
+    
     /**
      * Creates new form PropertiesParentMenu
      */
@@ -56,10 +65,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
         colorLabel = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         fontColorLabel = new javax.swing.JLabel();
-        markingText = new javax.swing.JTextField();
+        specific = new javax.swing.JPanel();
+        endCheckBox = new javax.swing.JCheckBox();
         jLabel7 = new javax.swing.JLabel();
         startCheckBox = new javax.swing.JCheckBox();
-        endCheckBox = new javax.swing.JCheckBox();
+        markingText = new javax.swing.JTextField();
 
         label4.setName(""); // NOI18N
         label4.setText("Width");
@@ -70,6 +80,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
         label6.setText("Font size");
 
         jButton6.setText("Ok");
+
+        setRequestFocusEnabled(false);
 
         jLabel1.setText("Name");
         jLabel1.setToolTipText("Name of element");
@@ -131,6 +143,13 @@ public class PropertiesMenu extends javax.swing.JPanel {
             }
         });
 
+        endCheckBox.setText("End");
+        endCheckBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                endCheckBoxActionPerformed(evt);
+            }
+        });
+
         jLabel7.setText("Marking");
 
         startCheckBox.setText("Start");
@@ -140,47 +159,67 @@ public class PropertiesMenu extends javax.swing.JPanel {
             }
         });
 
-        endCheckBox.setText("End");
-        endCheckBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                endCheckBoxActionPerformed(evt);
+        markingText.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                markingTextKeyReleased(evt);
             }
         });
+
+        javax.swing.GroupLayout specificLayout = new javax.swing.GroupLayout(specific);
+        specific.setLayout(specificLayout);
+        specificLayout.setHorizontalGroup(
+            specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, specificLayout.createSequentialGroup()
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(startCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(markingText, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(endCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        specificLayout.setVerticalGroup(
+            specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(specificLayout.createSequentialGroup()
+                .addGroup(specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(markingText))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(startCheckBox)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(endCheckBox)
+                .addGap(0, 26, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, 0)
-                                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(endCheckBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(heightText)
-                            .addComponent(nameText, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                            .addComponent(nameText, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
                             .addComponent(widthText)
                             .addComponent(fontSizeText)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(fontColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(markingText)
-                            .addComponent(startCheckBox, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                .addGap(0, 0, Short.MAX_VALUE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addComponent(specific, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -200,9 +239,9 @@ public class PropertiesMenu extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(fontSizeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fontSizeText, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(colorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -211,30 +250,28 @@ public class PropertiesMenu extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(fontColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(markingText)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(startCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(endCheckBox)
-                .addContainerGap(80, Short.MAX_VALUE))
+                .addComponent(specific, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(86, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void colorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorLabelMouseClicked
         JColorChooser colorChooser = new JColorChooser();
-        elementColor = JColorChooser.showDialog(this, "Vyberte farbu", Color.yellow);
+        elementColor = JColorChooser.showDialog(this, "Vyberte farbu", this.element.getColor());
         //colorLabel.setBackground(elementColor);
         element.setColor(elementColor);
+        this.revalidate();
+        this.repaint();
     }//GEN-LAST:event_colorLabelMouseClicked
 
     private void fontColorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontColorLabelMouseClicked
         JColorChooser colorChooser = new JColorChooser();
-        elementColor = JColorChooser.showDialog(this, "Vyberte farbu", Color.yellow);
+        elementColor = JColorChooser.showDialog(this, "Vyberte farbu", this.element.getColor2());
         //colorLabel.setBackground(elementColor);
         element.setColor2(elementColor);
+        this.revalidate();
+        this.repaint();
     }//GEN-LAST:event_fontColorLabelMouseClicked
 
     private void nameTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameTextKeyReleased
@@ -280,16 +317,44 @@ public class PropertiesMenu extends javax.swing.JPanel {
     }//GEN-LAST:event_fontSizeTextKeyReleased
 
     private void startCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startCheckBoxActionPerformed
-        if(startCheckBox.isSelected())
-            if(element instanceof AbsPlace)
+        if(element instanceof AbsPlace)
+        {
+            AbsPlace abs = (AbsPlace)element;
+            if(startCheckBox.isSelected())
             {
-                AbsPlace abs = (AbsPlace)element;
+                abs.setStart(true);
             }
+            else
+            {
+                abs.setStart(false);
+            }    
+        }
     }//GEN-LAST:event_startCheckBoxActionPerformed
 
     private void endCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endCheckBoxActionPerformed
-        // TODO add your handling code here:
+        if(element instanceof AbsPlace)
+        {
+            AbsPlace abs = (AbsPlace)element;
+            if(endCheckBox.isSelected())
+            {
+                abs.setEnd(true);
+            }
+            else
+            {
+                abs.setEnd(false);
+            }
+                
+        }
     }//GEN-LAST:event_endCheckBoxActionPerformed
+
+    private void markingTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_markingTextKeyReleased
+        if (!markingText.getText().equals("")) {
+            if (element instanceof AbsPlace) {
+                AbsPlace abs = (AbsPlace) element;
+                abs.setMarking(Integer.parseInt(markingText.getText()));
+            }
+        }        
+    }//GEN-LAST:event_markingTextKeyReleased
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel colorLabel;
@@ -312,6 +377,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private java.awt.Label label6;
     private javax.swing.JTextField markingText;
     private javax.swing.JTextField nameText;
+    private javax.swing.JPanel specific;
     private javax.swing.JCheckBox startCheckBox;
     private javax.swing.JTextField widthText;
     // End of variables declaration//GEN-END:variables
@@ -393,8 +459,61 @@ public class PropertiesMenu extends javax.swing.JPanel {
         this.nameText.setText(elementName);
     }
 
-    public void loadProperties(Element currentElement) {
-        element = currentElement;
+    
+    /**
+     * @return the elementMarking
+     */
+    public String getElementMarking() {
+        return elementMarking;
+    }
+
+    /**
+     * @param elementMarking the elementMarking to set
+     */
+    public void setElementMarking(String elementMarking) {
+       this.markingText.setText(elementMarking);
+    }
+
+    /**
+     * @return the elementStart
+     */
+    public boolean isElementStart() {
+        return elementStart;
+    }
+
+    /**
+     * @param elementStart the elementStart to set
+     */
+    public void setElementStart(boolean elementStart) {
+       if (elementStart) {
+            this.startCheckBox.setSelected(true);
+        }
+        else
+            this.startCheckBox.setSelected(false);
+    }
+
+    /**
+     * @return the elementEnd
+     */
+    public boolean isElementEnd() {
+        return elementEnd;
+    }
+
+    /**
+     * @param elementEnd the elementEnd to set
+     */
+    public void setElementEnd(boolean elementEnd) {
+        if (elementEnd) {
+            this.endCheckBox.setSelected(true);
+        }
+        else
+            this.endCheckBox.setSelected(false);
+    }
+    
+    public void loadProperties(Element currentElement, Graph graph, DiagramPanel window) {
+        this.element = currentElement;
+        //this.graph = graph;
+        this.window = window;
         setElementName(currentElement.getName());
         setElementColor(currentElement.getColor());      
         colorLabel.setBackground(currentElement.getColor());
@@ -406,15 +525,19 @@ public class PropertiesMenu extends javax.swing.JPanel {
                 AbsPlace current= (AbsPlace) currentElement;
                 setElementWidth(Integer.toString(current.getWidth()));
                 setElementHeight(Integer.toString(current.getHeight()));
+                setElementMarking(Integer.toString(current.getMarking()));
+                setElementEnd(current.isEnd());
+                setElementStart(current.isStart());
+                specific.setVisible(true);
             }
             if(currentElement instanceof Transition)
             {
                 Transition current= (Transition) currentElement;
                 setElementWidth(Integer.toString(current.getWidth()));
                 setElementHeight(Integer.toString(current.getHeight()));
+                specific.setVisible(false);
             }
             this.revalidate();
             this.validate();
     }
-
 }

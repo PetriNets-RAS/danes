@@ -12,6 +12,8 @@ import java.util.ArrayList;
  */
 public abstract class AbsPlace extends Element{
     private int marking;
+    private boolean start;
+    private boolean end;
     private int width=-1;
     private int height=-1;
     //private int tokens;
@@ -161,4 +163,32 @@ public abstract class AbsPlace extends Element{
         this.width=-1;
         this.height=-1;    
     }        
+
+    /**
+     * @return the start
+     */
+    public boolean isStart() {
+        return start;
+    }
+
+    /**
+     * @param start the start to set
+     */
+    public void setStart(boolean start) {
+        this.start = start;
+    }
+
+    /**
+     * @return the end
+     */
+    public boolean isEnd() {
+        return end;
+    }
+
+    /**
+     * @param end the end to set
+     */
+    public void setEnd(boolean end) {
+        this.end = end;
+    }
 }

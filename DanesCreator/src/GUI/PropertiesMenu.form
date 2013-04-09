@@ -29,6 +29,9 @@
     <Component class="javax.swing.JTextField" name="jTextField6">
     </Component>
   </NonVisualComponents>
+  <Properties>
+    <Property name="requestFocusEnabled" type="boolean" value="false"/>
+  </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -44,41 +47,38 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <Group type="103" groupAlignment="1" attributes="0">
+          <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="jLabel5" min="-2" pref="82" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="colorLabel" min="-2" pref="22" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                      <Group type="103" groupAlignment="1" attributes="0">
                           <Component id="jLabel1" min="-2" pref="82" max="-2" attributes="0"/>
                           <Component id="jLabel2" min="-2" pref="82" max="-2" attributes="0"/>
                           <Component id="jLabel3" min="-2" pref="82" max="-2" attributes="0"/>
                           <Component id="jLabel4" min="-2" pref="82" max="-2" attributes="0"/>
                           <Component id="jLabel6" alignment="1" min="-2" pref="82" max="-2" attributes="0"/>
-                          <Component id="jLabel7" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="endCheckBox" alignment="1" max="32767" attributes="0"/>
                           <Component id="heightText" max="32767" attributes="0"/>
-                          <Component id="nameText" pref="79" max="32767" attributes="0"/>
+                          <Component id="nameText" pref="94" max="32767" attributes="0"/>
                           <Component id="widthText" alignment="0" max="32767" attributes="0"/>
                           <Component id="fontSizeText" max="32767" attributes="0"/>
                           <Group type="102" attributes="0">
                               <Component id="fontColorLabel" min="-2" pref="22" max="-2" attributes="0"/>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="markingText" max="32767" attributes="0"/>
-                          <Component id="startCheckBox" alignment="1" max="32767" attributes="0"/>
                       </Group>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel5" min="-2" pref="82" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="colorLabel" min="-2" pref="22" max="-2" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
+          <Component id="specific" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -104,9 +104,9 @@
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="fontSizeText" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel4" min="-2" pref="22" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel4" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
+                  <Component id="fontSizeText" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
@@ -118,16 +118,9 @@
                   <Component id="fontColorLabel" min="-2" pref="20" max="-2" attributes="0"/>
                   <Component id="jLabel6" min="-2" pref="20" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="markingText" max="32767" attributes="0"/>
-                  <Component id="jLabel7" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="startCheckBox" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="endCheckBox" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="80" max="32767" attributes="0"/>
+              <Component id="specific" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="86" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -217,28 +210,67 @@
         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="fontColorLabelMouseClicked"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="markingText">
-    </Component>
-    <Component class="javax.swing.JLabel" name="jLabel7">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Marking"/>
-      </Properties>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="startCheckBox">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="Start"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startCheckBoxActionPerformed"/>
-      </Events>
-    </Component>
-    <Component class="javax.swing.JCheckBox" name="endCheckBox">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="End"/>
-      </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="endCheckBoxActionPerformed"/>
-      </Events>
-    </Component>
+    <Container class="javax.swing.JPanel" name="specific">
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="1" attributes="0">
+                  <Component id="jLabel7" min="-2" pref="73" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="startCheckBox" max="32767" attributes="0"/>
+                      <Component id="markingText" min="-2" pref="86" max="-2" attributes="0"/>
+                      <Component id="endCheckBox" alignment="0" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel7" alignment="3" min="-2" pref="20" max="-2" attributes="0"/>
+                      <Component id="markingText" alignment="3" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="startCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="endCheckBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="0" pref="26" max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JCheckBox" name="endCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="End"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="endCheckBoxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel7">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Marking"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="startCheckBox">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Start"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startCheckBoxActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JTextField" name="markingText">
+          <Events>
+            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="markingTextKeyReleased"/>
+          </Events>
+        </Component>
+      </SubComponents>
+    </Container>
   </SubComponents>
 </Form>
