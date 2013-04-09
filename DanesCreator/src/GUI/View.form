@@ -77,6 +77,14 @@
                 <Property name="text" type="java.lang.String" value="Export"/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="create_state_diagram">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Create state diagram"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="create_state_diagramActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="aboutUs">

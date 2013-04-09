@@ -14,7 +14,7 @@ public class PropertiesPlaceMenu extends javax.swing.JPanel {
      * Creates new form PropertiesPlaceMenu
      */
     public PropertiesPlaceMenu() {
-        super();       
+        super();     
         /*
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);

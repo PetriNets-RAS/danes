@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * @author marek
  */
 public class Controller {
-    private Graph        graph;
+    private Graph        graph;    
     //private View        mainFrame;
 
     public Controller(Graph pa_graph) {

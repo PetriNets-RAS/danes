@@ -6,6 +6,7 @@ package Core;
 
 import StateSpace.State;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -13,7 +14,7 @@ import java.util.Queue;
  *
  * @author Michal Skovajsa
  */
-public class PetriNet extends Graph {
+public class PetriNet extends Graph implements Cloneable{
 
     private ArrayList<Place> listOfPlaces;
     private ArrayList<Transition> listOfTransitions;
@@ -31,9 +32,32 @@ public class PetriNet extends Graph {
         this.listOfArcs = new ArrayList<Arc>();
         this.listOfTransitions = new ArrayList<Transition>();
         this.listOfResources = new ArrayList<Resource>();
-
     }
+    /*
+    public PetriNet(PetriNet net)
+    {                 
+            this(new String(net.getName()));
+            listOfPlaces.addAll(net.getListOfPlaces());
+            listOfArcs.addAll(net.getListOfArcs());
+            listOfTransitions.addAll(net.getListOfTransitions());
+            listOfResources.addAll(net.getListOfResources());
+            /*
+            this.listOfPlaces = new ArrayList<Place>(net.getListOfPlaces());
+            this.listOfArcs = new ArrayList<Arc>(net.getListOfArcs());
+            this.listOfTransitions = new ArrayList<Transition>(net.getListOfTransitions());
+            this.listOfResources = new ArrayList<Resource>(net.getListOfResources());            
+            
+            Collections.copy(listOfPlaces,net.listOfPlaces);
+            Collections.copy(listOfArcs,net.listOfArcs);
+            Collections.copy(listOfTransitions,net.listOfTransitions);
+            Collections.copy(listOfResources,net.listOfResources);
+            */
+/*            this.listOfPlaces = new ArrayList<Place>(
+            this.listOfArcs = new ArrayList<Arc>(net.getListOfArcs());
+            this.listOfTransitions = new ArrayList<Transition>(net.getListOfTransitions());
+            this.listOfResources = new ArrayList<Resource>(net.getListOfResources());            
 
+    }/*
     /**
      * @Add a place to the Petri Net
      */
@@ -318,10 +342,14 @@ public class PetriNet extends Graph {
     
     public int[] getState(){
         int[] vector=new int[listOfPlaces.size()+listOfResources.size()];
-        for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++){
-            if(i<listOfPlaces.size()){
+        for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++)
+        {
+            if(i<listOfPlaces.size())
+            {
                 vector[i]=listOfPlaces.get(i).getMarking();
-            }else{
+            }
+            else
+            {
                 vector[i]=listOfResources.get(i).getMarking();
             }
         }
@@ -329,10 +357,13 @@ public class PetriNet extends Graph {
     }
     
     public void setState(State state){
-        for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++){
-            if(i<listOfPlaces.size()){
+        for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++)
+        {
+            if(i<listOfPlaces.size())
+            {
                 listOfPlaces.get(i).setMarking(state.getMarkingField()[i]);           
-            }else{
+            }
+            else{
                 listOfResources.get(i).setMarking(state.getMarkingField()[i]);
             }
         }      

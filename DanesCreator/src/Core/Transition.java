@@ -4,6 +4,7 @@
  */
 package Core;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
@@ -108,4 +109,47 @@ public class Transition extends Element {
         this.width=-1;
         this.height=-1;   
     }    
+   
+   /* Check if transition is active */
+   public boolean isActive()
+   {
+       boolean _return=true;
+       
+       for(Arc arc : listOfInArcs)
+       {
+           AbsPlace outElement=(AbsPlace)arc.getOutElement();
+           /* Input element has more marking then required arc capacity */
+           if (outElement.getMarking()>=arc.getCapacity())               
+           {}
+           else 
+           {
+               _return=false;
+           }
+       }
+       
+       return _return;
+   }
+   
+   public boolean executeTransition()
+   {
+       if (isActive()==false)
+           return false;
+       
+       /* Minus for input arcs */
+       for(Arc arc : listOfInArcs)
+       {
+           AbsPlace outElement=(AbsPlace)arc.getOutElement();
+           int outMarkingOld=outElement.getMarking();
+           outElement.setMarking(outMarkingOld-arc.getCapacity());                      
+       }
+       /* Plus for output arcs */
+       for(Arc arc : listOfOutArcs)
+       {
+           AbsPlace inElement=(AbsPlace)arc.getInElement();
+           int inMarkingOld=inElement.getMarking();
+           inElement.setMarking(inMarkingOld+arc.getCapacity());                      
+       }
+       return true;
+       
+   }
 }
