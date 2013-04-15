@@ -529,73 +529,8 @@ public class View extends javax.swing.JFrame{
     private void newPetriNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPetriNetActionPerformed
 
         //Create and display new panel
-        //Petri Net ukazka ************************************************
         PetriNet p = new PetriNet("New petri net");
-        //umele pridanie siete
-        /*Place a = new Place("a");
-        a.setX(500);
-        a.setY(400);
-        a.setWidth(40);
-        a.setHeight(40);
-        //a.setDiagramElement(new DiagramElement(500, 400));
-        Transition b = new Transition("b");
-        b.setX(100);
-        b.setY(400);
-        //b.setDiagramElement(new DiagramElement(100, 400));
-        Arc c = new Arc("c", b, a);
-        Place p1 = new Place("p1");
-        p1.setX(300);
-        p1.setY(200);
-        //p1.setDiagramElement(new DiagramElement(300, 200));
-        Place p2 = new Place("p2");
-        p2.setX(400);
-        p2.setY(600);
-        //p2.setDiagramElement(new DiagramElement(400, 600));
 
-        Transition t1 = new Transition("t1");
-        t1.setX(500);
-        t1.setY(200);
-        //t1.setDiagramElement(new DiagramElement(500, 200));
-        Transition t2 = new Transition("t2");
-        t2.setX(500);
-        t2.setY(600);
-        //t2.setDiagramElement(new DiagramElement(500, 600));        
-
-        Resource r1 = new Resource("r1");
-        r1.setX(100);
-        r1.setY(100);
-        //r1.setDiagramElement(new DiagramElement(100, 100));
-        Arc a2 = new Arc("a2", t1, r1);
-
-        p.addResource(r1);
-        p.addPlace(a);
-        p.addTransition(b);
-        p.addArc(c);
-        p.addArc(a2);
-        p.addPlace(p1);
-        p.addPlace(p2);
-        p.addTransition(t1);
-        p.addTransition(t2);*/
-        // koniec umele pridanie siete
-        //*********************************************************** 
-        /*
-         pg=new PrecedenceGraph("Test");
-         Node n1=new Node("n1"); n1.setDiagramElement(new DiagramElement(4,2));
-         Node n2=new Node("n2"); n2.setDiagramElement(new DiagramElement(4,4));
-         Node n3=new Node("n3"); n3.setDiagramElement(new DiagramElement(4,6));
-        
-         Arc a1=new Arc("a1", n2, n1);
-         Arc a2=new Arc("a2", n2, n3);
-
-         pg.addNode(n1);
-         pg.addNode(n2);
-         pg.addNode(n3);
-         pg.addArc(a1);
-         pg.addArc(a2);
-         
-         controller.setModel(pg);
-         this.diagramPanel   =   new DiagramPanel(pg);
-         */
         graph = p;
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
