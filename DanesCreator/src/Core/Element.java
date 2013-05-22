@@ -19,8 +19,7 @@ public class Element{
     private Color color2=   new Color(100,100,150);
     private int x=-1;
     private int y=-1;
-    private int fontSize=16;
-        
+    private int fontSize=16;    
      /**
      * @Class constructor.
      */
@@ -126,5 +125,6 @@ public class Element{
     public void setY(int y) {
         this.y = y;
     }
+    
     
 }

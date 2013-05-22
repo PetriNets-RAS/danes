@@ -109,5 +109,6 @@ public class Node extends Element{
         super.setName(name);
         this.width=-1;
         this.height=-1;
-    }        
+    }  
+   
 }

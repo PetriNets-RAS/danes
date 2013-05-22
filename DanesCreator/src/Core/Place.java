@@ -16,7 +16,8 @@ public class Place extends AbsPlace {
 
 
     private boolean start;
-    private boolean end;  
+    private boolean end; 
+    private Marking markings;
      /**
      * @Class constructor.
      */
@@ -24,6 +25,7 @@ public class Place extends AbsPlace {
         super(paName);
         start=false;
         end=false;
+        this.markings = new Marking(this);
     }
 
 
@@ -54,4 +56,47 @@ public class Place extends AbsPlace {
     public void setEnd(boolean end) {
         this.end = end;
     }
+    
+        
+    /**
+     * @return the markings
+     */
+    public Marking getMarkings() {
+        return markings;
+    }
+
+    /**
+     * @param markings the markings to set
+     */
+    public void setMarkings(Marking markings) {
+        this.markings = markings;
+    }
+    
+    /**
+     * @param mark 
+     */
+    public void addMarking(int mark)
+    {
+        this.markings.getMarkings().add(mark);
+    }
+    
+    /**
+     * @param mark
+     */
+    public boolean removeMarking(int mark)
+    {
+        if (this.markings.getMarkings().isEmpty()) {
+            return false;
+        }
+        int indexOfMark = this.markings.getMarkings().indexOf(mark);
+        if (indexOfMark == -1) {
+            return false;
+        }
+        else
+        {
+            this.markings.getMarkings().remove(indexOfMark);
+        }
+        return true;
+    }
+    
 }

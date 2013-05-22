@@ -22,12 +22,13 @@ public abstract class AbsPlace extends Element{
     private ArrayList<Arc> listOfInArcs;
     private ArrayList<Arc> listOfOutArcs;
     
+    
     public AbsPlace(String paName){
         super(paName);
         listOfInArcs=new ArrayList<Arc>();
         listOfOutArcs=new ArrayList<Arc>();
         listOfInTransitions=new ArrayList<Transition>();
-        listOfOutTransitions=new ArrayList<Transition>();        
+        listOfOutTransitions=new ArrayList<Transition>();
     }
     
     public void delete() {

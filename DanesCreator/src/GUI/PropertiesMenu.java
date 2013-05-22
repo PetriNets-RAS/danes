@@ -7,6 +7,8 @@ package GUI;
 import Core.AbsPlace;
 import Core.Element;
 import Core.Graph;
+import Core.Place;
+import Core.Resource;
 import Core.Transition;
 import GUI.View.DiagramPanel;
 import java.awt.Color;
@@ -352,6 +354,16 @@ public class PropertiesMenu extends javax.swing.JPanel {
             if (element instanceof AbsPlace) {
                 AbsPlace abs = (AbsPlace) element;
                 abs.setMarking(Integer.parseInt(markingText.getText()));
+                if(abs instanceof Place)
+                {
+                    Place place = (Place)abs;
+                    place.addMarking(Integer.parseInt(markingText.getText()));
+                }
+                else if (abs instanceof Resource)
+                {
+                    Resource res = (Resource)abs;
+                    res.setMarking(Integer.parseInt(markingText.getText()));
+                }
             }
         }        
     }//GEN-LAST:event_markingTextKeyReleased

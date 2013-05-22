@@ -454,23 +454,20 @@ public class View extends javax.swing.JFrame{
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnAlignLeft)
-                        .addGap(26, 26, 26))
+                        .addComponent(btnAlignTop)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnAlignBottom))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnAlignTop)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnAlignBottom))
-                            .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(btnAlignRight)
-                                    .addComponent(btnZoomOut)
-                                    .addComponent(btnZoomReset)
-                                    .addComponent(btnZoomIn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnAlignRight)
+                            .addComponent(btnZoomOut)
+                            .addComponent(btnZoomReset)
+                            .addComponent(btnZoomIn, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(20, 20, 20)
+                        .addComponent(btnAlignLeft)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 669, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -617,14 +614,18 @@ public class View extends javax.swing.JFrame{
         btnAlignRight.setVisible(true);
         btnAlignTop.setVisible(true);
         btnAlignBottom.setVisible(true);
+        rectangleButton.setVisible(true);
+        resuorceButton.setVisible(true);
         getInfoAboutModel(graph);
     }//GEN-LAST:event_newPetriNetActionPerformed
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
         //AboutUs about = new AboutUs(this, rootPaneCheckingEnabled);
+        
         about.setVisible(true);
     }//GEN-LAST:event_aboutUsMouseClicked
 
+    
     private void ellipseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ellipseButtonActionPerformed
         rectangleButton.setSelected(false);
         lineButton.setSelected(false);
@@ -1357,7 +1358,7 @@ public class View extends javax.swing.JFrame{
 
                 // Draw all places
                 for (Element e : ((PetriNet) graph).getListOfPlaces()) {
-                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Place) e).getWidth(), ((Place) e).getHeight(), e.getName()+" :"+((Place)e).getMarking(), e.getFontSize());
+                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Place) e).getWidth(), ((Place) e).getHeight(), e.getName()+" :"+((Place)e).getMarkings(), e.getFontSize());
                 }
 
                 // Draw all resources
@@ -1435,7 +1436,7 @@ public class View extends javax.swing.JFrame{
             // Place
             if (draggedElement instanceof Place) {
                 Place p = (Place) draggedElement;
-                drawPlace(p.getX(), p.getY(), p.getColor(), p.getColor2(), p.getWidth(), p.getHeight(), p.getName()+" :"+p.getMarking(), p.getFontSize(), 2);
+                drawPlace(p.getX(), p.getY(), p.getColor(), p.getColor2(), p.getWidth(), p.getHeight(), p.getName()+" :"+p.getMarkings(), p.getFontSize(), 2);
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
             // Node

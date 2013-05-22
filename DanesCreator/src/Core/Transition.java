@@ -7,6 +7,7 @@ package Core;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import org.omg.CORBA.INTERNAL;
 
 /**
  *
@@ -20,7 +21,7 @@ public class Transition extends Element {
     private ArrayList<AbsPlace> listOfOutPlaces;
     private ArrayList<Arc> listOfInArcs;
     private ArrayList<Arc> listOfOutArcs;
-
+    private Marking transmitCondition;
     /**
      * @Class constructor.
      */
@@ -29,7 +30,7 @@ public class Transition extends Element {
         listOfInArcs=new ArrayList<Arc>();
         listOfOutArcs=new ArrayList<Arc>();
         listOfInPlaces=new ArrayList<AbsPlace>();
-        listOfOutPlaces=new ArrayList<AbsPlace>();     
+        listOfOutPlaces=new ArrayList<AbsPlace>();
     }
 
     /**
@@ -113,41 +114,78 @@ public class Transition extends Element {
    /* Check if transition is active */
    public boolean isActive()
    {
-       boolean _return=true;
-       
-       for(Arc arc : listOfInArcs)
-       {
-           AbsPlace outElement=(AbsPlace)arc.getOutElement();
-           /* Input element has more marking then required arc capacity */
-           if (outElement.getMarking()>=arc.getCapacity())               
-           {}
-           else 
-           {
-               _return=false;
+       int _return=-1;
+       int min = Integer.MAX_VALUE;
+       Place minPlace = null;
+       // find place with minimum marking count
+       for (AbsPlace absPlace : listOfInPlaces) {
+           if (absPlace instanceof Place) {  // only if it`s Place 
+                Place place = (Place) absPlace;
+                if (place.getMarkings().getMarkings().size() < min) {
+                    min = place.getMarkings().getMarkings().size();
+                    minPlace = place;
+                }
            }
        }
-       
-       return _return;
+       // check if every inPlace have the same mark
+       for (int i = 0; i < minPlace.getMarkings().getMarkings().size(); i++) {
+           for (AbsPlace absPlace : listOfInPlaces) {
+               if (absPlace != minPlace && absPlace instanceof Place) {
+                   Place place = (Place) absPlace;
+                   for (int j = 0; j < place.getMarkings().getMarkings().size(); j++) {
+                       if (minPlace.getMarkings().getMarkings().get(i) == place.getMarkings().getMarkings().get(j)) {
+                           _return = minPlace.getMarkings().getMarkings().get(i);
+                           break;
+                       }  
+                   }
+                   if (_return == -1) {
+                       return false;
+                   }
+               }
+               else if (absPlace instanceof Resource){ // if it`s resources, check capacity of outArc and Resource marking 
+                   for (Arc arcToTransition : listOfInArcs) {
+                       for (Arc arcFromAbsPlace : absPlace.getListOfOutArcs()) {
+                           if (arcFromAbsPlace.equals(arcToTransition)) {
+                               if (arcToTransition.getCapacity() > absPlace.getMarking()) {
+                                   return false;
+                               }
+                           }
+                       }
+                   }
+               }
+           }
+       }     
+       return true;
    }
    
    public boolean executeTransition()
    {
-       if (isActive()==false)
+       boolean marking = isActive();
+       if (!marking) {
            return false;
+       }
        
        /* Minus for input arcs */
        for(Arc arc : listOfInArcs)
        {
+           /*
            AbsPlace outElement=(AbsPlace)arc.getOutElement();
            int outMarkingOld=outElement.getMarking();
-           outElement.setMarking(outMarkingOld-arc.getCapacity());                      
+           outElement.setMarking(outMarkingOld-arc.getCapacity());
+           */
+           AbsPlace outElement = (AbsPlace)arc.getOutElement();
+           //outElement.removeMarking(marking);
        }
        /* Plus for output arcs */
        for(Arc arc : listOfOutArcs)
        {
+           /*
            AbsPlace inElement=(AbsPlace)arc.getInElement();
            int inMarkingOld=inElement.getMarking();
-           inElement.setMarking(inMarkingOld+arc.getCapacity());                      
+           inElement.setMarking(inMarkingOld+arc.getCapacity()); 
+           */
+           AbsPlace inElement=(AbsPlace)arc.getInElement();
+           //inElement.getMarkings().getMarkings().add(marking);
        }
        return true;
        

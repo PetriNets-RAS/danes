@@ -19,8 +19,7 @@ public class PetriNet extends Graph implements Cloneable{
     private ArrayList<Place> listOfPlaces;
     private ArrayList<Transition> listOfTransitions;
     private ArrayList<Arc> listOfArcs;
-    private ArrayList<Resource> listOfResources;
-    
+    private ArrayList<Resource> listOfResources;    
     private String name;
 
     /**
