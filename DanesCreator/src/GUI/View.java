@@ -1490,7 +1490,7 @@ public class View extends javax.swing.JFrame {
 
                 // Draw all places
                 for (Element e : ((PetriNet) graph).getListOfPlaces()) {
-                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Place) e).getWidth(), ((Place) e).getHeight(), e.getName() + " :" + ((Place) e).getMarking(), e.getFontSize());
+                    drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Place) e).getWidth(), ((Place) e).getHeight(), e.getName() + " :" + ((Place) e).getMarkings(), e.getFontSize());
                 }
 
                 // Draw all resources
@@ -1573,7 +1573,7 @@ public class View extends javax.swing.JFrame {
             // Place
             if (draggedElement instanceof Place) {
                 Place p = (Place) draggedElement;
-                drawPlace(p.getX(), p.getY(), p.getColor(), p.getColor2(), p.getWidth(), p.getHeight(), p.getName() + " :" + p.getMarking(), p.getFontSize(), 2);
+                drawPlace(p.getX(), p.getY(), p.getColor(), p.getColor2(), p.getWidth(), p.getHeight(), p.getName() + " :" + p.getMarkings(), p.getFontSize(), 2);
                 //drawPlace(x, y, Color.GRAY, Color.gray);
 
             }
