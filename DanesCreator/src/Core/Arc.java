@@ -13,6 +13,8 @@ public class Arc extends Element {
     private int capacity;
     private Element inElement;
     private Element outElement;
+    private int intercectionX;
+    private int intercectionY;
     
      /**
      * @Class constructor.
@@ -65,5 +67,33 @@ public class Arc extends Element {
      */
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    /**
+     * @return the intercectionX
+     */
+    public int getIntercectionX() {
+        return intercectionX;
+    }
+
+    /**
+     * @param intercectionX the intercectionX to set
+     */
+    public void setIntercectionX(int intercectionX) {
+        this.intercectionX = intercectionX;
+    }
+
+    /**
+     * @return the intercectionY
+     */
+    public int getIntercectionY() {
+        return intercectionY;
+    }
+
+    /**
+     * @param intercectionY the intercectionY to set
+     */
+    public void setIntercectionY(int intercectionY) {
+        this.intercectionY = intercectionY;
     }
 }
