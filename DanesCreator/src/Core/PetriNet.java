@@ -367,6 +367,5 @@ public class PetriNet extends Graph implements Cloneable{
             }
         }      
     }
-    
-    
+       
 }
