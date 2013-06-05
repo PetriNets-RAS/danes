@@ -7,6 +7,8 @@ package StateSpace;
 import Core.PetriNet;
 import Core.Transition;
 import StateSpace.Trie.Trie;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 /**
  *
@@ -38,7 +40,8 @@ public class StateSpaceCalculator {
             for(Transition t : _net.getListOfTransitions())
             {
                 _net.setState(_currentState);
-                if (t.isActive())
+                ArrayList<Integer> candidates = t.isActive();
+                if (candidates != null) // return array of markings
                 {
                     /* Simulate execution of transition */
                     t.executeTransition();

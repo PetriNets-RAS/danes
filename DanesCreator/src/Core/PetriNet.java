@@ -339,7 +339,22 @@ public class PetriNet extends Graph implements Cloneable{
         this.listOfResources = listOfResources;
     }
     
-    public int[] getState(){
+    public ArrayList<ArrayList<Integer>> getState(){
+        ArrayList<ArrayList<Integer>> stateMarkings = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> resourceVector = new ArrayList<Integer>();
+        for(int i=0;i<listOfPlaces.size();i++)
+        {
+            ArrayList<Integer> vector = new ArrayList<Integer>();
+            for (int j = 0; j < listOfPlaces.get(i).getMarkings().getMarkings().size(); j++) {
+                vector.add(listOfPlaces.get(i).getMarkings().getMarkings().get(j));
+            }
+            stateMarkings.add(vector);
+        }
+        for(int i=0;i<listOfResources.size();i++){
+            resourceVector.add(listOfResources.get(i).getMarking());
+        }
+        stateMarkings.add(resourceVector);
+        /*
         int[] vector=new int[listOfPlaces.size()+listOfResources.size()];
         for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++)
         {
@@ -352,10 +367,12 @@ public class PetriNet extends Graph implements Cloneable{
                 vector[i]=listOfResources.get(i).getMarking();
             }
         }
-        return vector;
+        */ 
+        return stateMarkings;
     }
     
     public void setState(State state){
+        /*
         for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++)
         {
             if(i<listOfPlaces.size())
@@ -365,7 +382,17 @@ public class PetriNet extends Graph implements Cloneable{
             else{
                 listOfResources.get(i).setMarking(state.getMarkingField()[i]);
             }
-        }      
+            
+        }
+        */
+        for (int i = 0; i < (listOfPlaces.size()); i++) {
+            listOfPlaces.get(i).getMarkings().setMarkings(state.getPlaceMarkings().get(i));
+        }
+        
+        int lastIndex = (state.getPlaceMarkings().size()-1);
+        for (int i = 0; i < listOfResources.size(); i++) {
+            listOfResources.get(i).setMarking(state.getPlaceMarkings().get(lastIndex).get(i));
+        }
     }
        
 }

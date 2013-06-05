@@ -7,6 +7,9 @@ package Core;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import org.omg.CORBA.INTERNAL;
 
 /**
@@ -112,80 +115,90 @@ public class Transition extends Element {
     }    
    
    /* Check if transition is active */
-   public boolean isActive()
+   public ArrayList<Integer> isActive()
    {
        int _return=-1;
        int min = Integer.MAX_VALUE;
-       Place minPlace = null;
-       // find place with minimum marking count
-       for (AbsPlace absPlace : listOfInPlaces) {
-           if (absPlace instanceof Place) {  // only if it`s Place 
-                Place place = (Place) absPlace;
-                if (place.getMarkings().getMarkings().size() < min) {
-                    min = place.getMarkings().getMarkings().size();
-                    minPlace = place;
-                }
+      // Place minPlace = null;
+       ArrayList<Place> listOfPlaces = new ArrayList<Place>();
+       ArrayList<Resource> listOfResources = new ArrayList<Resource>();
+       for (AbsPlace absPlace : this.getListOfInPlaces()) {
+           if (absPlace instanceof Place) {
+               listOfPlaces.add((Place)absPlace);
+           }
+           else {
+               listOfResources.add((Resource)absPlace);
            }
        }
-       // check if every inPlace have the same mark
-       for (int i = 0; i < minPlace.getMarkings().getMarkings().size(); i++) {
-           for (AbsPlace absPlace : listOfInPlaces) {
-               if (absPlace != minPlace && absPlace instanceof Place) {
-                   Place place = (Place) absPlace;
-                   for (int j = 0; j < place.getMarkings().getMarkings().size(); j++) {
-                       if (minPlace.getMarkings().getMarkings().get(i) == place.getMarkings().getMarkings().get(j)) {
-                           _return = minPlace.getMarkings().getMarkings().get(i);
-                           break;
-                       }  
-                   }
-                   if (_return == -1) {
-                       return false;
-                   }
-               }
-               else if (absPlace instanceof Resource){ // if it`s resources, check capacity of outArc and Resource marking 
-                   for (Arc arcToTransition : listOfInArcs) {
-                       for (Arc arcFromAbsPlace : absPlace.getListOfOutArcs()) {
-                           if (arcFromAbsPlace.equals(arcToTransition)) {
-                               if (arcToTransition.getCapacity() > absPlace.getMarking()) {
-                                   return false;
-                               }
-                           }
-                       }
+       for (int i = 0; i < listOfResources.size(); i++) {
+           for (int j = 0; j < listOfResources.get(i).getListOfOutTransitions().size(); j++) {
+               if (listOfResources.get(i).getListOfOutTransitions().get(j).equals(this)) {
+                   if (listOfResources.get(i).getMarking() < listOfResources.get(i).getListOfOutArcs().get(j).getCapacity()) {
+                       _return = -1;
+                       return null;
                    }
                }
            }
-       }     
-       return true;
+       }
+       //ArrayList<Integer> iterimResult = (ArrayList)listOfPlaces.get(0).getMarkings().getMarkings();
+       HashSet<Integer> result = new HashSet<Integer>(listOfPlaces.get(0).getMarkings().getMarkings());
+       HashSet<Integer> iterimResult = new HashSet<Integer>(); 
+       int iterator = 1;
+       while(iterator < listOfPlaces.size()){
+           for (int i = 0; i < result.size(); i++) {
+               for (int j = 0; j < listOfPlaces.get(iterator).getMarkings().getMarkings().size(); j++) {
+                   if (result.contains(listOfPlaces.get(iterator).getMarkings().getMarkings().get(j))) {
+                       iterimResult.add(listOfPlaces.get(iterator).getMarkings().getMarkings().get(j));
+                   }
+               }
+           }
+           result.clear();
+           result.addAll(iterimResult);
+           iterimResult.clear();
+           iterator++;
+       }
+       if (result.size()>0) {
+           ArrayList<Integer> res = new ArrayList<Integer>();
+           for (int value : result) {
+               res.add(value);
+           }
+           return res;
+       }else{
+            return null;
+       }
    }
    
    public boolean executeTransition()
    {
-       boolean marking = isActive();
-       if (!marking) {
+       ArrayList<Integer> markings = isActive();
+       if (markings == null) {
            return false;
        }
-       
+       int marking = markings.get(0); //token
        /* Minus for input arcs */
        for(Arc arc : listOfInArcs)
-       {
-           /*
+       {    
            AbsPlace outElement=(AbsPlace)arc.getOutElement();
-           int outMarkingOld=outElement.getMarking();
-           outElement.setMarking(outMarkingOld-arc.getCapacity());
-           */
-           AbsPlace outElement = (AbsPlace)arc.getOutElement();
-           //outElement.removeMarking(marking);
+           if (outElement instanceof Resource) {
+               int outMarkingOld = outElement.getMarking();
+               outElement.setMarking(outMarkingOld - arc.getCapacity());
+           }else
+           {
+               Place outPlace = (Place)outElement;
+               outPlace.removeMarking(marking);
+           }    
        }
        /* Plus for output arcs */
        for(Arc arc : listOfOutArcs)
        {
-           /*
            AbsPlace inElement=(AbsPlace)arc.getInElement();
-           int inMarkingOld=inElement.getMarking();
-           inElement.setMarking(inMarkingOld+arc.getCapacity()); 
-           */
-           AbsPlace inElement=(AbsPlace)arc.getInElement();
-           //inElement.getMarkings().getMarkings().add(marking);
+           if (inElement instanceof Resource) {
+               int inMarkingOld=inElement.getMarking();
+               inElement.setMarking(inMarkingOld+arc.getCapacity());                
+           }else{
+               Place inPlace = (Place)inElement;
+               inPlace.getMarkings().getMarkings().add(marking);
+           }
        }
        return true;
        

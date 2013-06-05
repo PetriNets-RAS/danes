@@ -4,7 +4,7 @@
  */
 package Core;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,11 +12,11 @@ import java.util.List;
  * @author Miso
  */
 public class Marking {
-    private List<Integer> markings;
+    private ArrayList<Integer> markings;
     private Element element;
     public Marking(Element pAbsPlace)
     {
-        this.markings = new LinkedList<Integer>();
+        this.markings = new ArrayList<Integer>();
         this.element = pAbsPlace;
     }
     
@@ -30,7 +30,7 @@ public class Marking {
     /**
      * @param markings the markings to set
      */
-    public void setMarkings(List<Integer> markings) {
+    public void setMarkings(ArrayList<Integer> markings) {
         this.markings = markings;
     }
     

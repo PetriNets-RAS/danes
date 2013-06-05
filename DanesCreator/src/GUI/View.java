@@ -567,7 +567,8 @@ public class View extends javax.swing.JFrame {
         zoomInButton.setVisible(true);
         zoomOutButton.setVisible(true);
         resetZoomButton.setVisible(true);
-
+        rectangleButton.setVisible(true);
+        resuorceButton.setVisible(true);
         toolBar.setEnabled(true);
         getInfoAboutModel(graph);
     }//GEN-LAST:event_newPetriNetActionPerformed
@@ -757,9 +758,6 @@ public class View extends javax.swing.JFrame {
         zoomOutButton.setVisible(true);
         zoomInButton.setVisible(true);
         resetZoomButton.setVisible(true);
-
-
-
         rectangleButton.setVisible(false);
         resuorceButton.setVisible(false);
         toolBar.setEnabled(true);
