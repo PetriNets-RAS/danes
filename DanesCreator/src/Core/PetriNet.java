@@ -218,7 +218,7 @@ public class PetriNet extends Graph implements Cloneable{
             if (actArc.getName().equals(paName)) {
                 if (actArc.getOutElement() instanceof Transition) {
                     Transition tempTr = (Transition) actArc.getOutElement();
-                    AbsPlace tempPl = (Place) actArc.getInElement();
+                    AbsPlace tempPl = (AbsPlace) actArc.getInElement();
 
                     tempTr.getListOfOutArcs().remove(actArc);
                     tempTr.getListOfOutPlaces().remove(tempPl);
@@ -227,7 +227,7 @@ public class PetriNet extends Graph implements Cloneable{
                     tempPl.getListOfInTransitions().remove(tempTr);
                 } else {
                     Transition tempTr = (Transition) actArc.getInElement();
-                    AbsPlace tempPl = (Place) actArc.getOutElement();
+                    AbsPlace tempPl = (AbsPlace) actArc.getOutElement();
 
                     tempTr.getListOfInArcs().remove(actArc);
                     tempTr.getListOfInPlaces().remove(tempPl);

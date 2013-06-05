@@ -25,6 +25,21 @@ public class Arc extends Element {
         this.outElement=paOutElement;
         this.inElement=paInElement;
         this.capacity=1;
+        //this.setX(paOutElement.getX());
+        //this.setX(paOutElement.getX());
+        
+        if(paOutElement instanceof Transition){
+            this.setX(((Transition) paOutElement).getWidth()/2+paOutElement.getX());
+            this.setY(((Transition) paOutElement).getHeight()/2+paOutElement.getY());
+        }
+        else if(paOutElement instanceof Place){
+            this.setX(((Place) paOutElement).getWidth()/2+paOutElement.getX());
+            this.setY(((Place) paOutElement).getHeight()/2+paOutElement.getY());
+        }
+        else if(paOutElement instanceof Resource){
+            this.setX(((Resource) paOutElement).getWidth()/2+paOutElement.getX());
+            this.setY(((Resource) paOutElement).getHeight()/2+paOutElement.getY());
+        }
     }
 
     /**
