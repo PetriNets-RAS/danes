@@ -29,8 +29,8 @@ public class Node extends Element{
         listOfOutArcs=new ArrayList<Arc>();
         listOfInNodes=new ArrayList<Node>();
         listOfOutNodes=new ArrayList<Node>();
-        this.width=50;
-        this.height=35;
+        this.width=70;
+        this.height=43;
     }
 
     /**

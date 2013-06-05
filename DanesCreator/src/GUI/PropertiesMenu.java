@@ -5,8 +5,10 @@
 package GUI;
 
 import Core.AbsPlace;
+import Core.Arc;
 import Core.Element;
 import Core.Graph;
+import Core.Node;
 import Core.Place;
 import Core.Resource;
 import Core.Transition;
@@ -14,13 +16,14 @@ import GUI.View.DiagramPanel;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import javax.swing.JColorChooser;
-
+import javax.swing.SwingUtilities;
 
 /**
  *
  * @author Miso
  */
 public class PropertiesMenu extends javax.swing.JPanel {
+
     private String elementName;
     private String elementWidth;
     private String elementHeight;
@@ -32,12 +35,72 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private Graph graph;
     private DiagramPanel window;
     private Element element;
-    
+
     /**
      * Creates new form PropertiesParentMenu
      */
     public PropertiesMenu() {
         initComponents();
+        setListeners();
+    }
+
+    private void setListeners() {
+        nameText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        nameText.selectAll();
+                    }
+                });
+            }
+        });
+
+        heightText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        heightText.selectAll();
+                    }
+                });
+            }
+        });
+
+        widthText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        widthText.selectAll();
+                    }
+                });
+            }
+        });
+
+        fontSizeText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        fontSizeText.selectAll();
+                    }
+                });
+            }
+        });
+
+        capacityText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        capacityText.selectAll();
+                    }
+                });
+            }
+        });
+
+
     }
 
     /**
@@ -71,7 +134,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
         endCheckBox = new javax.swing.JCheckBox();
         jLabel7 = new javax.swing.JLabel();
         startCheckBox = new javax.swing.JCheckBox();
-        markingText = new javax.swing.JTextField();
+        capacityText = new javax.swing.JTextField();
 
         label4.setName(""); // NOI18N
         label4.setText("Width");
@@ -88,6 +151,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
         jLabel1.setText("Name");
         jLabel1.setToolTipText("Name of element");
 
+        nameText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                nameTextFocusLost(evt);
+            }
+        });
         nameText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 nameTextKeyReleased(evt);
@@ -97,6 +165,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
         jLabel2.setText("Height");
         jLabel2.setToolTipText("GUI height of element");
 
+        heightText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                heightTextFocusLost(evt);
+            }
+        });
         heightText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 heightTextKeyReleased(evt);
@@ -106,6 +179,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
         jLabel3.setText("Width");
         jLabel3.setToolTipText("GUI width of element");
 
+        widthText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                widthTextFocusLost(evt);
+            }
+        });
         widthText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 widthTextKeyReleased(evt);
@@ -115,6 +193,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
         jLabel4.setText("Font Size");
         jLabel4.setToolTipText("Font Size");
 
+        fontSizeText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                fontSizeTextFocusLost(evt);
+            }
+        });
         fontSizeText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 fontSizeTextKeyReleased(evt);
@@ -122,7 +205,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
         });
 
         jLabel5.setText("Font color");
-        jLabel5.setToolTipText("color of element");
+        jLabel5.setToolTipText("Color of font");
 
         colorLabel.setBackground(new java.awt.Color(0, 0, 102));
         colorLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -134,7 +217,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
         });
 
         jLabel6.setText("Color");
-        jLabel6.setToolTipText("color of element");
+        jLabel6.setToolTipText("Color of element");
 
         fontColorLabel.setBackground(new java.awt.Color(0, 0, 102));
         fontColorLabel.setForeground(new java.awt.Color(255, 255, 255));
@@ -146,24 +229,36 @@ public class PropertiesMenu extends javax.swing.JPanel {
         });
 
         endCheckBox.setText("End");
+        endCheckBox.setToolTipText("Is place end place?");
         endCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 endCheckBoxActionPerformed(evt);
             }
         });
 
-        jLabel7.setText("Marking");
+        jLabel7.setText("Capacity");
 
         startCheckBox.setText("Start");
+        startCheckBox.setToolTipText("Is place start place?");
         startCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 startCheckBoxActionPerformed(evt);
             }
         });
 
-        markingText.addKeyListener(new java.awt.event.KeyAdapter() {
+        capacityText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                capacityTextActionPerformed(evt);
+            }
+        });
+        capacityText.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                capacityTextFocusLost(evt);
+            }
+        });
+        capacityText.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                markingTextKeyReleased(evt);
+                capacityTextKeyReleased(evt);
             }
         });
 
@@ -171,12 +266,14 @@ public class PropertiesMenu extends javax.swing.JPanel {
         specific.setLayout(specificLayout);
         specificLayout.setHorizontalGroup(
             specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, specificLayout.createSequentialGroup()
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(specificLayout.createSequentialGroup()
                 .addGroup(specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(specificLayout.createSequentialGroup()
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(capacityText, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(startCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(markingText, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(endCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -184,8 +281,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
             specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(specificLayout.createSequentialGroup()
                 .addGroup(specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(markingText))
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(capacityText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(startCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -198,30 +295,30 @@ public class PropertiesMenu extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(88, 88, 88)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(nameText)
+                    .addComponent(heightText)
+                    .addComponent(fontSizeText)
+                    .addComponent(widthText))
+                .addGap(10, 10, 10))
+            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(heightText)
-                            .addComponent(nameText, javax.swing.GroupLayout.DEFAULT_SIZE, 94, Short.MAX_VALUE)
-                            .addComponent(widthText)
-                            .addComponent(fontSizeText)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(fontColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE))))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-            .addComponent(specific, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(fontColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(colorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(specific, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,7 +347,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(fontColorLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fontColorLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(specific, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -262,113 +359,144 @@ public class PropertiesMenu extends javax.swing.JPanel {
         JColorChooser colorChooser = new JColorChooser();
         elementColor = JColorChooser.showDialog(this, "Vyberte farbu", this.element.getColor());
         //colorLabel.setBackground(elementColor);
+
         element.setColor(elementColor);
-        this.revalidate();
-        this.repaint();
+        this.colorLabel.setOpaque(true);
+        this.colorLabel.setBackground(elementColor);
+        window.repaint();
+        //this.revalidate();
+        //this.repaint();
     }//GEN-LAST:event_colorLabelMouseClicked
 
     private void fontColorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontColorLabelMouseClicked
         JColorChooser colorChooser = new JColorChooser();
         elementColor = JColorChooser.showDialog(this, "Vyberte farbu", this.element.getColor2());
-        //colorLabel.setBackground(elementColor);
         element.setColor2(elementColor);
-        this.revalidate();
-        this.repaint();
+        this.fontColorLabel.setOpaque(true);
+        this.fontColorLabel.setBackground(elementColor);
+        window.repaint();
+        //this.revalidate();
+        //this.repaint();
     }//GEN-LAST:event_fontColorLabelMouseClicked
 
     private void nameTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameTextKeyReleased
-        if(!nameText.getText().equals(""))   
-            element.setName(nameText.getText());
     }//GEN-LAST:event_nameTextKeyReleased
 
     private void heightTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_heightTextKeyReleased
-        if(!heightText.getText().equals(""))
-        {
-            if(element instanceof AbsPlace)
-            {
-                AbsPlace abs = (AbsPlace)element;
-                abs.setHeight(Integer.parseInt(heightText.getText()));
-            }
-            if(element instanceof Transition)
-            {
-                Transition abs = (Transition)element;
-                abs.setHeight(Integer.parseInt(heightText.getText()));
-            }
-        }
     }//GEN-LAST:event_heightTextKeyReleased
 
     private void widthTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_widthTextKeyReleased
-        if(!widthText.getText().equals(""))
-        {
-            if(element instanceof AbsPlace)
-            {
-                AbsPlace abs = (AbsPlace)element;
-                abs.setWidth(Integer.parseInt(widthText.getText()));
-            }
-            if(element instanceof Transition)
-            {
-                Transition abs = (Transition)element;
-                abs.setWidth(Integer.parseInt(widthText.getText()));
-            }
-        }
     }//GEN-LAST:event_widthTextKeyReleased
 
     private void fontSizeTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fontSizeTextKeyReleased
-        if(!fontSizeText.getText().equals(""))
-            element.setFontSize(Integer.parseInt(fontSizeText.getText()));
     }//GEN-LAST:event_fontSizeTextKeyReleased
 
     private void startCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startCheckBoxActionPerformed
-        if(element instanceof AbsPlace)
-        {
-            AbsPlace abs = (AbsPlace)element;
-            if(startCheckBox.isSelected())
-            {
+        if (element instanceof AbsPlace) {
+            AbsPlace abs = (AbsPlace) element;
+            if (startCheckBox.isSelected()) {
                 abs.setStart(true);
-            }
-            else
-            {
+            } else {
                 abs.setStart(false);
-            }    
+            }
         }
     }//GEN-LAST:event_startCheckBoxActionPerformed
 
     private void endCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_endCheckBoxActionPerformed
-        if(element instanceof AbsPlace)
-        {
-            AbsPlace abs = (AbsPlace)element;
-            if(endCheckBox.isSelected())
-            {
+        if (element instanceof AbsPlace) {
+            AbsPlace abs = (AbsPlace) element;
+            if (endCheckBox.isSelected()) {
                 abs.setEnd(true);
-            }
-            else
-            {
+            } else {
                 abs.setEnd(false);
             }
-                
+
         }
     }//GEN-LAST:event_endCheckBoxActionPerformed
 
-    private void markingTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_markingTextKeyReleased
-        if (!markingText.getText().equals("")) {
+    private void capacityTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_capacityTextKeyReleased
+    }//GEN-LAST:event_capacityTextKeyReleased
+
+    private void capacityTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_capacityTextActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_capacityTextActionPerformed
+
+    private void nameTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameTextFocusLost
+        if (!nameText.getText().equals("")) {
+            element.setName(nameText.getText());
+        }
+        window.repaint();
+
+    }//GEN-LAST:event_nameTextFocusLost
+
+    private void heightTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_heightTextFocusLost
+        if (!heightText.getText().equals("")) {
             if (element instanceof AbsPlace) {
                 AbsPlace abs = (AbsPlace) element;
-                abs.setMarking(Integer.parseInt(markingText.getText()));
-                if(abs instanceof Place)
-                {
-                    Place place = (Place)abs;
-                    place.addMarking(Integer.parseInt(markingText.getText()));
-                }
-                else if (abs instanceof Resource)
-                {
-                    Resource res = (Resource)abs;
-                    res.setMarking(Integer.parseInt(markingText.getText()));
-                }
+                abs.setHeight(Integer.parseInt(heightText.getText()));
             }
-        }        
-    }//GEN-LAST:event_markingTextKeyReleased
-    
+            if (element instanceof Transition) {
+                Transition abs = (Transition) element;
+                abs.setHeight(Integer.parseInt(heightText.getText()));
+            }
+            if(element instanceof Node){
+                Node node=(Node) element;
+                node.setHeight(Integer.parseInt(heightText.getText()));
+            }
+            window.repaint();
+        }
+    }//GEN-LAST:event_heightTextFocusLost
+
+    private void widthTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_widthTextFocusLost
+        if (!widthText.getText().equals("")) {
+            if (element instanceof AbsPlace) {
+                AbsPlace abs = (AbsPlace) element;
+                abs.setWidth(Integer.parseInt(widthText.getText()));
+            }
+            if (element instanceof Transition) {
+                Transition abs = (Transition) element;
+                abs.setWidth(Integer.parseInt(widthText.getText()));
+            }
+            if(element instanceof Node){
+                Node node=(Node) element;
+                node.setWidth(Integer.parseInt(widthText.getText()));
+            }
+            window.repaint();
+        }
+    }//GEN-LAST:event_widthTextFocusLost
+
+    private void fontSizeTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fontSizeTextFocusLost
+        if (!fontSizeText.getText().equals("")) {
+            element.setFontSize(Integer.parseInt(fontSizeText.getText()));
+            window.repaint();
+        }
+    }//GEN-LAST:event_fontSizeTextFocusLost
+
+    private void capacityTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_capacityTextFocusLost
+        if (!capacityText.getText().equals("")) {
+            if (element instanceof AbsPlace) {
+                AbsPlace abs = (AbsPlace) element;
+                abs.setMarking(Integer.parseInt(capacityText.getText()));
+                if (abs instanceof Place) {
+                    Place place = (Place) abs;
+                    place.addMarking(Integer.parseInt(capacityText.getText()));
+                } else if (abs instanceof Resource) {
+                    Resource res = (Resource) abs;
+                    res.setMarking(Integer.parseInt(capacityText.getText()));
+                }
+
+            } else if (element instanceof Arc) {
+                Arc a = (Arc) element;
+                a.setCapacity(Integer.parseInt(capacityText.getText()));
+            }else if(element instanceof Node){
+                Node node=(Node) element;
+                node.setCapacity(Integer.parseInt(capacityText.getText()));           
+            }
+            window.repaint();
+        }
+    }//GEN-LAST:event_capacityTextFocusLost
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField capacityText;
     private javax.swing.JLabel colorLabel;
     private javax.swing.JCheckBox endCheckBox;
     private javax.swing.JLabel fontColorLabel;
@@ -387,13 +515,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField6;
     private java.awt.Label label4;
     private java.awt.Label label6;
-    private javax.swing.JTextField markingText;
     private javax.swing.JTextField nameText;
     private javax.swing.JPanel specific;
     private javax.swing.JCheckBox startCheckBox;
     private javax.swing.JTextField widthText;
     // End of variables declaration//GEN-END:variables
-
 
     /**
      * @return the elementWidth
@@ -406,7 +532,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
      * @param elementWidth the elementWidth to set
      */
     public void setElementWidth(String elementWidth) {
-        
+
         this.widthText.setText(elementWidth);
         //this.elementWidth = elementWidth;
     }
@@ -471,7 +597,6 @@ public class PropertiesMenu extends javax.swing.JPanel {
         this.nameText.setText(elementName);
     }
 
-    
     /**
      * @return the elementMarking
      */
@@ -483,7 +608,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
      * @param elementMarking the elementMarking to set
      */
     public void setElementMarking(String elementMarking) {
-       this.markingText.setText(elementMarking);
+        this.capacityText.setText(elementMarking);
     }
 
     /**
@@ -497,11 +622,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
      * @param elementStart the elementStart to set
      */
     public void setElementStart(boolean elementStart) {
-       if (elementStart) {
+        if (elementStart) {
             this.startCheckBox.setSelected(true);
-        }
-        else
+        } else {
             this.startCheckBox.setSelected(false);
+        }
     }
 
     /**
@@ -517,39 +642,68 @@ public class PropertiesMenu extends javax.swing.JPanel {
     public void setElementEnd(boolean elementEnd) {
         if (elementEnd) {
             this.endCheckBox.setSelected(true);
-        }
-        else
+        } else {
             this.endCheckBox.setSelected(false);
+        }
     }
-    
+
     public void loadProperties(Element currentElement, Graph graph, DiagramPanel window) {
         this.element = currentElement;
+        heightText.setEnabled(true);
+        widthText.setEnabled(true);
         //this.graph = graph;
         this.window = window;
         setElementName(currentElement.getName());
-        setElementColor(currentElement.getColor());      
+        setElementColor(currentElement.getColor());
         colorLabel.setBackground(currentElement.getColor());
         fontColorLabel.setBackground(currentElement.getColor2());
-            setElementFontSize(Integer.toString(currentElement.getFontSize()));
-            //notes.setText(currentElement.getNote());
-            if(currentElement instanceof AbsPlace)
-            {
-                AbsPlace current= (AbsPlace) currentElement;
-                setElementWidth(Integer.toString(current.getWidth()));
-                setElementHeight(Integer.toString(current.getHeight()));
-                setElementMarking(Integer.toString(current.getMarking()));
-                setElementEnd(current.isEnd());
-                setElementStart(current.isStart());
-                specific.setVisible(true);
-            }
-            if(currentElement instanceof Transition)
-            {
-                Transition current= (Transition) currentElement;
-                setElementWidth(Integer.toString(current.getWidth()));
-                setElementHeight(Integer.toString(current.getHeight()));
-                specific.setVisible(false);
-            }
-            this.revalidate();
-            this.validate();
+        setElementFontSize(Integer.toString(currentElement.getFontSize()));
+        //notes.setText(currentElement.getNote());
+        if (currentElement instanceof AbsPlace) {
+            jLabel7.setText("Marking");
+            AbsPlace current = (AbsPlace) currentElement;
+            setElementWidth(Integer.toString(current.getWidth()));
+            setElementHeight(Integer.toString(current.getHeight()));
+            setElementMarking(Integer.toString(current.getMarking()));
+            startCheckBox.setVisible(true);
+            endCheckBox.setVisible(true);
+            setElementEnd(current.isEnd());
+            setElementStart(current.isStart());
+            specific.setVisible(true);
+            jLabel7.setToolTipText("Marking of place/resource");
+        }
+        if (currentElement instanceof Node) {
+            jLabel7.setText("Marking");
+            Node current = (Node) currentElement;
+            setElementWidth(Integer.toString(current.getWidth()));
+            setElementHeight(Integer.toString(current.getHeight()));
+            setElementMarking(Integer.toString(current.getCapacity()));
+            startCheckBox.setVisible(false);
+            endCheckBox.setVisible(false);
+            specific.setVisible(true);
+            jLabel7.setToolTipText("Marking of node");
+        }
+        if (currentElement instanceof Transition) {
+            Transition current = (Transition) currentElement;
+            setElementWidth(Integer.toString(current.getWidth()));
+            setElementHeight(Integer.toString(current.getHeight()));
+            specific.setVisible(false);
+        }
+        if (currentElement instanceof Arc) {
+            Arc current = (Arc) currentElement;
+            widthText.setEnabled(false);
+            widthText.setText("");
+            heightText.setEnabled(false);
+            heightText.setText("");
+            jLabel7.setText("Capacity");
+            capacityText.setText(current.getCapacity() + "");
+            capacityText.setSize(nameText.getHeight(), nameText.getWidth());
+            startCheckBox.setVisible(false);
+            endCheckBox.setVisible(false);
+            specific.setVisible(true);
+            jLabel7.setToolTipText("Capacity of a arc");
+        }
+        this.revalidate();
+        this.validate();
     }
 }
