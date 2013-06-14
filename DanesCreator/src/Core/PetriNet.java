@@ -354,37 +354,10 @@ public class PetriNet extends Graph implements Cloneable{
             resourceVector.add(listOfResources.get(i).getMarking());
         }
         stateMarkings.add(resourceVector);
-        /*
-        int[] vector=new int[listOfPlaces.size()+listOfResources.size()];
-        for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++)
-        {
-            if(i<listOfPlaces.size())
-            {
-                vector[i]=listOfPlaces.get(i).getMarking();
-            }
-            else
-            {
-                vector[i]=listOfResources.get(i).getMarking();
-            }
-        }
-        */ 
         return stateMarkings;
     }
     
     public void setState(State state){
-        /*
-        for(int i=0;i<(listOfPlaces.size()+listOfResources.size());i++)
-        {
-            if(i<listOfPlaces.size())
-            {
-                listOfPlaces.get(i).setMarking(state.getMarkingField()[i]);           
-            }
-            else{
-                listOfResources.get(i).setMarking(state.getMarkingField()[i]);
-            }
-            
-        }
-        */
         for (int i = 0; i < (listOfPlaces.size()); i++) {
             listOfPlaces.get(i).getMarkings().setMarkings(state.getPlaceMarkings().get(i));
         }
