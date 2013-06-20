@@ -15,17 +15,19 @@ import java.util.Queue;
 public class Trie {
 
     private TrieNode root;
+    private int count;
 
     public Trie() {
         root = new TrieNode(' ');
+        count=0;
     }
 
     public boolean insert(String s, State data) {
         TrieNode current = root;
         if (s.length() == 0) //For an empty character
         {
-            if (!current.marker) {
-                current.marker = true;
+            if (!current.isMarker()) {
+                current.setMarker(true);
             } else {
                 return false;
             }
@@ -36,14 +38,16 @@ public class Trie {
             if (child != null) {
                 current = child;
             } else {
-                current.child.add(new TrieNode(s.charAt(i)));
+                current.getChild().add(new TrieNode(s.charAt(i)));
                 current = current.subNode(s.charAt(i));
             }
             // Set marker to indicate end of the word
             if (i == s.length() - 1) {
-                if (!current.marker) {
-                    current.marker = true;
-                    current.data = data;
+                if (!current.isMarker()) {
+                    current.setMarker(true);
+                    current.setData(data);
+                    current.setName(s);
+                    count++;
                     return true;
                 } else {
                     return false;
@@ -68,7 +72,7 @@ public class Trie {
              * This means that a string exists, but make sure its
              * a word by checking its 'marker' flag
              */
-            if (current.marker == true) {
+            if (current.isMarker() == true) {
                 //return true;
                 return current;
             } else {
@@ -80,6 +84,7 @@ public class Trie {
     }
 
     public void levelOrder() {
+        System.out.println("Count:"+ getCount()+" ");
         System.out.println("Lever order :");
         Queue q = new LinkedList();
         if (root != null);
@@ -87,12 +92,20 @@ public class Trie {
 
         while (!q.isEmpty()) {
             TrieNode temp = (TrieNode) q.remove();
-            if (temp.marker) {
-                System.out.println(temp.data + " ");
+            if (temp.getData()!=null) {
+                System.out.println(temp.getData() + " ");
+                //System.out.println(temp.getName() + " ");
             }
-            for (TrieNode eachChild : temp.child) {
+            for (TrieNode eachChild : temp.getChild()) {
                 q.add(eachChild);
             }
         }
+    }
+
+    /**
+     * @return the count
+     */
+    public int getCount() {
+        return count;
     }
 }

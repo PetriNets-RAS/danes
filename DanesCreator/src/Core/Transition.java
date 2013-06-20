@@ -7,6 +7,8 @@ package Core;
 import com.sun.org.apache.bcel.internal.generic.RETURN;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -168,13 +170,13 @@ public class Transition extends Element {
        }
    }
    
-   public boolean executeTransition()
+   public boolean executeTransition(int k)
    {
        ArrayList<Integer> markings = isActive();
        if (markings == null) {
            return false;
        }
-       int marking = markings.get(0); //token
+       int marking = markings.get(k); //token
        /* Minus for input arcs */
        for(Arc arc : listOfInArcs)
        {    
@@ -198,6 +200,7 @@ public class Transition extends Element {
            }else{
                Place inPlace = (Place)inElement;
                inPlace.getMarkings().getMarkings().add(marking);
+               Collections.sort(inPlace.getMarkings().getMarkings());
            }
        }
        return true;

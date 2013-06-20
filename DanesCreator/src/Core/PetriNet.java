@@ -346,12 +346,12 @@ public class PetriNet extends Graph implements Cloneable{
         {
             ArrayList<Integer> vector = new ArrayList<Integer>();
             for (int j = 0; j < listOfPlaces.get(i).getMarkings().getMarkings().size(); j++) {
-                vector.add(listOfPlaces.get(i).getMarkings().getMarkings().get(j));
+                vector.add(new Integer(listOfPlaces.get(i).getMarkings().getMarkings().get(j)));
             }
             stateMarkings.add(vector);
         }
         for(int i=0;i<listOfResources.size();i++){
-            resourceVector.add(listOfResources.get(i).getMarking());
+            resourceVector.add(new Integer(listOfResources.get(i).getMarking()));
         }
         stateMarkings.add(resourceVector);
         return stateMarkings;

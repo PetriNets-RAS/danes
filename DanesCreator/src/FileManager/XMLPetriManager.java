@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.DocumentBuilder;
@@ -209,7 +210,15 @@ public class XMLPetriManager {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) nNode;
                 Place pl = new Place(eElement.getAttribute("name"));
-                int initialMarking = Integer.parseInt(eElement.getAttribute("tokens"));
+                
+                ArrayList<Integer> marking=new ArrayList<Integer>();
+                ArrayList<String> list = new ArrayList<String>(Arrays.asList(eElement.getAttribute("tokens").split(";")));
+                for(String s : list){
+                    if(s.length()>0)marking.add(Integer.parseInt(s));
+                }
+                
+                
+                //int initialMarking = Integer.parseInt(eElement.getAttribute("tokens"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
 
@@ -227,7 +236,8 @@ public class XMLPetriManager {
                 pl.setWidth(Integer.parseInt(eElement.getAttribute("width")));
                 pl.setHeight(Integer.parseInt(eElement.getAttribute("height")));
                 pl.setNote(eElement.getAttribute("note"));
-                pl.setMarking(initialMarking);
+                pl.getMarkings().setMarkings(marking);
+                //pl.setMarking(initialMarking);
                 pl.setX(x);
                 pl.setY(y);
                 pl.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
@@ -392,7 +402,15 @@ public class XMLPetriManager {
             place.setAttributeNode(Y);
 
             Attr tokens = doc.createAttribute("tokens");
-            tokens.setValue(p.getMarking() + "");
+            String tokensTemp="";
+            StringBuilder sb=new StringBuilder(tokensTemp);
+            for(Integer i : p.getMarkings().getMarkings()){
+                sb.append(i).append(";");
+            }
+            
+            
+            //tokens.setValue(p.getMarking() + "");
+            tokens.setValue(sb.toString() + "");
             place.setAttributeNode(tokens);
 
             Attr start = doc.createAttribute("start");

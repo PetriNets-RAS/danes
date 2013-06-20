@@ -13,8 +13,7 @@ import java.util.ArrayList;
  * @author Michal Skovajsa
  */
 public class Place extends AbsPlace {
-
-
+    
     private boolean start;
     private boolean end; 
     private Marking markings;

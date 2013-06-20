@@ -615,19 +615,32 @@ public class View extends javax.swing.JFrame {
         selectedFile = jFileChooser.getSelectedFile();
         File inputFile = new File(selectedFile.getAbsolutePath());
 
+        int x,y;
+        
         if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
             FileManager.XMLPetriManager loader = new XMLPetriManager();
             PetriNet p = loader.getPetriNetFromXML(inputFile);
             graph = p;
+            x=p.getListOfPlaces().get(0).getX();
+            y=p.getListOfPlaces().get(0).getY();
         } else {
             FileManager.XMLPrecedenceManager loader = new XMLPrecedenceManager();
             PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
             graph = pg;
+            x=pg.getListOfNodes().get(0).getX();
+            y=pg.getListOfNodes().get(0).getY();
         }
         getInfoAboutFile(inputFile);
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
         diagramScrollPane.setViewportView(this.diagramPanel);
+        
+        if((x-50)<0 || (y-50<0)){
+            x=0;
+            y=0;
+        }
+        
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x-50,y-50));
 
         sideMenu.setVisible(true);
         // hide side menu
@@ -648,6 +661,9 @@ public class View extends javax.swing.JFrame {
 
         ///
         getInfoAboutModel(graph);
+        
+        
+        
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
@@ -1153,8 +1169,6 @@ public class View extends javax.swing.JFrame {
 
         public int[] solvePointsOfArrow(double x1, double x2, double y1, double y2, double midX, double midY, Element e, double width, double height) {
 
-            System.out.println("pocitam body prieniku");
-            
             if (e instanceof Transition) {
                 double kx = midY - y1;
                 double ky = midX - x1;
@@ -1399,16 +1413,16 @@ public class View extends javax.swing.JFrame {
         public int[] drawArc(int column1, int row1, int width1, int height1, int column2, int row2, int width2, int height2, Color color, String name, int fontSize, Element e, int upperLeftAngleX, int upperLeftAngleY, int capacity) {
             // Arc / Arrow
             //g2d.setColor(new Color(27,161,226)); // Windows8Blue
-            System.out.println("x1 "+column1);
-            System.out.println("y1 "+row1);
-            
-            System.out.println("x2 "+column2);
-            System.out.println("y2 "+row2);
-            
-            System.out.println("width out "+width1);
-            System.out.println("height out "+height1);
-            System.out.println("width in "+width2);
-            System.out.println("height in "+height2);
+//            System.out.println("x1 "+column1);
+//            System.out.println("y1 "+row1);
+//            
+//            System.out.println("x2 "+column2);
+//            System.out.println("y2 "+row2);
+//            
+//            System.out.println("width out "+width1);
+//            System.out.println("height out "+height1);
+//            System.out.println("width in "+width2);
+//            System.out.println("height in "+height2);
             
             g2d.setColor(color);
             g2d.setStroke(new BasicStroke(3));
@@ -2109,5 +2123,5 @@ public class View extends javax.swing.JFrame {
         propertiesMenu.setVisible(false);
         this.revalidate();
         this.repaint();
-    }
+}
 }

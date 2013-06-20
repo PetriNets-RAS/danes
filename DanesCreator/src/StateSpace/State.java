@@ -34,7 +34,14 @@ public class State {
         //int count = pMarkigField.length;
         //this.markingField = new int[count];
         this.placeMarkings = new ArrayList<ArrayList<Integer>>();
-        this.placeMarkings = pPlaceMarkings;
+        for(int i=0;i<pPlaceMarkings.size();i++){
+            ArrayList a=new ArrayList();
+            for(int j=0;j<pPlaceMarkings.get(i).size();j++){
+                a.add(new Integer(pPlaceMarkings.get(i).get(j)));
+            }
+            placeMarkings.add(a);
+        }
+        //this.placeMarkings = pPlaceMarkings;
         //this.markingField=pMarkigField.clone();
         this.lastMarkedItem = pLastMarkedItem;
         this.parent = pParent;
