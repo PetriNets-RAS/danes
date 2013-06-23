@@ -4,10 +4,9 @@
  */
 package danescreator;
 
-import GUI.View;
 import Core.PetriNet;
 import GUI.Controller;
-import javax.swing.JFrame;
+import GUI.View;
 import javax.swing.UIManager;
 //import sun.applet.Main;
 

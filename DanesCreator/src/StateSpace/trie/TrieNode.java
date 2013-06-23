@@ -89,7 +89,7 @@ public class TrieNode {
      * @param data the data to seta
      */
     public void setData(State data) {
-        this.data=new State(data.getPlaceMarkings(), data.getLastMarkedItem(), data.getParent());
+        this.data=new State(data.getPlaceMarkings(), data.getLastMarkedItem(), data.getParent(),data.getPn());
         //this.data = data;
     }
 

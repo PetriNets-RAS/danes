@@ -28,8 +28,10 @@ public class StateSpaceCalculator {
         //State _intialState=new State(_net.getState(), 0, null);
         Trie _stateSpace = new Trie();
         State _currentState;
+        State firstState;
 
-        _currentState = new State(_net.getState(), 0, null);
+        firstState = new State(_net.getState(), 0, null,_net);
+        _currentState = new State(_net.getState(), 0, null,_net);
         _stateSpace.insert(_currentState.toString(), _currentState);
 
         /* Calculation */
@@ -41,23 +43,26 @@ public class StateSpaceCalculator {
             for (Transition t : _net.getListOfTransitions()) {
                 _net.setState(_currentState);
                 ArrayList<Integer> candidates = t.isActive();
+                System.out.println(candidates);
                 if (candidates != null) // return array of markings
                 {
                     /* Simulate execution of transition */
-                    State temp = new State(_net.getState(), 0, null);
+                    State temp = new State(_net.getState(), 0, null,_net);
                     for (int i = 0; i < candidates.size(); i++) {
 
                         t.executeTransition(i);
-                        _currentState=new State(_net.getState(), _currentState.getLastMarkedItem(), _currentState.getParent());
+                        _currentState=new State(temp.getPlaceMarkings(), temp.getLastMarkedItem(), temp.getParent(),_net);
                         /* If child state already exists in stateSpace , do nothing */
                         /* else add to parent's childs & add to stateSpace */
-                        State _childState = new State(_net.getState(), 0, _currentState);
+                        State _childState = new State(_net.getState(), 0, _currentState,_net);
                         /* Unique state add to childs and stateSpaces */
                         
                         if (_stateSpace.insert(_childState.toString(), _childState)) {
+                            System.out.println("VKLADAM: "+ _childState);
                             _currentState.addChild(new StateItem(_childState, t));                           
                             _net.setState(temp);
                         }
+                        _net.setState(temp);
 
                     }
                 }
@@ -80,6 +85,8 @@ public class StateSpaceCalculator {
 //        System.out.println("***********************************************");
         /* Write results and revert back original net markings */
         _stateSpace.levelOrder();
+        _net.setState(firstState);
+        //System.out.println(firstState);
         //_net.setState(_intialState);
     }
 }

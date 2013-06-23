@@ -93,7 +93,7 @@ public class Trie {
         while (!q.isEmpty()) {
             TrieNode temp = (TrieNode) q.remove();
             if (temp.getData()!=null) {
-                System.out.println(temp.getData() + " ");
+                System.out.println(temp.getData() + " PREDCHODCA: "+temp.getData().getParent());
                 //System.out.println(temp.getName() + " ");
             }
             for (TrieNode eachChild : temp.getChild()) {

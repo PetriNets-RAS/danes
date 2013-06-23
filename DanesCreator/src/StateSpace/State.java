@@ -18,6 +18,7 @@ public class State {
     private int lastMarkedItem;
     private ArrayList<ArrayList<Integer>> placeMarkings;
     private State parent;
+    private PetriNet pn;
     
     /*
     public State(int[] pMarkigField, int pLastMarkedItem, State pParent){
@@ -30,7 +31,7 @@ public class State {
         this.childs = new ArrayList<StateItem>();
     }
     */
-    public State(ArrayList<ArrayList<Integer>> pPlaceMarkings, int pLastMarkedItem, State pParent){
+    public State(ArrayList<ArrayList<Integer>> pPlaceMarkings, int pLastMarkedItem, State pParent, PetriNet pn){
         //int count = pMarkigField.length;
         //this.markingField = new int[count];
         this.placeMarkings = new ArrayList<ArrayList<Integer>>();
@@ -41,6 +42,7 @@ public class State {
             }
             placeMarkings.add(a);
         }
+        this.pn=pn;
         //this.placeMarkings = pPlaceMarkings;
         //this.markingField=pMarkigField.clone();
         this.lastMarkedItem = pLastMarkedItem;
@@ -83,7 +85,8 @@ public class State {
         */
         stateName.append("{");
         for (int i = 0; i < this.placeMarkings.size()-1; i++) {
-            stateName.append("P").append(i+1).append(":");
+            stateName.append(pn.getListOfPlaces().get(i).getName()).append(":");
+            //stateName.append("P").append(i+1).append(":");
             for (int j = 0; j < this.placeMarkings.get(i).size(); j++) {
                 if(j < this.placeMarkings.get(i).size() -1){
                     stateName.append("1'").append(this.placeMarkings.get(i).get(j)).append("++");
@@ -95,9 +98,11 @@ public class State {
         }
         int lastIndexOfArray = this.placeMarkings.size()-1; // resources
         for (int j = 0; j < this.placeMarkings.get(lastIndexOfArray).size(); j++) {
-            stateName.append("R").append(j+1).append(":").append(this.placeMarkings.get(lastIndexOfArray).get(j)).append(";");       
+            stateName.append(pn.getListOfResources().get(j).getName()).append(j+1).append(":").append(this.placeMarkings.get(lastIndexOfArray).get(j)).append(";");       
+            //stateName.append("R").append(j+1).append(":").append(this.placeMarkings.get(lastIndexOfArray).get(j)).append(";");       
         }
         stateName.append("}");
+        stateName.append("  ").append(lastMarkedItem).append(" - ").append(childs.size());
         return stateName.toString();
     }    
 
@@ -125,6 +130,13 @@ public class State {
      */
     public void setPlaceMarkings(ArrayList<ArrayList<Integer>> placeMarkings) {
         this.placeMarkings = placeMarkings;
+    }
+
+    /**
+     * @return the pn
+     */
+    public PetriNet getPn() {
+        return pn;
     }
  
     

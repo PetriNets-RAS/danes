@@ -20,12 +20,12 @@ public class NewMain {
         // TODO code application logic here
         Trie t=new StateSpace.Trie.Trie();
         
-        t.insert("polko", new State(null, 0, null));
-        t.insert("ivan", new State(null, 1, null));
-        t.insert("jakub", new State(null, 2, null));
-        t.insert("maly", new State(null, 3, null));
-        t.insert("mala", new State(null, 4, null));
-        t.insert("mala", new State(null, 9, null));
+        t.insert("polko", new State(null, 0, null,null));
+        t.insert("ivan", new State(null, 1, null,null));
+        t.insert("jakub", new State(null, 2, null,null));
+        t.insert("maly", new State(null, 3, null,null));
+        t.insert("mala", new State(null, 4, null,null));
+        t.insert("mala", new State(null, 9, null,null));
         
         t.levelOrder();
         

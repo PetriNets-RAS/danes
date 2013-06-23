@@ -14,7 +14,6 @@ import Core.Resource;
 import Core.Transition;
 import GUI.View.DiagramPanel;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 import javax.swing.JColorChooser;
 import javax.swing.SwingUtilities;
 
