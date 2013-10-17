@@ -15,8 +15,6 @@ import Core.PrecedenceGraph;
 import Core.Resource;
 import Core.Transition;
 import java.awt.Point;
-import java.awt.Polygon;
-import java.awt.geom.Area;
 import java.awt.geom.Line2D;
 import java.awt.geom.Path2D;
 import java.util.ArrayList;
