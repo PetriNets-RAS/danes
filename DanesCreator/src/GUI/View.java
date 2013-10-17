@@ -1747,7 +1747,7 @@ public class View extends javax.swing.JFrame {
                 // Place / Node
                 if (ellipseButton.isSelected()) {
                     if (graph instanceof PetriNet) {
-                        controller.addPlace("Place", x - 38, y - 19);
+                        controller.addPlace("P", x - 38, y - 19);
                     }
                     if (graph instanceof PrecedenceGraph) {
                         controller.addNode("Node", x - 25, y - 12);
@@ -1756,12 +1756,12 @@ public class View extends javax.swing.JFrame {
                 // Resource
                 if (resuorceButton.isSelected()) {
                     if (graph instanceof PetriNet) {
-                        controller.addResource("Resource", x - 50, y - 19);
+                        controller.addResource("R", x - 50, y - 19);
                     }
                 }
                 // Transition
                 if (rectangleButton.isSelected()) {
-                    controller.addTransition("Transition", x - 43, y - 19);
+                    controller.addTransition("T", x - 43, y - 19);
                 }
 
             }

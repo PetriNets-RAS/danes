@@ -6,7 +6,6 @@ package StateSpace;
 
 import Core.PetriNet;
 import Core.Transition;
-import StateSpace.Trie.Trie;
 import java.util.ArrayList;
 
 /**
@@ -16,9 +15,11 @@ import java.util.ArrayList;
 public class StateSpaceCalculator {
 
     PetriNet petriNet;
+    private int idCount;
 
     public StateSpaceCalculator(PetriNet petriNet) {
         this.petriNet = petriNet;
+        idCount=1;
     }
 
     /* Calculate whole stateSpace */
@@ -30,9 +31,9 @@ public class StateSpaceCalculator {
         State _currentState;
         State firstState;
 
-        firstState = new State(_net.getState(), 0, null,_net);
-        _currentState = new State(_net.getState(), 0, null,_net);
-        _stateSpace.insert(_currentState.toString(), _currentState);
+        firstState = new State(_net.getState(), 0, null, _net);
+        _currentState = new State(_net.getState(), 0, null, _net);
+        _stateSpace.insert(_currentState.getKey(), _currentState);
 
         /* Calculation */
 //        System.out.println("***********************************************");
@@ -43,41 +44,50 @@ public class StateSpaceCalculator {
             for (Transition t : _net.getListOfTransitions()) {
                 _net.setState(_currentState);
                 ArrayList<Integer> candidates = t.isActive();
-                System.out.println(candidates);
                 if (candidates != null) // return array of markings
                 {
                     /* Simulate execution of transition */
-                    State temp = new State(_net.getState(), 0, null,_net);
+                    State temp = new State(_net.getState(), 0, _currentState.getParent(), _net);
+                    //System.out.println("TRAN "+t.getName());
+                    
                     for (int i = 0; i < candidates.size(); i++) {
-
+                        //System.out.println("CAND NUMB " + candidates.get(i));
                         t.executeTransition(i);
-                        _currentState=new State(temp.getPlaceMarkings(), temp.getLastMarkedItem(), temp.getParent(),_net);
+                        //System.out.println("CURR NUMB " + _currentState);
+                        //_currentState = new State(temp.getPlaceMarkings(), temp.getLastMarkedItem(), temp.getParent(), _net);
+                        //System.out.println("ACT "+_net.getState());
+                        
+                        //System.out.println("TEMP "+temp);
                         /* If child state already exists in stateSpace , do nothing */
                         /* else add to parent's childs & add to stateSpace */
-                        State _childState = new State(_net.getState(), 0, _currentState,_net);
+                        State _childState = new State(_net.getState(), 0, _currentState, _net);
                         /* Unique state add to childs and stateSpaces */
-                        
-                        if (_stateSpace.insert(_childState.toString(), _childState)) {
-                            System.out.println("VKLADAM: "+ _childState);
-                            _currentState.addChild(new StateItem(_childState, t));                           
-                            _net.setState(temp);
-                        }
-                        _net.setState(temp);
 
+                        if (_stateSpace.insert(_childState.getKey(), _childState)) {
+                            _currentState.addChild(new StateItem(_childState, t));
+                            //_stateSpace.levelOrder();
+                            
+                            //System.out.println("VKLADAM: " + _childState);
+                            _net.setState(_currentState);
+                        }
+                        _net.setState(_currentState);
+                        //System.out.println("STAV "+temp);
                     }
                 }
             }
 
             /* Can I execute any child? */
             if (_currentState.getLastMarkedItem() < _currentState.getChilds().size()) {
-                //System.out.println("dalsi");
+                //System.out.println("dalsi " + _currentState.getLastMarkedItem());
                 State _newState = _currentState.getChilds().get(_currentState.getLastMarkedItem()).getState();
                 _currentState.increaseLastMarkedItem();
                 _currentState = _newState;
+                //System.out.println("CRUR po pridani "+_currentState);
                 //_currentState = new State(_newState.getPlaceMarkings(), 0, null);
             } /* No child, go to parent */ else {
                 //System.out.println("otec");
                 _currentState = _currentState.getParent();
+                //System.out.println("NAVRAT HORE");
             }
             // End while (_currentState!=null)
         }
@@ -86,7 +96,7 @@ public class StateSpaceCalculator {
         /* Write results and revert back original net markings */
         _stateSpace.levelOrder();
         _net.setState(firstState);
-        //System.out.println(firstState);
+        
         //_net.setState(_intialState);
     }
 }

@@ -84,12 +84,12 @@ public class Controller {
 
             Place place;
 
-            if (name.equals("Place")) {
+            if (name.equals("P")) {
 
                 // Generate text name until it is unique
                 int _offset = 1;
                 do {
-                    place = new Place("Place" + (((PetriNet) graph).getListOfPlaces().size() + _offset));
+                    place = new Place("P" + (((PetriNet) graph).getListOfPlaces().size() + _offset));
                     place.setX(x);
                     place.setY(y);
                     _offset++;
@@ -112,12 +112,12 @@ public class Controller {
         if (graph instanceof PetriNet) {
             Resource resource;
 
-            if (name.equals("Resource")) {
+            if (name.equals("R")) {
 
                 // Generate text name until it is unique
                 int _offset = 1;
                 do {
-                    resource = new Resource("Resource" + (((PetriNet) graph).getListOfResources().size() + _offset));
+                    resource = new Resource("R" + (((PetriNet) graph).getListOfResources().size() + _offset));
                     resource.setX(x);
                     resource.setY(y);
                     _offset++;
@@ -143,11 +143,11 @@ public class Controller {
         if (graph instanceof PetriNet) {
             Transition transition;
 
-            if (name.equals("Transition")) {
+            if (name.equals("T")) {
                 // Generate text name until it is unique
                 int _offset = 1;
                 do {
-                    transition = new Transition("Transition" + (((PetriNet) graph).getListOfTransitions().size() + _offset));
+                    transition = new Transition("T" + (((PetriNet) graph).getListOfTransitions().size() + _offset));
                     transition.setX(x);
                     transition.setY(y);
                     _offset++;

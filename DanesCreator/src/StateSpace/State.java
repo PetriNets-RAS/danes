@@ -49,7 +49,7 @@ public class State {
         this.parent = pParent;
         this.childs = new ArrayList<StateItem>();
 
-    }
+    }    
     
     public int[] getMarkingField(){
         return markingField;
@@ -83,6 +83,39 @@ public class State {
             stateName.append(this.markingField[i]);
         }
         */
+
+        stateName.append(" {");
+        for (int i = 0; i < this.placeMarkings.size()-1; i++) {
+            stateName.append(pn.getListOfPlaces().get(i).getName()).append(":");
+            //stateName.append("P").append(i+1).append(":");
+            for (int j = 0; j < this.placeMarkings.get(i).size(); j++) {
+                if(j < this.placeMarkings.get(i).size() -1){
+                    stateName.append("1'").append(this.placeMarkings.get(i).get(j)).append("++");
+                }else{
+                    stateName.append("1'").append(this.placeMarkings.get(i).get(j));
+                }       
+            }
+            stateName.append(";");
+        }
+        int lastIndexOfArray = this.placeMarkings.size()-1; // resources
+        for (int j = 0; j < this.placeMarkings.get(lastIndexOfArray).size(); j++) {
+            stateName.append(pn.getListOfResources().get(j).getName()).append(j+1).append(":").append(this.placeMarkings.get(lastIndexOfArray).get(j)).append(";");       
+            //stateName.append("R").append(":").append(this.placeMarkings.get(lastIndexOfArray).get(j)).append(";");       
+        }
+        stateName.append("}");
+        stateName.append(" Parrent: ").append(parent);
+        return stateName.toString();
+    }    
+    
+        
+    public String getKey()
+    {
+        StringBuilder stateName = new StringBuilder();
+        /*
+        for (int i = 0; i < this.markingField.length; i++) {
+            stateName.append(this.markingField[i]);
+        }
+        */
         stateName.append("{");
         for (int i = 0; i < this.placeMarkings.size()-1; i++) {
             stateName.append(pn.getListOfPlaces().get(i).getName()).append(":");
@@ -99,10 +132,9 @@ public class State {
         int lastIndexOfArray = this.placeMarkings.size()-1; // resources
         for (int j = 0; j < this.placeMarkings.get(lastIndexOfArray).size(); j++) {
             stateName.append(pn.getListOfResources().get(j).getName()).append(j+1).append(":").append(this.placeMarkings.get(lastIndexOfArray).get(j)).append(";");       
-            //stateName.append("R").append(j+1).append(":").append(this.placeMarkings.get(lastIndexOfArray).get(j)).append(";");       
+            //stateName.append("R").append(":").append(this.placeMarkings.get(lastIndexOfArray).get(j)).append(";");       
         }
         stateName.append("}");
-        stateName.append("  ").append(lastMarkedItem).append(" - ").append(childs.size());
         return stateName.toString();
     }    
 

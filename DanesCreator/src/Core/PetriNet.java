@@ -6,6 +6,7 @@ package Core;
 
 import StateSpace.State;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -355,13 +356,16 @@ public class PetriNet extends Graph implements Cloneable{
     }
     
     public void setState(State state){
+        
+        State st=new State(state.getPlaceMarkings(), 0, null, null);
+        
         for (int i = 0; i < (listOfPlaces.size()); i++) {
-            listOfPlaces.get(i).getMarkings().setMarkings(state.getPlaceMarkings().get(i));
+            listOfPlaces.get(i).getMarkings().setMarkings(st.getPlaceMarkings().get(i));
         }
         
-        int lastIndex = (state.getPlaceMarkings().size()-1);
+        int lastIndex = (st.getPlaceMarkings().size()-1);
         for (int i = 0; i < listOfResources.size(); i++) {
-            listOfResources.get(i).setMarking(state.getPlaceMarkings().get(lastIndex).get(i));
+            listOfResources.get(i).setMarking(st.getPlaceMarkings().get(lastIndex).get(i));
         }
     }
        
