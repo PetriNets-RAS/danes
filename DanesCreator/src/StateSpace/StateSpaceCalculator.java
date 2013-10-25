@@ -16,10 +16,12 @@ public class StateSpaceCalculator {
 
     PetriNet petriNet;
     private int idCount;
+    private ArrayList<State> result;
 
     public StateSpaceCalculator(PetriNet petriNet) {
         this.petriNet = petriNet;
         idCount=1;
+        result=new ArrayList<State>();
     }
 
     /* Calculate whole stateSpace */
@@ -94,9 +96,16 @@ public class StateSpaceCalculator {
 //        System.out.println("***********************************************");
 //        System.out.println("***********************************************");
         /* Write results and revert back original net markings */
-        _stateSpace.levelOrder();
+        result=_stateSpace.levelOrder();
         _net.setState(firstState);
         
         //_net.setState(_intialState);
+    }
+
+    /**
+     * @return the result
+     */
+    public ArrayList<State> getResult() {
+        return result;
     }
 }

@@ -137,6 +137,17 @@ public class State {
         stateName.append("}");
         return stateName.toString();
     }    
+    
+    public String toFile(){
+        String out="";
+        StringBuilder sb=new StringBuilder(out);
+        
+        
+        
+        
+        return sb.toString();
+    }
+    
 
     public int getLastMarkedItem() {
         return lastMarkedItem;

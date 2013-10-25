@@ -17,6 +17,7 @@ public class PetriNet extends Graph implements Cloneable{
     private ArrayList<Transition> listOfTransitions;
     private ArrayList<Arc> listOfArcs;
     private ArrayList<Resource> listOfResources;    
+    private ArrayList<State> states;    
     private String name;
 
     /**
@@ -366,6 +367,20 @@ public class PetriNet extends Graph implements Cloneable{
         for (int i = 0; i < listOfResources.size(); i++) {
             listOfResources.get(i).setMarking(st.getPlaceMarkings().get(lastIndex).get(i));
         }
+    }
+
+    /**
+     * @return the states
+     */
+    public ArrayList<State> getStates() {
+        return states;
+    }
+
+    /**
+     * @param states the states to set
+     */
+    public void setStates(ArrayList<State> states) {
+        this.states = states;
     }
        
 }

@@ -4,6 +4,7 @@
  */
 package StateSpace;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -85,7 +86,8 @@ public class Trie {
         return null;
     }
 
-    public void levelOrder() {
+    public ArrayList<State> levelOrder() {
+        ArrayList<State> result=new ArrayList<State>();
         System.out.println("Count:"+ getCount()+" ");
         System.out.println("Lever order :");
         Queue q = new LinkedList();
@@ -95,18 +97,20 @@ public class Trie {
         while (!q.isEmpty()) {
             TrieNode temp = (TrieNode) q.remove();
             if (temp.getState()!=null) {
-                String out="ID: "+(temp.getIDnode()+1)+ " "+ temp.getName()+ "Parent ";
-                System.out.print("ID: "+(temp.getIDnode())+ " "+ temp.getName()+ "Parent ");
-                if(temp.getState().getParent()!=null){
-                System.out.println((search(temp.getState().getParent().getKey()).getIDnode()));
-                }else{
-                    System.out.println("null");
-                }
+                result.add(temp.getState());
+//                String out="ID: "+(temp.getIDnode()+1)+ " "+ temp.getName()+ "Parent ";
+//                System.out.print("ID: "+(temp.getIDnode())+ " "+ temp.getName()+ "Parent ");
+//                if(temp.getState().getParent()!=null){
+//                System.out.println((search(temp.getState().getParent().getKey()).getIDnode()));
+//                }else{
+//                    System.out.println("null");
+//                }
             }
             for (TrieNode eachChild : temp.getChild()) {
                 q.add(eachChild);
             }
         }
+        return result;
     }
 
     /**

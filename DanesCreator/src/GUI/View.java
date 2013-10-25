@@ -790,6 +790,8 @@ public class View extends javax.swing.JFrame {
 
         StateSpaceCalculator ssCalc = new StateSpaceCalculator(ssPetriNet);
         ssCalc.calculateStateSpace();
+        ssPetriNet.setStates(ssCalc.getResult());
+        
     }//GEN-LAST:event_create_state_diagramActionPerformed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
