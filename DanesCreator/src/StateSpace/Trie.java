@@ -98,8 +98,10 @@ public class Trie {
             TrieNode temp = (TrieNode) q.remove();
             if (temp.getState()!=null) {
                 result.add(temp.getState());
-//                String out="ID: "+(temp.getIDnode()+1)+ " "+ temp.getName()+ "Parent ";
-//                System.out.print("ID: "+(temp.getIDnode())+ " "+ temp.getName()+ "Parent ");
+                System.out.println(temp.getState().toString());
+                
+                //String out="ID: "+(temp.getIDnode()+1)+ " "+ temp.getName()+ "Parent ";
+                //System.out.print("ID: "+(temp.getIDnode())+ " "+ temp.getName()+ "Parent ");
 //                if(temp.getState().getParent()!=null){
 //                System.out.println((search(temp.getState().getParent().getKey()).getIDnode()));
 //                }else{

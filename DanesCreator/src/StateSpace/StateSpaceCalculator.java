@@ -84,6 +84,7 @@ public class StateSpaceCalculator {
                 State _newState = _currentState.getChilds().get(_currentState.getLastMarkedItem()).getState();
                 _currentState.increaseLastMarkedItem();
                 _currentState = _newState;
+                //_stateSpace.levelOrder();
                 //System.out.println("CRUR po pridani "+_currentState);
                 //_currentState = new State(_newState.getPlaceMarkings(), 0, null);
             } /* No child, go to parent */ else {
@@ -97,6 +98,10 @@ public class StateSpaceCalculator {
 //        System.out.println("***********************************************");
         /* Write results and revert back original net markings */
         result=_stateSpace.levelOrder();
+//        for(State s : result){
+//            System.out.println(result.size());
+//            System.out.println(s);
+//        }
         _net.setState(firstState);
         
         //_net.setState(_intialState);

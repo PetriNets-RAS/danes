@@ -36,12 +36,13 @@ import org.w3c.dom.NodeList;
  */
 public class XMLPetriManager {
 
-    DocumentBuilderFactory docFactory;
-    DocumentBuilder docBuilder;
-    Document doc;
+    private DocumentBuilderFactory docFactory;
+    private DocumentBuilder docBuilder;
+    private Document doc;
+    private ArrayList<String> resProf;
 
     public XMLPetriManager() {
-
+        resProf=new ArrayList<String>();
         try {
             docFactory = DocumentBuilderFactory.newInstance();
             docBuilder = docFactory.newDocumentBuilder();
@@ -49,6 +50,12 @@ public class XMLPetriManager {
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(XMLPetriManager.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public void insertProf(String rp){
+        if(!resProf.contains(rp)){
+            resProf.add(rp);
+        };
     }
 
     public boolean createPetriXML(Core.Graph g, File outputFile) {
@@ -68,9 +75,14 @@ public class XMLPetriManager {
             Element places = this.getPlacesElement(pn.getListOfPlaces(), doc);
             Element transitions = this.getTransationsElement(pn.getListOfTransitions(), doc);
             Element edges = getEdgesElement(pn.getListOfArcs(), doc);
+            Element states = getStatesElement(pn.getStates(), doc);           
+            Element prof=getProfElement(this.resProf,doc);
+            
             rootElement.appendChild(places);
             rootElement.appendChild(transitions);
             rootElement.appendChild(edges);
+            rootElement.appendChild(states);
+            rootElement.appendChild(prof);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -307,6 +319,7 @@ public class XMLPetriManager {
                 type = "TP";
                 if (a.getInElement() instanceof Resource) {
                     resourceType = "P_" + a.getInElement().getName();
+                    insertProf("P_"+ a.getInElement().getName());
                 }
                 /*X1.setValue(a.getInElement().getDiagramElement().getX() + "");
                  Y1.setValue(a.getInElement().getDiagramElement().getY() + "");
@@ -387,16 +400,37 @@ public class XMLPetriManager {
         for (State s : listOfStates) {           
             Element marking = doc.createElement("marking");
             Attr name = doc.createAttribute("name");
-            name.setValue(inc+"");
+            name.setValue(inc+"");           
             marking.setAttributeNode(name);
             
             Attr vector = doc.createAttribute("vector");
-            vector.setValue(s.toFile() + "");
+            vector.setValue(s.toString() + "");
             marking.setAttributeNode(vector);
             
             markings.appendChild(marking);
+            inc++;
         }
         return markings;
+    }
+    
+        private Element getProfElement(ArrayList<String> listOfProf, Document doc) {
+        Element ResourceProfessions = doc.createElement("ResourceProfessions");
+        for (String s : listOfProf) {           
+            Element ResourceProfession = doc.createElement("ResourceProfession");
+            Element resourceset  = doc.createElement("resourceset");
+            
+            Attr name = doc.createAttribute("name");
+            name.setValue(s);      
+            ResourceProfession.setAttributeNode(name);
+            
+            Attr RSname=doc.createAttribute("name");
+            RSname.setValue(s.substring(2));
+            resourceset.setAttributeNode(RSname);
+            
+            ResourceProfession.appendChild(resourceset);
+            ResourceProfessions.appendChild(ResourceProfession);
+        }
+        return ResourceProfessions;
     }
 
     private Element getPlacesElement(ArrayList<Place> listOfPlaces, Document doc) {
