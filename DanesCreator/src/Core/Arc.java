@@ -4,6 +4,9 @@
  */
 package Core;
 
+import java.awt.Point;
+import java.util.ArrayList;
+
 /**
  *
  * @author Michal Skovajsa
@@ -15,6 +18,7 @@ public class Arc extends Element {
     private Element outElement;
     private int intercectionX;
     private int intercectionY;
+    private ArrayList<Point> bendPoints;
     
      /**
      * @Class constructor.
@@ -25,6 +29,7 @@ public class Arc extends Element {
         this.outElement=paOutElement;
         this.inElement=paInElement;
         this.capacity=1;
+        this.bendPoints=new ArrayList<Point>();
         //this.setX(paOutElement.getX());
         //this.setX(paOutElement.getX());
         
@@ -111,4 +116,31 @@ public class Arc extends Element {
     public void setIntercectionY(int intercectionY) {
         this.intercectionY = intercectionY;
     }
+
+    /**
+     * @return the bendPoints
+     */
+    public ArrayList<Point> getBendPoints() {
+        return bendPoints;
+    }
+
+    /**
+     * @param bendPoints the bendPoints to set
+     */
+    public void setBendPoints(ArrayList<Point> bendPoints) {
+        this.bendPoints = bendPoints;
+    }
+    
+    public void removeBendPoint(Point p){
+        for(Point actPoint : bendPoints){
+            if( p.getX()>actPoint.getX()-5 && p.getX()<actPoint.getX()+5
+                    && p.getY()>actPoint.getY()-5 && p.getY()<actPoint.getY()+5){
+                bendPoints.remove(actPoint);
+                break;
+            }
+                
+            
+        }
+    }
+    
 }

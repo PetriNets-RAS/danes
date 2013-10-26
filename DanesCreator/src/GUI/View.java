@@ -102,6 +102,8 @@ public class View extends javax.swing.JFrame {
         zoomInButton.setVisible(false);
         zoomOutButton.setVisible(false);
         resetZoomButton.setVisible(false);
+        bendButton.setVisible(false);
+        deleteBendButton.setVisible(false);
 
         // Custom init 
         setTitle("DANES Creator");
@@ -113,7 +115,7 @@ public class View extends javax.swing.JFrame {
         setFocusable(true);
         setFocusableWindowState(true);
         //addKeyListener(diagramKeyListener);
-
+        
 
     }
     /* Class for keyMapping */
@@ -167,6 +169,8 @@ public class View extends javax.swing.JFrame {
         zoomInButton = new javax.swing.JButton();
         zoomOutButton = new javax.swing.JButton();
         resetZoomButton = new javax.swing.JButton();
+        bendButton = new javax.swing.JButton();
+        deleteBendButton = new javax.swing.JButton();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newPetriNet = new javax.swing.JMenuItem();
@@ -291,7 +295,7 @@ public class View extends javax.swing.JFrame {
         toolBar.setEnabled(false);
 
         alignTopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/alignTop.png"))); // NOI18N
-        alignTopButton.setToolTipText("Align Top");
+        alignTopButton.setToolTipText("Align top");
         alignTopButton.setFocusable(false);
         alignTopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         alignTopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -351,6 +355,7 @@ public class View extends javax.swing.JFrame {
         toolBar.add(zoomInButton);
 
         zoomOutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/zoomOut.png"))); // NOI18N
+        zoomOutButton.setToolTipText("Zoom out");
         zoomOutButton.setFocusable(false);
         zoomOutButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         zoomOutButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -362,6 +367,7 @@ public class View extends javax.swing.JFrame {
         toolBar.add(zoomOutButton);
 
         resetZoomButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/magnifier.png"))); // NOI18N
+        resetZoomButton.setToolTipText("Reset zoom");
         resetZoomButton.setFocusable(false);
         resetZoomButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         resetZoomButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -371,6 +377,31 @@ public class View extends javax.swing.JFrame {
             }
         });
         toolBar.add(resetZoomButton);
+
+        bendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/bendLine.png"))); // NOI18N
+        bendButton.setToolTipText("Bend line");
+        bendButton.setActionCommand("BendButton");
+        bendButton.setFocusable(false);
+        bendButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        bendButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bendButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(bendButton);
+
+        deleteBendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/DeleteLineBend.png"))); // NOI18N
+        deleteBendButton.setToolTipText("Delete bend on line");
+        deleteBendButton.setFocusable(false);
+        deleteBendButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        deleteBendButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deleteBendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBendButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(deleteBendButton);
 
         fileMenu.setText("File");
 
@@ -548,8 +579,8 @@ public class View extends javax.swing.JFrame {
 
 
         diagramScrollPane.setViewportView(this.diagramPanel);
-       
-        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750,4750));
+
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
@@ -569,6 +600,8 @@ public class View extends javax.swing.JFrame {
         rectangleButton.setVisible(true);
         resuorceButton.setVisible(true);
         cursorButton.setSelected(true);
+        bendButton.setVisible(true);
+        deleteBendButton.setVisible(true);
 
         toolBar.setEnabled(true);
         getInfoAboutModel(graph);
@@ -608,32 +641,32 @@ public class View extends javax.swing.JFrame {
         selectedFile = jFileChooser.getSelectedFile();
         File inputFile = new File(selectedFile.getAbsolutePath());
 
-        int x,y;
-        
+        int x, y;
+
         if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
             FileManager.XMLPetriManager loader = new XMLPetriManager();
             PetriNet p = loader.getPetriNetFromXML(inputFile);
             graph = p;
-            x=p.getListOfPlaces().get(0).getX();
-            y=p.getListOfPlaces().get(0).getY();
+            x = p.getListOfPlaces().get(0).getX();
+            y = p.getListOfPlaces().get(0).getY();
         } else {
             FileManager.XMLPrecedenceManager loader = new XMLPrecedenceManager();
             PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
             graph = pg;
-            x=pg.getListOfNodes().get(0).getX();
-            y=pg.getListOfNodes().get(0).getY();
+            x = pg.getListOfNodes().get(0).getX();
+            y = pg.getListOfNodes().get(0).getY();
         }
         getInfoAboutFile(inputFile);
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
         diagramScrollPane.setViewportView(this.diagramPanel);
-        
-        if((x-50)<0 || (y-50<0)){
-            x=0;
-            y=0;
+
+        if ((x - 50) < 0 || (y - 50 < 0)) {
+            x = 0;
+            y = 0;
         }
-        
-        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x-50,y-50));
+
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x - 50, y - 50));
 
         sideMenu.setVisible(true);
         // hide side menu
@@ -654,9 +687,9 @@ public class View extends javax.swing.JFrame {
 
         ///
         getInfoAboutModel(graph);
-        
-        
-        
+
+
+
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
@@ -733,7 +766,7 @@ public class View extends javax.swing.JFrame {
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
         diagramScrollPane.setViewportView(this.diagramPanel);
-        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750,4750));
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
@@ -764,7 +797,7 @@ public class View extends javax.swing.JFrame {
         // hide side menu
         propertiesMenu.setVisible(false);
         getInfoAboutModel(graph);
-        
+
         rectangleButton.setVisible(true);
         resuorceButton.setVisible(true);
     }//GEN-LAST:event_convertActionPerformed
@@ -791,7 +824,7 @@ public class View extends javax.swing.JFrame {
         StateSpaceCalculator ssCalc = new StateSpaceCalculator(ssPetriNet);
         ssCalc.calculateStateSpace();
         ssPetriNet.setStates(ssCalc.getResult());
-        
+
     }//GEN-LAST:event_create_state_diagramActionPerformed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
@@ -844,15 +877,65 @@ public class View extends javax.swing.JFrame {
         resuorceButton.setSelected(false);
         rectangleButton.setSelected(false);
     }//GEN-LAST:event_cursorButtonActionPerformed
+
+    private void bendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bendButtonActionPerformed
+        if (bendButton.isSelected()) {
+            bendButton.setSelected(false);
+            bendButton.setFocusCycleRoot(false);
+            bendButton.setFocusPainted(false);
+            
+            deleteBendButton.setSelected(false);
+            deleteBendButton.setFocusCycleRoot(false);
+            deleteBendButton.setFocusPainted(false);
+            
+        } else {
+            
+            
+            deleteBendButton.setSelected(false);
+            deleteBendButton.setFocusCycleRoot(false);
+            deleteBendButton.setFocusPainted(false);
+            bendButton.setSelected(true);
+
+
+        }
+
+
+    }//GEN-LAST:event_bendButtonActionPerformed
+
+    private void deleteBendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBendButtonActionPerformed
+        if (deleteBendButton.isSelected()) {
+            deleteBendButton.setSelected(false);
+            deleteBendButton.setFocusCycleRoot(false);
+            deleteBendButton.setFocusPainted(false);
+            
+            bendButton.setSelected(false);
+            bendButton.setFocusCycleRoot(false);
+            bendButton.setFocusPainted(false);
+            
+        } else {
+            bendButton.setSelected(false);
+            bendButton.setFocusCycleRoot(false);
+            bendButton.setFocusPainted(false);
+            
+            deleteBendButton.setSelected(true);
+            //bendButton.setSelected(false);
+
+
+
+        }
+    }//GEN-LAST:event_deleteBendButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
     private javax.swing.JButton alignLeftButton;
     private javax.swing.JButton alignRightButton;
     private javax.swing.JButton alignTopButton;
+    private javax.swing.JButton bendButton;
     private javax.swing.JMenuItem convert;
     private javax.swing.JMenuItem create_state_diagram;
     private javax.swing.JButton cursorButton;
+    private javax.swing.JButton deleteBendButton;
     private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenu;
     private javax.swing.JToggleButton ellipseButton;
@@ -928,6 +1011,7 @@ public class View extends javax.swing.JFrame {
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(10000, 10000));
             setBackground(Color.WHITE);
+            
             /* Key */
             addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent event) {
@@ -944,6 +1028,7 @@ public class View extends javax.swing.JFrame {
             super.paint(g);
             this.g2d = (Graphics2D) g;
             g2d.scale(scaleRatio[0], scaleRatio[1]);
+            g2d.setStroke(new BasicStroke(3));
 
             /*
              if (g2d==null)
@@ -1300,7 +1385,7 @@ public class View extends javax.swing.JFrame {
             midX = field[0];
             midY = field[1];
 
-
+            
             double dx = midX - x1;
             double dy = midY - y1;
 
@@ -1405,8 +1490,19 @@ public class View extends javax.swing.JFrame {
              */
         }
 
-        public int[] drawArc(int column1, int row1, int width1, int height1, int column2, int row2, int width2, int height2, Color color, String name, int fontSize, Element e, int upperLeftAngleX, int upperLeftAngleY, int capacity) {
+        public int[] drawArc(Arc arc, int column1, int row1, int width1, int height1, int column2, int row2, int width2, int height2) {
             // Arc / Arrow
+            //arc, out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1, arc.getColor(), arc.getName(), arc.getFontSize(), arc.getInElement(), arc.getInElement().getX(), arc.getInElement().getY(), capacity
+            Color color = arc.getColor();
+            String name = arc.getName();
+            int fontSize = arc.getFontSize();
+            Element e = arc.getInElement();
+            int upperLeftAngleX = arc.getInElement().getX();
+            int upperLeftAngleY = arc.getInElement().getY();
+            int capacity = arc.getCapacity();
+            //int from
+
+
             //g2d.setColor(new Color(27,161,226)); // Windows8Blue
 //            System.out.println("x1 "+column1);
 //            System.out.println("y1 "+row1);
@@ -1418,14 +1514,37 @@ public class View extends javax.swing.JFrame {
 //            System.out.println("height out "+height1);
 //            System.out.println("width in "+width2);
 //            System.out.println("height in "+height2);
-            
+
+            Point lastPoint = new Point(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0));
+                    
             g2d.setColor(color);
             g2d.setStroke(new BasicStroke(3));
+            if (arc.getBendPoints().size() > 0) {
+                
+                for (Point nextPoint : arc.getBendPoints()) {
+                    g2d.drawLine((int)lastPoint.getX(), (int)lastPoint.getY(), (int)nextPoint.getX(), (int)nextPoint.getY());
+                    Color tempCol=g2d.getColor();
+                    g2d.setColor(Color.black);
+                    g2d.fillRect((int)nextPoint.getX()-5, (int)nextPoint.getY()-5, 10, 10);
+                    
+                    
+                    lastPoint=nextPoint;
+                    g2d.setColor(tempCol);
+                }
+                
+            }
+
+
             // Draw arrow       
             int intercection[];
-            intercection = drawArrow(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0),
+            
+            intercection = drawArrow((int)lastPoint.getX(),(int) lastPoint.getY(),
                     column2 + (int) (width2 / 2.0), row2 + (int) (height2 / 2.0), upperLeftAngleX, upperLeftAngleY,
                     "short", name, fontSize, e, width2, height2, capacity);
+            
+//            intercection = drawArrow(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0),
+//                    column2 + (int) (width2 / 2.0), row2 + (int) (height2 / 2.0), upperLeftAngleX, upperLeftAngleY,
+//                    "short", name, fontSize, e, width2, height2, capacity);
 
             return intercection;
         }
@@ -1530,7 +1649,7 @@ public class View extends javax.swing.JFrame {
                     int intersection[];
 
                     //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
-                    intersection = drawArc(out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1, arc.getColor(), arc.getName(), arc.getFontSize(), arc.getInElement(), arc.getInElement().getX(), arc.getInElement().getY(), capacity);
+                    intersection = drawArc(arc, out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1);
                     //drawArc(out.getX(), out.getY(), width1, height1, in.getX(), in.getY(), width2, height2, arc.getColor(), arc.getName(), arc.getFontSize());
                     arc.setIntercectionX(intersection[0]);
                     arc.setIntercectionY(intersection[1]);
@@ -1580,7 +1699,7 @@ public class View extends javax.swing.JFrame {
                     int intersection[];
                     //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
                     //drawArc(out.getX(), out.getY(), width1, height1, in.getX(), in.getY(), width2, height2, arc.getColor(), arc.getName(), arc.getFontSize());
-                    intersection = drawArc(out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1, arc.getColor(), arc.getName(), arc.getFontSize(), arc.getInElement(), arc.getInElement().getX(), arc.getInElement().getY(), capacity);
+                    intersection = drawArc(arc, out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1);
                     arc.setIntercectionX(intersection[0]);
                     arc.setIntercectionY(intersection[1]);
                 }
@@ -1591,7 +1710,7 @@ public class View extends javax.swing.JFrame {
                 }
 
                 return;
-            }   
+            }
 
         }
 
@@ -1784,9 +1903,23 @@ public class View extends javax.swing.JFrame {
 
                 // Arc
                 if (currentElement instanceof Arc) {
+                    if (bendButton.isSelected()) {
+                        Arc temp = (Arc) currentElement;
+                        temp.getBendPoints().add(new Point(x, y));
+                    }
+                    if (deleteBendButton.isSelected()) {
+                        Arc temp = (Arc) currentElement;
+                        temp.removeBendPoint(new Point(x, y));
+                    }
+                    
                     //this.draggedColor=Color.GRAY;
                     //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
                     propertiesMenu.setVisible(true);
+                    PetriNet pn = (PetriNet) graph;
+                    
+                    for (Arc arc : pn.getListOfArcs()) {
+                        System.out.println(arc.getBendPoints());
+                    }
                 }
             }
 
@@ -2118,5 +2251,5 @@ public class View extends javax.swing.JFrame {
         propertiesMenu.setVisible(false);
         this.revalidate();
         this.repaint();
-}
+    }
 }
