@@ -115,7 +115,7 @@ public class View extends javax.swing.JFrame {
         setFocusable(true);
         setFocusableWindowState(true);
         //addKeyListener(diagramKeyListener);
-        
+
 
     }
     /* Class for keyMapping */
@@ -883,14 +883,14 @@ public class View extends javax.swing.JFrame {
             bendButton.setSelected(false);
             bendButton.setFocusCycleRoot(false);
             bendButton.setFocusPainted(false);
-            
+
             deleteBendButton.setSelected(false);
             deleteBendButton.setFocusCycleRoot(false);
             deleteBendButton.setFocusPainted(false);
-            
+
         } else {
-            
-            
+
+
             deleteBendButton.setSelected(false);
             deleteBendButton.setFocusCycleRoot(false);
             deleteBendButton.setFocusPainted(false);
@@ -907,16 +907,16 @@ public class View extends javax.swing.JFrame {
             deleteBendButton.setSelected(false);
             deleteBendButton.setFocusCycleRoot(false);
             deleteBendButton.setFocusPainted(false);
-            
+
             bendButton.setSelected(false);
             bendButton.setFocusCycleRoot(false);
             bendButton.setFocusPainted(false);
-            
+
         } else {
             bendButton.setSelected(false);
             bendButton.setFocusCycleRoot(false);
             bendButton.setFocusPainted(false);
-            
+
             deleteBendButton.setSelected(true);
             //bendButton.setSelected(false);
 
@@ -924,7 +924,6 @@ public class View extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_deleteBendButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
@@ -1011,7 +1010,7 @@ public class View extends javax.swing.JFrame {
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(10000, 10000));
             setBackground(Color.WHITE);
-            
+
             /* Key */
             addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent event) {
@@ -1385,7 +1384,7 @@ public class View extends javax.swing.JFrame {
             midX = field[0];
             midY = field[1];
 
-            
+
             double dx = midX - x1;
             double dy = midY - y1;
 
@@ -1516,32 +1515,32 @@ public class View extends javax.swing.JFrame {
 //            System.out.println("height in "+height2);
 
             Point lastPoint = new Point(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0));
-                    
+
             g2d.setColor(color);
             g2d.setStroke(new BasicStroke(3));
             if (arc.getBendPoints().size() > 0) {
-                
+
                 for (Point nextPoint : arc.getBendPoints()) {
-                    g2d.drawLine((int)lastPoint.getX(), (int)lastPoint.getY(), (int)nextPoint.getX(), (int)nextPoint.getY());
-                    Color tempCol=g2d.getColor();
+                    g2d.drawLine((int) lastPoint.getX(), (int) lastPoint.getY(), (int) nextPoint.getX(), (int) nextPoint.getY());
+                    Color tempCol = g2d.getColor();
                     g2d.setColor(Color.black);
-                    g2d.fillRect((int)nextPoint.getX()-5, (int)nextPoint.getY()-5, 10, 10);
-                    
-                    
-                    lastPoint=nextPoint;
+                    g2d.fillRect((int) nextPoint.getX() - 5, (int) nextPoint.getY() - 5, 10, 10);
+
+
+                    lastPoint = nextPoint;
                     g2d.setColor(tempCol);
                 }
-                
+
             }
 
 
             // Draw arrow       
             int intercection[];
-            
-            intercection = drawArrow((int)lastPoint.getX(),(int) lastPoint.getY(),
+
+            intercection = drawArrow((int) lastPoint.getX(), (int) lastPoint.getY(),
                     column2 + (int) (width2 / 2.0), row2 + (int) (height2 / 2.0), upperLeftAngleX, upperLeftAngleY,
                     "short", name, fontSize, e, width2, height2, capacity);
-            
+
 //            intercection = drawArrow(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0),
 //                    column2 + (int) (width2 / 2.0), row2 + (int) (height2 / 2.0), upperLeftAngleX, upperLeftAngleY,
 //                    "short", name, fontSize, e, width2, height2, capacity);
@@ -1549,11 +1548,68 @@ public class View extends javax.swing.JFrame {
             return intercection;
         }
 
-        public void drawArcSelected(int column1, int row1, int column2, int row2) {
+        public void drawArcSelected(Arc a, int column1, int row1, int column2, int row2) {
             /* Calculating */
             // Get line between 2 points
             //Line2D.Double ln = new Line2D.Double(column1 + 25, row1 + 25, column2 + 25, row2 + 25);
-            Line2D.Double ln = new Line2D.Double(column1, row1, column2, row2);
+            int inc = 0;
+            double lastX = column1;
+            double lastY = row1;
+            double k1=0;
+            double k2=0;
+            
+            Path2D path = new Path2D.Double();
+
+            for (Point nextPoint : a.getBendPoints()) {
+                inc++;
+                // Get line between 2 points
+                Line2D.Double ln = new Line2D.Double(lastX, lastY, nextPoint.getX(), nextPoint.getY());
+
+                // Distance from central line
+                double indent = 10.0;
+                double length = ln.getP1().distance(ln.getP2());
+
+                double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+                double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+
+                // line moved to the left
+                double lX1 = ln.getX1() - dy_li;
+                double lY1 = ln.getY1() + dx_li;
+                double lX2 = ln.getX2() - dy_li;
+                double lY2 = ln.getY2() + dx_li;
+
+                // line moved to the right
+                double rX1 = ln.getX1() + dy_li;
+                double rY1 = ln.getY1() - dx_li;
+                double rX2 = ln.getX2() + dy_li;
+                double rY2 = ln.getY2() - dx_li;
+
+
+
+                if (inc == 1) {
+                    System.out.println(nextPoint);
+                    System.out.println("Prvy krat "+lX1+" "+lY1);
+                    path.moveTo(lX1, lY1);
+                    k1=rX1;
+                    k2=rY1;
+
+                }
+                path.moveTo(lX1, lY1);
+                path.lineTo(lX1, lY1);
+                path.lineTo(lX2, lY2);
+                //path.lineTo(p2X, p2Y);
+                //path.moveTo(rX2, rY2);
+                path.lineTo(rX2, rY2);
+                path.lineTo(rX1, rY1);
+
+                lastX = nextPoint.getX();
+                lastY = nextPoint.getY();
+
+            }
+
+            // Get line between 2 points
+            Line2D.Double ln = new Line2D.Double(lastX, lastY, column2, row2);
+
             // Distance from central line
             double indent = 10.0;
             double length = ln.getP1().distance(ln.getP2());
@@ -1576,20 +1632,25 @@ public class View extends javax.swing.JFrame {
             //double p2Y = ln.getY2() + dy_li;
 
             // line moved to the right
-            double rX1_ = ln.getX1() + dy_li;
+            double rX1 = ln.getX1() + dy_li;
             double rY1 = ln.getY1() - dx_li;
             double rX2 = ln.getX2() + dy_li;
             double rY2 = ln.getY2() - dx_li;
 
-            Path2D path = new Path2D.Double();
+            if (inc == 0) {
+                //path.moveTo(lX1, lY1);
+                k1=rX1;
+                k2=rY1;
+            }
             path.moveTo(lX1, lY1);
-
             path.lineTo(lX1, lY1);
             path.lineTo(lX2, lY2);
             //path.lineTo(p2X, p2Y);
             path.lineTo(rX2, rY2);
-            path.lineTo(rX1_, rY1);
-            //path.lineTo(p1X, p1Y);
+            path.lineTo(rX1, rY1);
+
+            path.moveTo(k1, k2);
+            path.closePath();
 
             // Add result
             Area area = new Area();
@@ -1608,6 +1669,70 @@ public class View extends javax.swing.JFrame {
             g2d.draw(area);
         }
 
+//                public void drawArcSelected(int column1, int row1, int column2, int row2) {
+//            /* Calculating */
+//            // Get line between 2 points
+//            //Line2D.Double ln = new Line2D.Double(column1 + 25, row1 + 25, column2 + 25, row2 + 25);
+//            Line2D.Double ln = new Line2D.Double(column1, row1, column2, row2);
+//            // Distance from central line
+//            double indent = 10.0;
+//            double length = ln.getP1().distance(ln.getP2());
+//
+//            double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+//            double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+//
+//            // moved p1 point
+//            //double p1X = ln.getX1() - dx_li;
+//            //double p1Y = ln.getY1() - dy_li;
+//
+//            // line moved to the left
+//            double lX1 = ln.getX1() - dy_li;
+//            double lY1 = ln.getY1() + dx_li;
+//            double lX2 = ln.getX2() - dy_li;
+//            double lY2 = ln.getY2() + dx_li;
+//
+//            // moved p2 point
+//            //double p2X = ln.getX2() + dx_li;
+//            //double p2Y = ln.getY2() + dy_li;
+//
+//            // line moved to the right
+//            double rX1 = ln.getX1() + dy_li;
+//            double rY1 = ln.getY1() - dx_li;
+//            double rX2 = ln.getX2() + dy_li;
+//            double rY2 = ln.getY2() - dx_li;
+//            
+//            System.out.println("Left X1: "+lX1 +" Left Y1: "+lY1);
+//            System.out.println("Left X2: "+lX2 +" Left Y2: "+lY2);
+//            System.out.println("Right X1: "+rX1 +" Right Y1: "+rY1);
+//            System.out.println("Right X1: "+rX2 +" Right Y1: "+rY2);
+//            
+//
+//            Path2D path = new Path2D.Double();
+//            path.moveTo(lX1, lY1);
+//
+//            path.lineTo(lX1, lY1);
+//            path.lineTo(lX2, lY2);
+//            //path.lineTo(p2X, p2Y);
+//            path.lineTo(rX2, rY2);
+//            path.lineTo(rX1, rY1);
+//            //path.lineTo(p1X, p1Y);
+//
+//            // Add result
+//            Area area = new Area();
+//            area.add(new Area(path));
+//            /* End calculating */
+//
+//
+//            // Arc / Arrow
+//            g2d.setColor(Color.GRAY);
+//            Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
+//            g2d.setStroke(s);
+//            // Draw arrow        
+//            //drawArrow( column1+25  ,row1+25,
+//            //           column2+25,  row2+25,"short");   
+//            // Draw dashed line around line
+//            g2d.draw(area);
+//        }
         public void drawGraph() {
             if (graph == null) {
                 return;
@@ -1810,6 +1935,7 @@ public class View extends javax.swing.JFrame {
 //                    System.out.println(in);
 //                    System.out.println(in.getX());
 //                    System.out.println(in.getY());
+
                     if (out instanceof Transition) {
                         outX = ((Transition) out).getWidth() / 2 + out.getX();
                         outY = ((Transition) out).getHeight() / 2 + out.getY();
@@ -1826,7 +1952,8 @@ public class View extends javax.swing.JFrame {
                         outX = ((Node) out).getWidth() / 2 + out.getX();
                         outY = ((Node) out).getHeight() / 2 + out.getY();
                     }
-                    drawArcSelected(outX, outY, ((Arc) e).getIntercectionX(), ((Arc) e).getIntercectionY());
+
+                    drawArcSelected((Arc) e, outX, outY, ((Arc) e).getIntercectionX(), ((Arc) e).getIntercectionY());
                 }
 
             }
@@ -1905,18 +2032,18 @@ public class View extends javax.swing.JFrame {
                 if (currentElement instanceof Arc) {
                     if (bendButton.isSelected()) {
                         Arc temp = (Arc) currentElement;
-                        temp.getBendPoints().add(new Point(x, y));
+                        temp.addBendPoint(new Point(x, y));
                     }
                     if (deleteBendButton.isSelected()) {
                         Arc temp = (Arc) currentElement;
                         temp.removeBendPoint(new Point(x, y));
                     }
-                    
+
                     //this.draggedColor=Color.GRAY;
                     //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
                     propertiesMenu.setVisible(true);
                     PetriNet pn = (PetriNet) graph;
-                    
+
                     for (Arc arc : pn.getListOfArcs()) {
                         System.out.println(arc.getBendPoints());
                     }

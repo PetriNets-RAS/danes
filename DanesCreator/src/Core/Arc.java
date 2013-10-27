@@ -19,31 +19,29 @@ public class Arc extends Element {
     private int intercectionX;
     private int intercectionY;
     private ArrayList<Point> bendPoints;
-    
-     /**
+
+    /**
      * @Class constructor.
      */
     public Arc(String paName, Element paOutElement, Element paInElement) {
         super(paName);
         //this.setName(paName);
-        this.outElement=paOutElement;
-        this.inElement=paInElement;
-        this.capacity=1;
-        this.bendPoints=new ArrayList<Point>();
+        this.outElement = paOutElement;
+        this.inElement = paInElement;
+        this.capacity = 1;
+        this.bendPoints = new ArrayList<Point>();
         //this.setX(paOutElement.getX());
         //this.setX(paOutElement.getX());
-        
-        if(paOutElement instanceof Transition){
-            this.setX(((Transition) paOutElement).getWidth()/2+paOutElement.getX());
-            this.setY(((Transition) paOutElement).getHeight()/2+paOutElement.getY());
-        }
-        else if(paOutElement instanceof Place){
-            this.setX(((Place) paOutElement).getWidth()/2+paOutElement.getX());
-            this.setY(((Place) paOutElement).getHeight()/2+paOutElement.getY());
-        }
-        else if(paOutElement instanceof Resource){
-            this.setX(((Resource) paOutElement).getWidth()/2+paOutElement.getX());
-            this.setY(((Resource) paOutElement).getHeight()/2+paOutElement.getY());
+
+        if (paOutElement instanceof Transition) {
+            this.setX(((Transition) paOutElement).getWidth() / 2 + paOutElement.getX());
+            this.setY(((Transition) paOutElement).getHeight() / 2 + paOutElement.getY());
+        } else if (paOutElement instanceof Place) {
+            this.setX(((Place) paOutElement).getWidth() / 2 + paOutElement.getX());
+            this.setY(((Place) paOutElement).getHeight() / 2 + paOutElement.getY());
+        } else if (paOutElement instanceof Resource) {
+            this.setX(((Resource) paOutElement).getWidth() / 2 + paOutElement.getX());
+            this.setY(((Resource) paOutElement).getHeight() / 2 + paOutElement.getY());
         }
     }
 
@@ -130,17 +128,44 @@ public class Arc extends Element {
     public void setBendPoints(ArrayList<Point> bendPoints) {
         this.bendPoints = bendPoints;
     }
-    
-    public void removeBendPoint(Point p){
-        for(Point actPoint : bendPoints){
-            if( p.getX()>actPoint.getX()-5 && p.getX()<actPoint.getX()+5
-                    && p.getY()>actPoint.getY()-5 && p.getY()<actPoint.getY()+5){
+
+    public void addBendPoint(Point p) {
+        System.out.println("000");
+        if (bendPoints.size() != 0) {
+            for (int i = 0; i < bendPoints.size(); i++) {
+                Point actPoint = bendPoints.get(i);
+                System.out.println("+++");
+                if (p.getX() > actPoint.getX() - 5 && p.getX() < actPoint.getX() + 5
+                        && p.getY() > actPoint.getY() - 5 && p.getY() < actPoint.getY() + 5) {
+                    //bendPoints.remove(actPoint);
+                    System.out.println("111");
+                    if (i + 1 < bendPoints.size()-1) {
+                        bendPoints.add(i + 1, p);
+                        System.out.println("aaa");
+                    } else {
+                        bendPoints.add(p);
+                        System.out.println("bbb");
+                    }
+                    break;
+                }
+
+
+            }
+        }else{
+            bendPoints.add(p);
+        }
+
+    }
+
+    public void removeBendPoint(Point p) {
+        for (Point actPoint : bendPoints) {
+            if (p.getX() > actPoint.getX() - 5 && p.getX() < actPoint.getX() + 5
+                    && p.getY() > actPoint.getY() - 5 && p.getY() < actPoint.getY() + 5) {
                 bendPoints.remove(actPoint);
                 break;
             }
-                
-            
+
+
         }
     }
-    
 }
