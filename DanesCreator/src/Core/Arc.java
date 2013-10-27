@@ -129,12 +129,18 @@ public class Arc extends Element {
         this.bendPoints = bendPoints;
     }
 
-    public void addBendPoint(Point p) {
+    public void addBendPoint(Point p){
+        bendPoints.add(p);
+    }
+    
+    public void addBendPoints(Point p) {
         System.out.println("000");
         if (bendPoints.size() != 0) {
             for (int i = 0; i < bendPoints.size(); i++) {
                 Point actPoint = bendPoints.get(i);
                 System.out.println("+++");
+
+                
                 if (p.getX() > actPoint.getX() - 5 && p.getX() < actPoint.getX() + 5
                         && p.getY() > actPoint.getY() - 5 && p.getY() < actPoint.getY() + 5) {
                     //bendPoints.remove(actPoint);
