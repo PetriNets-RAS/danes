@@ -87,9 +87,9 @@ public class State {
             }
             for (int j = 0; j < this.placeMarkings.get(i).size(); j++) {
                 if (j < this.placeMarkings.get(i).size() - 1) {
-                    stateName.append("1'").append(this.placeMarkings.get(i).get(j)).append("++");
+                    stateName.append("1`").append(this.placeMarkings.get(i).get(j)).append("++");
                 } else {
-                    stateName.append("1'").append(this.placeMarkings.get(i).get(j));
+                    stateName.append("1`").append(this.placeMarkings.get(i).get(j));
                 }
             }
             stateName.append(";");
@@ -99,7 +99,7 @@ public class State {
             int[] process = getCount(this.placeMarkings.get(i + pn.getListOfPlaces().size()), pn.getListOfResources().get(i));
             if (this.placeMarkings.get(i + pn.getListOfPlaces().size()).get(0) != 0) {
                 //add free resources
-                stateName.append(this.placeMarkings.get(i + pn.getListOfPlaces().size()).get(0)).append("'(");
+                stateName.append(this.placeMarkings.get(i + pn.getListOfPlaces().size()).get(0)).append("`(");
                 stateName.append(pn.getListOfResources().get(i).getName()).append(",0)");
                 //add "++" if som resources are used
 //                if(process.length >0 && isNull(process,0)){
@@ -118,7 +118,7 @@ public class State {
             for (int k = 0; k < process.length; k++) {
                 if (process[k] != 0) {
 
-                    stateName.append("++").append(process[k]).append("'(").append(pn.getListOfResources().get(i).getName()).append(",").append((k + 1)).append(")");
+                    stateName.append("++").append(process[k]).append("`(").append(pn.getListOfResources().get(i).getName()).append(",").append((k + 1)).append(")");
 //                    if (isNull(process, k)) {
 //                        stateName.append("++");
 //                    }
@@ -152,9 +152,9 @@ public class State {
             //stateName.append("P").append(i+1).append(":");
             for (int j = 0; j < this.placeMarkings.get(i).size(); j++) {
                 if (j < this.placeMarkings.get(i).size() - 1) {
-                    stateName.append("1'").append(this.placeMarkings.get(i).get(j)).append("++");
+                    stateName.append("1`").append(this.placeMarkings.get(i).get(j)).append("++");
                 } else {
-                    stateName.append("1'").append(this.placeMarkings.get(i).get(j));
+                    stateName.append("1`").append(this.placeMarkings.get(i).get(j));
                 }
             }
             stateName.append(";");

@@ -1587,8 +1587,6 @@ public class View extends javax.swing.JFrame {
 
 
                 if (inc == 1) {
-                    System.out.println(nextPoint);
-                    System.out.println("Prvy krat "+lX1+" "+lY1);
                     path.moveTo(lX1, lY1);
                     k1=rX1;
                     k2=rY1;
@@ -1669,70 +1667,6 @@ public class View extends javax.swing.JFrame {
             g2d.draw(area);
         }
 
-//                public void drawArcSelected(int column1, int row1, int column2, int row2) {
-//            /* Calculating */
-//            // Get line between 2 points
-//            //Line2D.Double ln = new Line2D.Double(column1 + 25, row1 + 25, column2 + 25, row2 + 25);
-//            Line2D.Double ln = new Line2D.Double(column1, row1, column2, row2);
-//            // Distance from central line
-//            double indent = 10.0;
-//            double length = ln.getP1().distance(ln.getP2());
-//
-//            double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
-//            double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
-//
-//            // moved p1 point
-//            //double p1X = ln.getX1() - dx_li;
-//            //double p1Y = ln.getY1() - dy_li;
-//
-//            // line moved to the left
-//            double lX1 = ln.getX1() - dy_li;
-//            double lY1 = ln.getY1() + dx_li;
-//            double lX2 = ln.getX2() - dy_li;
-//            double lY2 = ln.getY2() + dx_li;
-//
-//            // moved p2 point
-//            //double p2X = ln.getX2() + dx_li;
-//            //double p2Y = ln.getY2() + dy_li;
-//
-//            // line moved to the right
-//            double rX1 = ln.getX1() + dy_li;
-//            double rY1 = ln.getY1() - dx_li;
-//            double rX2 = ln.getX2() + dy_li;
-//            double rY2 = ln.getY2() - dx_li;
-//            
-//            System.out.println("Left X1: "+lX1 +" Left Y1: "+lY1);
-//            System.out.println("Left X2: "+lX2 +" Left Y2: "+lY2);
-//            System.out.println("Right X1: "+rX1 +" Right Y1: "+rY1);
-//            System.out.println("Right X1: "+rX2 +" Right Y1: "+rY2);
-//            
-//
-//            Path2D path = new Path2D.Double();
-//            path.moveTo(lX1, lY1);
-//
-//            path.lineTo(lX1, lY1);
-//            path.lineTo(lX2, lY2);
-//            //path.lineTo(p2X, p2Y);
-//            path.lineTo(rX2, rY2);
-//            path.lineTo(rX1, rY1);
-//            //path.lineTo(p1X, p1Y);
-//
-//            // Add result
-//            Area area = new Area();
-//            area.add(new Area(path));
-//            /* End calculating */
-//
-//
-//            // Arc / Arrow
-//            g2d.setColor(Color.GRAY);
-//            Stroke s = new BasicStroke(2, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{5}, 0);
-//            g2d.setStroke(s);
-//            // Draw arrow        
-//            //drawArrow( column1+25  ,row1+25,
-//            //           column2+25,  row2+25,"short");   
-//            // Draw dashed line around line
-//            g2d.draw(area);
-//        }
         public void drawGraph() {
             if (graph == null) {
                 return;

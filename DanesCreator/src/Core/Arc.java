@@ -5,6 +5,7 @@
 package Core;
 
 import java.awt.Point;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 /**
@@ -129,37 +130,57 @@ public class Arc extends Element {
         this.bendPoints = bendPoints;
     }
 
-    public void addBendPoint(Point p){
+    public void addBendPoint(Point p) {
         bendPoints.add(p);
     }
-    
-    public void addBendPoints(Point p) {
-        System.out.println("000");
-        if (bendPoints.size() != 0) {
-            for (int i = 0; i < bendPoints.size(); i++) {
-                Point actPoint = bendPoints.get(i);
-                System.out.println("+++");
 
+    public void addBendPoints(Point p) {
+
+        //if (!bendPoints.isEmpty()) {
+            Point first = new Point(outElement.getX(), outElement.getY());
+            Point last = new Point(inElement.getX(), inElement.getY());
+            
+            System.out.println("IN: "+inElement.getX()+" "+inElement.getY());
+            System.out.println("OUT: "+outElement.getX()+" "+outElement.getY());
+            bendPoints.add(last);
+            bendPoints.add(0, first);
+
+
+            for (int i = 0; i < bendPoints.size() - 1; i++) {
                 
-                if (p.getX() > actPoint.getX() - 5 && p.getX() < actPoint.getX() + 5
-                        && p.getY() > actPoint.getY() - 5 && p.getY() < actPoint.getY() + 5) {
-                    //bendPoints.remove(actPoint);
-                    System.out.println("111");
-                    if (i + 1 < bendPoints.size()-1) {
-                        bendPoints.add(i + 1, p);
-                        System.out.println("aaa");
-                    } else {
-                        bendPoints.add(p);
-                        System.out.println("bbb");
-                    }
+                Point A = bendPoints.get(i);
+                Point B = bendPoints.get(i + 1);
+                
+                System.out.println("A: "+A.x+" "+A.y);
+                System.out.println("B: "+B.x+" "+B.y);
+                System.out.println("p: "+p.x+" "+p.y);
+                
+                double distance = pointToLineDistance(A, B, p);
+                Line2D.Double ln=new Line2D.Double(A,B);
+                
+                System.out.println("+++");
+                System.out.println("Distance: "+distance);
+                
+                if (ln.contains(p)) {
+                    bendPoints.add(i+1, p);
+                    System.out.println("Pridavam");
+                    bendPoints.remove(first);
+                    bendPoints.remove(last);
                     break;
+
                 }
 
+//                bendPoints.add(p);
+//                bendPoints.remove(first);
+//                bendPoints.remove(last);
+//                System.out.println("bbb");
 
             }
-        }else{
-            bendPoints.add(p);
-        }
+            bendPoints.remove(first);
+            bendPoints.remove(last);
+//        } else {
+//            bendPoints.add(p);
+//        }
 
     }
 
@@ -173,5 +194,10 @@ public class Arc extends Element {
 
 
         }
+    }
+
+    public double pointToLineDistance(Point A, Point B, Point P) {
+        double normalLength = Math.sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
+        return Math.abs((P.x - A.x) * (B.y - A.y) - (P.y - A.y) * (B.x - A.x)) / normalLength;
     }
 }

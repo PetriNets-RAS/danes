@@ -488,8 +488,6 @@ public class Controller {
 
 
                 if (inc == 1) {
-                    System.out.println(nextPoint);
-                    System.out.println("Prvy krat "+lX1+" "+lY1);
                     path.moveTo(lX1, lY1);
                     k1=rX1;
                     k2=rY1;

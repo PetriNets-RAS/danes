@@ -479,7 +479,7 @@ public class XMLPetriManager {
 
             Attr end = doc.createAttribute("end");
             if (p.isEnd()) {
-                end.setValue("true");
+                end.setValue("yes");
             } else {
                 end.setValue("no");
             }
