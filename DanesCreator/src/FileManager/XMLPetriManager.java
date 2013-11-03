@@ -75,13 +75,16 @@ public class XMLPetriManager {
             Element places = this.getPlacesElement(pn.getListOfPlaces(), doc);
             Element transitions = this.getTransationsElement(pn.getListOfTransitions(), doc);
             Element edges = getEdgesElement(pn.getListOfArcs(), doc);
-            Element states = getStatesElement(pn.getStates(), doc);           
-            Element prof=getProfElement(this.resProf,doc);
-            
             rootElement.appendChild(places);
             rootElement.appendChild(transitions);
             rootElement.appendChild(edges);
-            rootElement.appendChild(states);
+            if(pn.getStates()!=null){
+                Element states = getStatesElement(pn.getStates(), doc);   
+                rootElement.appendChild(states);
+            }
+                    
+            Element prof=getProfElement(this.resProf,doc);
+            
             rootElement.appendChild(prof);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

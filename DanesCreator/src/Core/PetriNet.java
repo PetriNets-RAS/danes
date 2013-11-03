@@ -5,6 +5,7 @@
 package Core;
 
 import StateSpace.State;
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -408,6 +409,18 @@ public class PetriNet extends Graph implements Cloneable{
      */
     public void setStates(ArrayList<State> states) {
         this.states = states;
+    }
+    
+    
+    public Arc getArc(Point p){
+        for (Arc a: listOfArcs){
+            for(Point tempPoint : a.getBendPoints()){
+                if(tempPoint==p) return a;
+            }
+            
+        }
+        
+        return null;
     }
        
 }

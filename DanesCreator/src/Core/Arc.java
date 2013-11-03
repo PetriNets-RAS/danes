@@ -7,6 +7,7 @@ package Core;
 import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
+import javax.sound.sampled.Line;
 
 /**
  *
@@ -20,6 +21,8 @@ public class Arc extends Element {
     private int intercectionX;
     private int intercectionY;
     private ArrayList<Point> bendPoints;
+    private Point outPoint;
+    private Point inPoint;
 
     /**
      * @Class constructor.
@@ -130,74 +133,136 @@ public class Arc extends Element {
         this.bendPoints = bendPoints;
     }
 
-    public void addBendPoint(Point p) {
+    public void addBendPoints(Point p) {
         bendPoints.add(p);
     }
 
-    public void addBendPoints(Point p) {
+    public void addBendPoint(Point p) {
+        Point first = new Point(outElement.getX(), outElement.getY());
+        Point last = new Point(inElement.getX(), inElement.getY());
 
-        //if (!bendPoints.isEmpty()) {
-            Point first = new Point(outElement.getX(), outElement.getY());
-            Point last = new Point(inElement.getX(), inElement.getY());
-            
-            System.out.println("IN: "+inElement.getX()+" "+inElement.getY());
-            System.out.println("OUT: "+outElement.getX()+" "+outElement.getY());
-            bendPoints.add(last);
-            bendPoints.add(0, first);
+        int x = 0;
+        int y = 0;
+        int x2 = 0;
+        int y2 = 0;
+        if (inElement instanceof Transition) {
+            Transition t = (Transition) inElement;
+            x = t.getX() + (t.getWidth() / 2);
+            y = t.getY() + (t.getHeight() / 2);
+        } else if (inElement instanceof AbsPlace) {
+            AbsPlace ap = (AbsPlace) inElement;
+            x = ap.getX() + (ap.getWidth() / 2);
+            y = ap.getY() + (ap.getHeight() / 2);
+        } else if (inElement instanceof Node) {
+            Node n = (Node) inElement;
+            x = n.getX() + (n.getWidth() / 2);
+            y = n.getY() + (n.getHeight() / 2);
+        }
+
+        if (outElement instanceof Transition) {
+            Transition t = (Transition) outElement;
+            x2 = t.getX() + (t.getWidth() / 2);
+            y2 = t.getY() + (t.getHeight() / 2);
+        } else if (outElement instanceof AbsPlace) {
+            AbsPlace ap = (AbsPlace) outElement;
+            x2 = ap.getX() + (ap.getWidth() / 2);
+            y2 = ap.getY() + (ap.getHeight() / 2);
+        } else if (outElement instanceof Node) {
+            Node n = (Node) outElement;
+            x2 = n.getX() + (n.getWidth() / 2);
+            y2 = n.getY() + (n.getHeight() / 2);
+        }
+
+        Point in = new Point(x, y);
+        Point out = new Point(x2, y2);
+
+        bendPoints.add(in);
+        bendPoints.add(0, out);
 
 
-            for (int i = 0; i < bendPoints.size() - 1; i++) {
-                
-                Point A = bendPoints.get(i);
-                Point B = bendPoints.get(i + 1);
-                
-                System.out.println("A: "+A.x+" "+A.y);
-                System.out.println("B: "+B.x+" "+B.y);
-                System.out.println("p: "+p.x+" "+p.y);
-                
-                double distance = pointToLineDistance(A, B, p);
-                Line2D.Double ln=new Line2D.Double(A,B);
-                
-                System.out.println("+++");
-                System.out.println("Distance: "+distance);
-                
-                if (ln.contains(p)) {
-                    bendPoints.add(i+1, p);
-                    System.out.println("Pridavam");
-                    bendPoints.remove(first);
-                    bendPoints.remove(last);
-                    break;
+        for (int i = 0; i < bendPoints.size() - 1; i++) {
 
-                }
+            Point A = bendPoints.get(i);
+            Point B = bendPoints.get(i + 1);
+            double distance = pointToLineDistance(A, B, p);
+            Line2D.Double ln = new Line2D.Double(A, B);
+            double dist=lineDist(ln);
+            Line2D.Double ln1 = new Line2D.Double(A, p);
+            double dist1=lineDist(ln1);
+            Line2D.Double ln2 = new Line2D.Double(B, p);
+            double dist2=lineDist(ln2);
 
-//                bendPoints.add(p);
-//                bendPoints.remove(first);
-//                bendPoints.remove(last);
-//                System.out.println("bbb");
-
+            if (distance < 5 && dist1<dist && dist2<dist) {
+                bendPoints.add(i + 1, p);
+                bendPoints.remove(in);
+                bendPoints.remove(out);
+                return;
             }
-            bendPoints.remove(first);
-            bendPoints.remove(last);
-//        } else {
-//            bendPoints.add(p);
-//        }
-
-    }
-
-    public void removeBendPoint(Point p) {
-        for (Point actPoint : bendPoints) {
-            if (p.getX() > actPoint.getX() - 5 && p.getX() < actPoint.getX() + 5
-                    && p.getY() > actPoint.getY() - 5 && p.getY() < actPoint.getY() + 5) {
-                bendPoints.remove(actPoint);
-                break;
-            }
-
 
         }
+
+        bendPoints.remove(in);
+        bendPoints.remove(out);
+    }
+    
+    public double lineDist(Line2D l){
+        return Math.sqrt( Math.pow(l.getY2()-l.getY1(),2)+  Math.pow(l.getX2()-l.getX2(),2)  );        
+    }
+    
+    public Point getPoint(int x, int y){
+        for(Point actPoint:bendPoints){
+            if (x >= actPoint.getX() - 5 && x<= actPoint.getX() + 5
+                    && y >= actPoint.getY() - 5 && y <= actPoint.getY() + 5) {
+                return actPoint;
+            }            
+        }             
+        return null;
+    }
+    
+
+    public void removeBendPoint(Point p) {
+//        for (Point actPoint : bendPoints) {
+//            if (p.getX() > actPoint.getX() - 5 && p.getX() < actPoint.getX() + 5
+//                    && p.getY() > actPoint.getY() - 5 && p.getY() < actPoint.getY() + 5) {
+//                
+//                break;
+//            }
+//
+//
+//        }
+        bendPoints.remove(p);
     }
 
     public double pointToLineDistance(Point A, Point B, Point P) {
         double normalLength = Math.sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y));
         return Math.abs((P.x - A.x) * (B.y - A.y) - (P.y - A.y) * (B.x - A.x)) / normalLength;
+    }
+
+    /**
+     * @return the outPoint
+     */
+    public Point getOutPoint() {
+        return outPoint;
+    }
+
+    /**
+     * @param outPoint the outPoint to set
+     */
+    public void setOutPoint(Point outPoint) {
+        this.outPoint = outPoint;
+    }
+
+    /**
+     * @return the inPoint
+     */
+    public Point getInPoint() {
+        return inPoint;
+    }
+
+    /**
+     * @param inPoint the inPoint to set
+     */
+    public void setInPoint(Point inPoint) {
+        this.inPoint = inPoint;
     }
 }

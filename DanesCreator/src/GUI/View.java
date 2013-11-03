@@ -1377,13 +1377,15 @@ public class View extends javax.swing.JFrame {
             }
         }
 
-        public int[] drawArrow(int x1, int y1, int midX, int midY, int x2, int y2, String type, String name, int fontSize, Element e, int width, int height, int capacity) {
+        public int[] drawArrow(Arc a, int x1, int y1, int midX, int midY, int x2, int y2, String type, String name, int fontSize, Element e, int width, int height, int capacity) {
             // Size of arrow in px
             int ARR_SIZE = 8;
             int[] field = solvePointsOfArrow(x1, x2, y1, y2, midX, midY, e, width, height);
             midX = field[0];
             midY = field[1];
 
+            a.setOutPoint(new Point(x1, y1));
+            a.setInPoint(new Point(midX, midY));
 
             double dx = midX - x1;
             double dy = midY - y1;
@@ -1441,6 +1443,9 @@ public class View extends javax.swing.JFrame {
         public void drawArrow(int x1, int y1, int x2, int y2, String type, String name, int fontSize) {
             // Size of arrow in px
             int ARR_SIZE = 8;
+            //System.out.println("HOVADINA");
+            //a.setOutPoint(new Point(x1, y1));
+            //a.setInPoint(new Point(x2, y2));
 
             double dx = x2 - x1;
             double dy = y2 - y1;
@@ -1537,7 +1542,7 @@ public class View extends javax.swing.JFrame {
             // Draw arrow       
             int intercection[];
 
-            intercection = drawArrow((int) lastPoint.getX(), (int) lastPoint.getY(),
+            intercection = drawArrow(arc, (int) lastPoint.getX(), (int) lastPoint.getY(),
                     column2 + (int) (width2 / 2.0), row2 + (int) (height2 / 2.0), upperLeftAngleX, upperLeftAngleY,
                     "short", name, fontSize, e, width2, height2, capacity);
 
@@ -1555,9 +1560,9 @@ public class View extends javax.swing.JFrame {
             int inc = 0;
             double lastX = column1;
             double lastY = row1;
-            double k1=0;
-            double k2=0;
-            
+            double k1 = 0;
+            double k2 = 0;
+
             Path2D path = new Path2D.Double();
 
             for (Point nextPoint : a.getBendPoints()) {
@@ -1588,8 +1593,8 @@ public class View extends javax.swing.JFrame {
 
                 if (inc == 1) {
                     path.moveTo(lX1, lY1);
-                    k1=rX1;
-                    k2=rY1;
+                    k1 = rX1;
+                    k2 = rY1;
 
                 }
                 path.moveTo(lX1, lY1);
@@ -1637,8 +1642,8 @@ public class View extends javax.swing.JFrame {
 
             if (inc == 0) {
                 //path.moveTo(lX1, lY1);
-                k1=rX1;
-                k2=rY1;
+                k1 = rX1;
+                k2 = rY1;
             }
             path.moveTo(lX1, lY1);
             path.lineTo(lX1, lY1);
@@ -1809,8 +1814,6 @@ public class View extends javax.swing.JFrame {
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
 
-
-
             // Selected is 
             if (draggedObject instanceof Line2D) //if(lineButton.isSelected())
             {
@@ -1818,6 +1821,7 @@ public class View extends javax.swing.JFrame {
                 int y1 = (int) ((Line2D) draggedObject).getY1();
                 int x2 = (int) ((Line2D) draggedObject).getX2();
                 int y2 = (int) ((Line2D) draggedObject).getY2();
+                //Arc a=(Arc) draggedObject;
 
                 // Arc is selected when it is moving
                 //Arc _arc=(Arc)selectedElements.get(0); 
@@ -1895,8 +1899,7 @@ public class View extends javax.swing.JFrame {
 
         public void mouseLeftClick(int x, int y) {
             // Select 1 element
-            //g2d.drawString(name, x, y);
-            //g2d.drawString(name, po.x, po.y);
+            Point selectedArcPoint = null;
             x = (int) (x / scaleRatio[0]);// +(1-scaleRatio[0])*(x-0));// --scaleRatio[0])*x/2);
             y = (int) (y / scaleRatio[1]);// +(1-scaleRatio[1])*(y-0));// -(1-scaleRatio[1])*y/2);
 
@@ -1904,8 +1907,23 @@ public class View extends javax.swing.JFrame {
             if (isCTRLdown == false) {
                 selectedElements.clear();
             }
-
-            Element e = controller.getLocationElement(x, y);
+            Element e = null;
+            Object o = controller.getLocationElement(x, y);
+            if (o instanceof Element) {
+                e = (Element) o;
+            }else if(o instanceof Point){
+                draggedObject=(Point) o;
+                Arc tempArc=((PetriNet)graph).getArc((Point)draggedObject);
+                selectedElements.add(tempArc);
+                if (deleteBendButton.isSelected()){
+                    
+                    tempArc.removeBendPoint((Point)draggedObject);
+                    
+                    return;
+                }
+                
+                
+            }
             Arc a = controller.getLocationArc(x, y);
             if (e != null) {
                 selectedElements.add(e);
@@ -1938,6 +1956,7 @@ public class View extends javax.swing.JFrame {
                 if (rectangleButton.isSelected()) {
                     controller.addTransition("T", x - 43, y - 19);
                 }
+                
 
             }
 
@@ -1947,7 +1966,7 @@ public class View extends javax.swing.JFrame {
                 Element currentElement = selectedElements.get(0);
 
                 if (currentElement instanceof Transition || currentElement instanceof Place
-                        || currentElement instanceof Node || currentElement instanceof Resource) {
+                        || currentElement instanceof Node || currentElement instanceof Resource ) {
                     // Place or Node or Resource or Transition
                     if (lineButton.isSelected()) {
                         // Creat new Arc
@@ -1968,19 +1987,17 @@ public class View extends javax.swing.JFrame {
                         Arc temp = (Arc) currentElement;
                         temp.addBendPoint(new Point(x, y));
                     }
-                    if (deleteBendButton.isSelected()) {
-                        Arc temp = (Arc) currentElement;
-                        temp.removeBendPoint(new Point(x, y));
-                    }
+//                    if (deleteBendButton.isSelected()) {
+//                        System.out.println("mazem");
+//                        Arc temp = (Arc) currentElement;
+//                        temp.removeBendPoint(new Point(x, y));
+//                    }
 
                     //this.draggedColor=Color.GRAY;
                     //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
                     propertiesMenu.setVisible(true);
                     PetriNet pn = (PetriNet) graph;
 
-                    for (Arc arc : pn.getListOfArcs()) {
-                        System.out.println(arc.getBendPoints());
-                    }
                 }
             }
 
@@ -2001,18 +2018,6 @@ public class View extends javax.swing.JFrame {
             controller.deleteArc(x, y);
             selectedElements.clear();
             repaint();
-            /*Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
-             if (currentElement!=null)
-             controller.deleteElement(x, y);*/
-            // Arc 
-        /*if (currentElement!=null)//  &&  lineButton.isSelected()  )
-             {
-             this.draggedColor=Color.RED;
-             this.draggedObject=new Line2D.Float(x,y,x,y);
-             }  */
-
-            // Not reapinting ! Deleting single item
-            //repaint();
         }
 
         private void mouseLeftDragged(int x, int y) {
@@ -2032,40 +2037,24 @@ public class View extends javax.swing.JFrame {
                 clickedX = x;
                 clickedY = y;
             }
-            //draggedObject=new Rectangle2D.Float(x, y, 25, 40);
-
-            // Ellipse
-       /* if (draggedObject instanceof Ellipse2D)
-             draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
-             */
-            // Rectangle
-        /*if (draggedObject instanceof Rectangle2D)
-             draggedObject=new Rectangle2D.Float(x, y, 25, 40);
-        
-             // Ellipse
-             if (draggedObject instanceof Ellipse2D)
-             draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
-             */
             // Line
             if (draggedObject instanceof Line2D) {
+                
                 int x1 = (int) ((Line2D) draggedObject).getX1();
                 int y1 = (int) ((Line2D) draggedObject).getY1();
                 draggedObject = new Line2D.Float(x1, y1, x, y);
             }
-
+            // Point on a line
+            if (draggedObject instanceof Point) {
+                Point p=(Point)draggedObject;
+                p.setLocation(x, y);                     
+                clickedX = x;
+                clickedY = y;
+                draggedObject=p;
+            }           
             repaint();
         }
 
-        /*private void mouseRightDragged(int x, int y) {
-         // Line
-         /*if (draggedObject instanceof Line2D)
-         {
-         int x1=(int)((Line2D)draggedObject).getX1();
-         int y1=(int)((Line2D)draggedObject).getY1();                
-         draggedObject=new Line2D.Float(x1,y1,x,y);
-         }  
-         repaint();     */
-        //}
         public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
             x_old = (int) (x_old * scaleRatio[0]);
             x_new = (int) (x_new * scaleRatio[0]);
@@ -2090,28 +2079,6 @@ public class View extends javax.swing.JFrame {
             repaint();
         }
 
-        /*private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new) {
-         /*
-         // Old and current positions
-         int x_old_location=x_old/elementWidth;
-         int y_old_location=y_old/elementWidth;            
-         int x_new_location=x_new/elementWidth;
-         int y_new_location=y_new/elementWidth;
-        
-         // Select existing 
-         // Same location - delete element
-         if (x_old_location == x_new_location && y_old_location == y_new_location)
-         {
-         controller.deleteElement(x_new_location,y_new_location);
-         }
-        
-         // Delete arc
-         {
-         //controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
-         }
-         draggedObject=null;
-         repaint();*/
-        //}
         private void loadElementProperties(Element currentElement) {
             generalProperties.loadProperties(currentElement, graph, this);
             notes.setText(currentElement.getNote());
