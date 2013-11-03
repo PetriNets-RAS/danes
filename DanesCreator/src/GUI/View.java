@@ -684,12 +684,11 @@ public class View extends javax.swing.JFrame {
         zoomOutButton.setVisible(true);
         zoomInButton.setVisible(true);
         resetZoomButton.setVisible(true);
+        deleteBendButton.setVisible(true);
+        bendButton.setVisible(true);
 
         ///
         getInfoAboutModel(graph);
-
-
-
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
@@ -779,6 +778,8 @@ public class View extends javax.swing.JFrame {
         zoomInButton.setVisible(true);
         resetZoomButton.setVisible(true);
         cursorButton.setSelected(true);
+        bendButton.setVisible(true);
+        deleteBendButton.setVisible(true);
 
         rectangleButton.setVisible(false);
         resuorceButton.setVisible(false);
@@ -1841,14 +1842,23 @@ public class View extends javax.swing.JFrame {
             Object o = controller.getLocationElement(x, y);
             if (o instanceof Element) {
                 e = (Element) o;
-            }else if(o instanceof Point){
-                draggedObject=(Point) o;
-                Arc tempArc=((PetriNet)graph).getArc((Point)draggedObject);
-                selectedElements.add(tempArc);
-                if (deleteBendButton.isSelected()){                   
-                    tempArc.removeBendPoint((Point)draggedObject);                   
-                    return;
-                }                             
+            } else if (o instanceof Point) {
+                draggedObject = (Point) o;
+                if (graph instanceof PetriNet) {
+                    Arc tempArc = ((PetriNet) graph).getArc((Point) draggedObject);
+                    selectedElements.add(tempArc);
+                    if (deleteBendButton.isSelected()) {
+                        tempArc.removeBendPoint((Point) draggedObject);
+                        return;
+                    }
+                } else if(graph instanceof PrecedenceGraph){
+                    Arc tempArc = ((PrecedenceGraph) graph).getArc((Point) draggedObject);
+                    selectedElements.add(tempArc);
+                    if (deleteBendButton.isSelected()) {
+                        tempArc.removeBendPoint((Point) draggedObject);
+                        return;
+                    }
+                }
             }
             Arc a = controller.getLocationArc(x, y);
             if (e != null) {
@@ -1881,7 +1891,7 @@ public class View extends javax.swing.JFrame {
                 // Transition
                 if (rectangleButton.isSelected()) {
                     controller.addTransition("T", x - 43, y - 19);
-                }            
+                }
             }
 
             // Dragging preparation & create new arc
@@ -1890,7 +1900,7 @@ public class View extends javax.swing.JFrame {
                 Element currentElement = selectedElements.get(0);
 
                 if (currentElement instanceof Transition || currentElement instanceof Place
-                        || currentElement instanceof Node || currentElement instanceof Resource ) {
+                        || currentElement instanceof Node || currentElement instanceof Resource) {
                     // Place or Node or Resource or Transition
                     if (lineButton.isSelected()) {
                         // Creat new Arc
@@ -1912,7 +1922,7 @@ public class View extends javax.swing.JFrame {
                         temp.addBendPoint(new Point(x, y));
                     }
                     propertiesMenu.setVisible(true);
-                    PetriNet pn = (PetriNet) graph;
+                    //PetriNet pn = (PetriNet) graph;
                 }
             }
 
@@ -1951,19 +1961,19 @@ public class View extends javax.swing.JFrame {
             }
             // Line
             if (draggedObject instanceof Line2D) {
-                
+
                 int x1 = (int) ((Line2D) draggedObject).getX1();
                 int y1 = (int) ((Line2D) draggedObject).getY1();
                 draggedObject = new Line2D.Float(x1, y1, x, y);
             }
             // Point on a line
             if (draggedObject instanceof Point) {
-                Point p=(Point)draggedObject;
-                p.setLocation(x, y);                     
+                Point p = (Point) draggedObject;
+                p.setLocation(x, y);
                 clickedX = x;
                 clickedY = y;
-                draggedObject=p;
-            }           
+                draggedObject = p;
+            }
             repaint();
         }
 

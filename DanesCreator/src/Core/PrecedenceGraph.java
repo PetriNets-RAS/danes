@@ -4,6 +4,7 @@
  */
 package Core;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -218,5 +219,18 @@ public class PrecedenceGraph extends Graph {
         }
 
         return pn;
+    }
+
+    public Arc getArc(Point p) {
+        for (Arc a : listOfArcs) {
+            for (Point tempPoint : a.getBendPoints()) {
+                if (tempPoint == p) {
+                    return a;
+                }
+            }
+
+        }
+
+        return null;
     }
 }

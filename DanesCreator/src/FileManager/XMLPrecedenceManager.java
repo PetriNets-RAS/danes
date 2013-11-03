@@ -8,6 +8,7 @@ import Core.Arc;
 import Core.Place;
 import Core.PrecedenceGraph;
 import java.awt.Color;
+import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -50,7 +51,7 @@ public class XMLPrecedenceManager {
 
     public boolean createPrecedenceXML(Core.Graph g, File outputFile) {
         try {
-            PrecedenceGraph pg=(PrecedenceGraph) g;
+            PrecedenceGraph pg = (PrecedenceGraph) g;
             doc = (Document) docBuilder.newDocument();
             Element rootElement = doc.createElement("process");
             doc.appendChild(rootElement);
@@ -111,29 +112,42 @@ public class XMLPrecedenceManager {
 
                 Place p;
                 //Resource r;
-                
+
                 int x1 = Integer.parseInt(eElement.getAttribute("x1"));
                 int y1 = Integer.parseInt(eElement.getAttribute("y1"));
                 int x2 = Integer.parseInt(eElement.getAttribute("x2"));
                 int y2 = Integer.parseInt(eElement.getAttribute("y2"));
                 int power = Integer.parseInt(eElement.getAttribute("power"));
 
-                Core.Node outNode=pg.getNode(x1, y1);
-                Core.Node inNode=pg.getNode(x2, y2);
-                Arc a=new Arc("ARC" + i, outNode, inNode);             
-              
-               outNode.getListOfOutArcs().add(a);
-               outNode.getListOfOutNodes().add(inNode);
-               inNode.getListOfInArcs().add(a);
-               inNode.getListOfInNodes().add(outNode);
+                Core.Node outNode = pg.getNode(x1, y1);
+                Core.Node inNode = pg.getNode(x2, y2);
+                Arc a = new Arc("ARC" + i, outNode, inNode);
+
+                outNode.getListOfOutArcs().add(a);
+                outNode.getListOfOutNodes().add(inNode);
+                inNode.getListOfInArcs().add(a);
+                inNode.getListOfInNodes().add(outNode);
 
                 a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
                 a.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
-                                     Integer.parseInt(eElement.getAttribute("green1")),
-                                     Integer.parseInt(eElement.getAttribute("blue1"))));
+                        Integer.parseInt(eElement.getAttribute("green1")),
+                        Integer.parseInt(eElement.getAttribute("blue1"))));
                 a.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
-                                     Integer.parseInt(eElement.getAttribute("green2")),
-                                     Integer.parseInt(eElement.getAttribute("blue2"))));
+                        Integer.parseInt(eElement.getAttribute("green2")),
+                        Integer.parseInt(eElement.getAttribute("blue2"))));
+
+                for (int j = 0; j < eElement.getChildNodes().getLength(); j++) {
+                    Node pNode = eElement.getChildNodes().item(j);
+
+                    if (pNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element pElement = (Element) pNode;
+                        int x = Integer.parseInt(pElement.getAttribute("x"));
+                        int y = Integer.parseInt(pElement.getAttribute("y"));
+                        Point newPoint = new Point(x, y);
+                        a.getBendPoints().add(newPoint);
+                    }
+                }
+
                 pg.addArc(a);
             }
         }
@@ -155,14 +169,14 @@ public class XMLPrecedenceManager {
                 nd.setCapacity(tokens);
                 nd.setX(x);
                 nd.setY(y);
-                
+
                 nd.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
                 nd.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
-                                     Integer.parseInt(eElement.getAttribute("green1")),
-                                     Integer.parseInt(eElement.getAttribute("blue1"))));
+                        Integer.parseInt(eElement.getAttribute("green1")),
+                        Integer.parseInt(eElement.getAttribute("blue1"))));
                 nd.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
-                                     Integer.parseInt(eElement.getAttribute("green2")),
-                                     Integer.parseInt(eElement.getAttribute("blue2"))));
+                        Integer.parseInt(eElement.getAttribute("green2")),
+                        Integer.parseInt(eElement.getAttribute("blue2"))));
                 //nd.setWidth(Integer.parseInt(eElement.getAttribute("width")));
                 //nd.setHeight(Integer.parseInt(eElement.getAttribute("height")));
                 pg.addNode(nd);
@@ -207,34 +221,45 @@ public class XMLPrecedenceManager {
             //?????????????
             resourceProfession.setValue(resourceType);
             edge.setAttributeNode(resourceProfession);
-            
+
             Attr red1 = doc.createAttribute("red1");
-            red1.setValue(a.getColor().getRed()+"");
+            red1.setValue(a.getColor().getRed() + "");
             edge.setAttributeNode(red1);
-            
+
             Attr green1 = doc.createAttribute("green1");
-            green1.setValue(a.getColor().getGreen()+"");
+            green1.setValue(a.getColor().getGreen() + "");
             edge.setAttributeNode(green1);
-            
+
             Attr blue1 = doc.createAttribute("blue1");
-            blue1.setValue(a.getColor().getBlue()+"");
+            blue1.setValue(a.getColor().getBlue() + "");
             edge.setAttributeNode(blue1);
-            
+
             Attr green2 = doc.createAttribute("green2");
-            green2.setValue(a.getColor2().getGreen()+"");
+            green2.setValue(a.getColor2().getGreen() + "");
             edge.setAttributeNode(green2);
-            
+
             Attr red2 = doc.createAttribute("red2");
-            red2.setValue(a.getColor2().getRed()+"");
+            red2.setValue(a.getColor2().getRed() + "");
             edge.setAttributeNode(red2);
-            
+
             Attr blue2 = doc.createAttribute("blue2");
-            blue2.setValue(a.getColor2().getBlue()+"");
+            blue2.setValue(a.getColor2().getBlue() + "");
             edge.setAttributeNode(blue2);
-            
+
             Attr fontSize = doc.createAttribute("fontSize");
-            fontSize.setValue(a.getFontSize()+"");
+            fontSize.setValue(a.getFontSize() + "");
             edge.setAttributeNode(fontSize);
+
+            for (Point p : a.getBendPoints()) {
+                Element bendPoint = doc.createElement("bendPoint");
+                Attr x = doc.createAttribute("x");
+                x.setValue(p.x + "");
+                Attr y = doc.createAttribute("y");
+                y.setValue(p.y + "");
+                bendPoint.setAttributeNode(x);
+                bendPoint.setAttributeNode(y);
+                edge.appendChild(bendPoint);
+            }
 
             edges.appendChild(edge);
         }
@@ -269,39 +294,39 @@ public class XMLPrecedenceManager {
             node.setAttributeNode(tokens);
 
             Attr red1 = doc.createAttribute("red1");
-            red1.setValue(p.getColor().getRed()+"");
+            red1.setValue(p.getColor().getRed() + "");
             node.setAttributeNode(red1);
-            
+
             Attr green1 = doc.createAttribute("green1");
-            green1.setValue(p.getColor().getGreen()+"");
+            green1.setValue(p.getColor().getGreen() + "");
             node.setAttributeNode(green1);
-            
+
             Attr blue1 = doc.createAttribute("blue1");
-            blue1.setValue(p.getColor().getBlue()+"");
+            blue1.setValue(p.getColor().getBlue() + "");
             node.setAttributeNode(blue1);
-            
+
             Attr green2 = doc.createAttribute("green2");
-            green2.setValue(p.getColor2().getGreen()+"");
+            green2.setValue(p.getColor2().getGreen() + "");
             node.setAttributeNode(green2);
-            
+
             Attr red2 = doc.createAttribute("red2");
-            red2.setValue(p.getColor2().getRed()+"");
+            red2.setValue(p.getColor2().getRed() + "");
             node.setAttributeNode(red2);
-            
+
             Attr blue2 = doc.createAttribute("blue2");
-            blue2.setValue(p.getColor2().getBlue()+"");
+            blue2.setValue(p.getColor2().getBlue() + "");
             node.setAttributeNode(blue2);
-            
+
             Attr fontSize = doc.createAttribute("fontSize");
-            fontSize.setValue(p.getFontSize()+"");
+            fontSize.setValue(p.getFontSize() + "");
             node.setAttributeNode(fontSize);
-            
+
             Attr width = doc.createAttribute("width");
-            width.setValue(p.getWidth()+"");
+            width.setValue(p.getWidth() + "");
             node.setAttributeNode(width);
-            
+
             Attr height = doc.createAttribute("height");
-            width.setValue(p.getHeight()+"");
+            width.setValue(p.getHeight() + "");
             node.setAttributeNode(height);
 
             nodes.appendChild(node);

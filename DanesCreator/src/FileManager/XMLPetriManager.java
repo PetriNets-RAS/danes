@@ -11,6 +11,7 @@ import Core.Resource;
 import Core.Transition;
 import StateSpace.State;
 import java.awt.Color;
+import java.awt.Point;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -42,7 +43,7 @@ public class XMLPetriManager {
     private ArrayList<String> resProf;
 
     public XMLPetriManager() {
-        resProf=new ArrayList<String>();
+        resProf = new ArrayList<String>();
         try {
             docFactory = DocumentBuilderFactory.newInstance();
             docBuilder = docFactory.newDocumentBuilder();
@@ -51,9 +52,9 @@ public class XMLPetriManager {
             Logger.getLogger(XMLPetriManager.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void insertProf(String rp){
-        if(!resProf.contains(rp)){
+
+    public void insertProf(String rp) {
+        if (!resProf.contains(rp)) {
             resProf.add(rp);
         };
     }
@@ -78,13 +79,13 @@ public class XMLPetriManager {
             rootElement.appendChild(places);
             rootElement.appendChild(transitions);
             rootElement.appendChild(edges);
-            if(pn.getStates()!=null){
-                Element states = getStatesElement(pn.getStates(), doc);   
+            if (pn.getStates() != null) {
+                Element states = getStatesElement(pn.getStates(), doc);
                 rootElement.appendChild(states);
             }
-                    
-            Element prof=getProfElement(this.resProf,doc);
-            
+
+            Element prof = getProfElement(this.resProf, doc);
+
             rootElement.appendChild(prof);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -137,16 +138,38 @@ public class XMLPetriManager {
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
                 int quantity = Integer.parseInt(eElement.getAttribute("quantity"));
-                res.setWidth(Integer.parseInt(eElement.getAttribute("width")));
-                res.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                if (eElement.getAttribute("width") != "") {
+                    res.setWidth(Integer.parseInt(eElement.getAttribute("width")));
+                } else {
+                    res.setWidth(53);
+                }
+                if (eElement.getAttribute("height") != "") {
+                    res.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                } else {
+                    res.setHeight(38);
+                }
                 res.setNote(eElement.getAttribute("note"));
-                res.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
-                res.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
-                        Integer.parseInt(eElement.getAttribute("green1")),
-                        Integer.parseInt(eElement.getAttribute("blue1"))));
-                res.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                if (eElement.getAttribute("fontSize") != "") {
+                    res.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                } else {
+                    res.setFontSize(16);
+                }
+                if (eElement.getAttribute("red1") != "") {
+                    res.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                            Integer.parseInt(eElement.getAttribute("green1")),
+                            Integer.parseInt(eElement.getAttribute("blue1"))));
+                }else{
+                    res.setColor(new Color(10,10,10));
+                }
+                if(eElement.getAttribute("red2")!=""){
+                    res.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
                         Integer.parseInt(eElement.getAttribute("green2")),
                         Integer.parseInt(eElement.getAttribute("blue2"))));
+                }else{
+                    res.setColor(new Color(255,255,255));
+                }
+
+                
                 res.setMarking(quantity);
                 res.setX(x);
                 res.setY(y);
@@ -158,9 +181,9 @@ public class XMLPetriManager {
 
     private void getArcsFromXML(Document doc, PetriNet pn) {
 
-        NodeList resourcesList = doc.getElementsByTagName("edge");
-        for (int i = 0; i < resourcesList.getLength(); i++) {
-            Node nNode = resourcesList.item(i);
+        NodeList edgeList = doc.getElementsByTagName("edge");
+        for (int i = 0; i < edgeList.getLength(); i++) {
+            Node nNode = edgeList.item(i);
 
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) nNode;
@@ -199,14 +222,36 @@ public class XMLPetriManager {
                         a = new Arc("ARC" + i, r, t);
                     }
                 }
-                a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
-                a.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
-                        Integer.parseInt(eElement.getAttribute("green1")),
-                        Integer.parseInt(eElement.getAttribute("blue1"))));
-                a.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                if (eElement.getAttribute("fontSize") != "") {
+                    a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                } else {
+                    a.setFontSize(16);
+                }
+                if (eElement.getAttribute("red1") != "") {
+                    a.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                            Integer.parseInt(eElement.getAttribute("green1")),
+                            Integer.parseInt(eElement.getAttribute("blue1"))));
+                }else{
+                    a.setColor(new Color(10,10,10));
+                }
+                if(eElement.getAttribute("red2")!=""){
+                    a.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
                         Integer.parseInt(eElement.getAttribute("green2")),
                         Integer.parseInt(eElement.getAttribute("blue2"))));
+                }else{
+                    a.setColor(new Color(255,255,255));
+                }
+                for (int j = 0; j < eElement.getChildNodes().getLength(); j++) {
+                    Node pNode = eElement.getChildNodes().item(j);
 
+                    if (pNode.getNodeType() == Node.ELEMENT_NODE) {
+                        Element pElement = (Element) pNode;
+                        int x = Integer.parseInt(pElement.getAttribute("x"));
+                        int y = Integer.parseInt(pElement.getAttribute("y"));
+                        Point newPoint = new Point(x, y);
+                        a.getBendPoints().add(newPoint);
+                    }
+                }
                 pn.addArc(a);
             }
         }
@@ -250,21 +295,40 @@ public class XMLPetriManager {
                 } else {
                     pl.setEnd(false);
                 }
-                pl.setWidth(Integer.parseInt(eElement.getAttribute("width")));
-                pl.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                if (eElement.getAttribute("width") != "") {
+                    pl.setWidth(Integer.parseInt(eElement.getAttribute("width")));
+                } else {
+                    pl.setWidth(53);
+                }
+                if (eElement.getAttribute("height") != "") {
+                    pl.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                } else {
+                    pl.setHeight(38);
+                }
                 pl.setNote(eElement.getAttribute("note"));
                 pl.getMarkings().setMarkings(marking);
                 //pl.setMarking(initialMarking);
                 pl.setX(x);
                 pl.setY(y);
-                pl.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
-                pl.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
-                        Integer.parseInt(eElement.getAttribute("green1")),
-                        Integer.parseInt(eElement.getAttribute("blue1"))));
-                pl.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                if (eElement.getAttribute("fontSize") != "") {
+                    pl.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                } else {
+                    pl.setFontSize(16);
+                }
+                if (eElement.getAttribute("red1") != "") {
+                    pl.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                            Integer.parseInt(eElement.getAttribute("green1")),
+                            Integer.parseInt(eElement.getAttribute("blue1"))));
+                }else{
+                    pl.setColor(new Color(10,10,10));
+                }
+                if(eElement.getAttribute("red2")!=""){
+                    pl.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
                         Integer.parseInt(eElement.getAttribute("green2")),
                         Integer.parseInt(eElement.getAttribute("blue2"))));
-
+                }else{
+                    pl.setColor(new Color(255,255,255));
+                }
                 //pl.setDiagramElement(new DiagramElement(x, y));
                 pn.addPlace(pl);
             }
@@ -286,15 +350,35 @@ public class XMLPetriManager {
                 tr.setNote(eElement.getAttribute("note"));
                 tr.setX(x);
                 tr.setY(y);
-                tr.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
-                tr.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
-                        Integer.parseInt(eElement.getAttribute("green1")),
-                        Integer.parseInt(eElement.getAttribute("blue1"))));
-                tr.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
+                if (eElement.getAttribute("fontSize") != "") {
+                    tr.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
+                } else {
+                    tr.setFontSize(16);
+                }
+                if (eElement.getAttribute("red1") != "") {
+                    tr.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
+                            Integer.parseInt(eElement.getAttribute("green1")),
+                            Integer.parseInt(eElement.getAttribute("blue1"))));
+                }else{
+                    tr.setColor(new Color(10,10,10));
+                }
+                if(eElement.getAttribute("red2")!=""){
+                    tr.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
                         Integer.parseInt(eElement.getAttribute("green2")),
                         Integer.parseInt(eElement.getAttribute("blue2"))));
-                tr.setWidth(Integer.parseInt(eElement.getAttribute("width")));
-                tr.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                }else{
+                    tr.setColor(new Color(255,255,255));
+                }
+                if (eElement.getAttribute("width") != "") {
+                    tr.setWidth(Integer.parseInt(eElement.getAttribute("width")));
+                } else {
+                    tr.setWidth(53);
+                }
+                if (eElement.getAttribute("height") != "") {
+                    tr.setHeight(Integer.parseInt(eElement.getAttribute("height")));
+                } else {
+                    tr.setHeight(38);
+                }
                 //tr.setDiagramElement(new DiagramElement(x, y));
                 pn.addTransition(tr);
             }
@@ -322,7 +406,7 @@ public class XMLPetriManager {
                 type = "TP";
                 if (a.getInElement() instanceof Resource) {
                     resourceType = "P_" + a.getInElement().getName();
-                    insertProf("P_"+ a.getInElement().getName());
+                    insertProf("P_" + a.getInElement().getName());
                 }
                 /*X1.setValue(a.getInElement().getDiagramElement().getX() + "");
                  Y1.setValue(a.getInElement().getDiagramElement().getY() + "");
@@ -392,6 +476,17 @@ public class XMLPetriManager {
             fontSize.setValue(a.getFontSize() + "");
             edge.setAttributeNode(fontSize);
 
+            for (Point p : a.getBendPoints()) {
+                Element bendPoint = doc.createElement("bendPoint");
+                Attr x = doc.createAttribute("x");
+                x.setValue(p.x + "");
+                Attr y = doc.createAttribute("y");
+                y.setValue(p.y + "");
+                bendPoint.setAttributeNode(x);
+                bendPoint.setAttributeNode(y);
+                edge.appendChild(bendPoint);
+            }
+
             edges.appendChild(edge);
         }
         return edges;
@@ -399,37 +494,37 @@ public class XMLPetriManager {
 
     private Element getStatesElement(ArrayList<State> listOfStates, Document doc) {
         Element markings = doc.createElement("markings");
-        int inc=1;
-        for (State s : listOfStates) {           
+        int inc = 1;
+        for (State s : listOfStates) {
             Element marking = doc.createElement("marking");
             Attr name = doc.createAttribute("name");
-            name.setValue(inc+"");           
+            name.setValue(inc + "");
             marking.setAttributeNode(name);
-            
+
             Attr vector = doc.createAttribute("vector");
             vector.setValue(s.toString() + "");
             marking.setAttributeNode(vector);
-            
+
             markings.appendChild(marking);
             inc++;
         }
         return markings;
     }
-    
-        private Element getProfElement(ArrayList<String> listOfProf, Document doc) {
+
+    private Element getProfElement(ArrayList<String> listOfProf, Document doc) {
         Element ResourceProfessions = doc.createElement("ResourceProfessions");
-        for (String s : listOfProf) {           
+        for (String s : listOfProf) {
             Element ResourceProfession = doc.createElement("ResourceProfession");
-            Element resourceset  = doc.createElement("resourceset");
-            
+            Element resourceset = doc.createElement("resourceset");
+
             Attr name = doc.createAttribute("name");
-            name.setValue(s);      
+            name.setValue(s);
             ResourceProfession.setAttributeNode(name);
-            
-            Attr RSname=doc.createAttribute("name");
+
+            Attr RSname = doc.createAttribute("name");
             RSname.setValue(s.substring(2));
             resourceset.setAttributeNode(RSname);
-            
+
             ResourceProfession.appendChild(resourceset);
             ResourceProfessions.appendChild(ResourceProfession);
         }

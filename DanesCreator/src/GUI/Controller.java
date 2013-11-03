@@ -303,6 +303,13 @@ public class Controller {
                     return e;
                 }
             }
+            // Arc bend points
+            for (Arc a : ((PrecedenceGraph) graph).getListOfArcs()) {
+                Point p = a.getPoint(x, y);
+                if (p != null) {
+                    return p;
+                }
+            }
         }
         // Nothing found
         return null;
