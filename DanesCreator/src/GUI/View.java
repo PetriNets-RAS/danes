@@ -982,27 +982,12 @@ public class View extends javax.swing.JFrame {
         public DiagramPanel(Graph pa_graph) {
             super();
             setFocusable(true);
-            //addKeyListener(new DiagramKeyAdapter());*/
-
             this.graph = pa_graph;
-            //this.g2d;//null;
             this.scaleRatio = new double[]{1.0, 1.0};
             this.draggedObject = null;
             this.draggedElement = null;
             this.selectedElements = new ArrayList<Element>();
             this.mouseAdapter = new DiagramMouseAdapter();
-
-
-            /*    Action _ctrlAction = new AbstractAction() {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-             isCTRLdown=true;
-             System.out.println("ctrl pressed");
-             }
-             };
-             getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.CTRL_DOWN_MASK,1,tru),"ctrlPressed");
-             getActionMap().put("ctrlPressed",                _ctrlAction);
-             */
 
             // Click listener, drag listener
             addMouseListener(mouseAdapter);
@@ -1029,35 +1014,14 @@ public class View extends javax.swing.JFrame {
             g2d.scale(scaleRatio[0], scaleRatio[1]);
             g2d.setStroke(new BasicStroke(3));
 
-            /*
-             if (g2d==null)
-          
-             else
-             g=this.g2d;*/
             autosetWidthHeight();
             drawGraph();
             drawDraggedObject();
             drawSelectedElements();
         }
-        /*
-         public void drawPlace(int column,int row){
-         drawPlace(column, row, Color.BLACK, Color.WHITE);          
-         }
-         public void drawPlace(int column,int row,Color c1, Color c2){
-         // Place / Ring
-         g2d.setColor(c2);
-         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
-         g2d.setColor(c1);    
-         g2d.draw(new 2D.Double(column+5,row+5,40,40));                
-         }*/
 
         public void drawPlace(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
             // Place / Ring
-        /*g2d.setColor(c2);
-             g2d.fill(new Ellipse2D.Double(column+5,row+5,width,height));        
-             g2d.setColor(c1);    
-             g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));   
-             */
             g2d.setColor(c2);
             g2d.fill(new Ellipse2D.Double(column, row, width, height));
             g2d.setColor(c1);
@@ -1127,16 +1091,6 @@ public class View extends javax.swing.JFrame {
             g2d.setStroke(_oldStroke);
         }
 
-        /*public void drawResource(int column,int row){
-         drawPlace(column, row, Color.BLACK, Color.GRAY);          
-         }
-         public void drawResource(int column,int row,Color c1, Color c2){
-         // Place / Ring
-         g2d.setColor(c2); //white vypln
-         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
-         g2d.setColor(c1); //black   
-         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
-         }*/
         public void drawResource(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
             // Place / Ring
             Stroke _oldStroke = g2d.getStroke();
@@ -1181,17 +1135,6 @@ public class View extends javax.swing.JFrame {
             drawResource(column, row, c1alpha, c2alpha, width, height, name, fontSize);
         }
 
-        /*
-         public void drawTransition(int column,int row){
-         drawTransition(column, row ,Color.BLACK,Color.WHITE);
-         }
-         public void drawTransition(int column,int row,Color c1,Color c2){
-         // Transition / Rectangle
-         g2d.setColor(c2);
-         g2d.fill(new Rectangle2D.Float(column+12,row+5,25,40));                
-         g2d.setColor(c1);
-         g2d.draw(new Rectangle2D.Float(column+12,row+5,25,40));                        
-         }*/
         public void drawTransition(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
             // Transition / Rectangle                        
 
@@ -1829,14 +1772,11 @@ public class View extends javax.swing.JFrame {
             }
 
         }
-//**
 
         private void drawSelectedElements() {
             /* Drah all elements */
             for (Element e : selectedElements) {
                 // Ring
-
-
                 if (e instanceof Place) {
                     Place p = (Place) e;
                     //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
@@ -1861,18 +1801,9 @@ public class View extends javax.swing.JFrame {
                 if (e instanceof Arc) {
                     int outX = 0;
                     int outY = 0;
-                    /*   DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
-                     DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
 
-                     drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());*/
                     Element in = ((Arc) e).getInElement();
                     Element out = ((Arc) e).getOutElement();
-//                    System.out.println(out);
-//                    System.out.println(out.getX());
-//                    System.out.println(out.getY());
-//                    System.out.println(in);
-//                    System.out.println(in.getX());
-//                    System.out.println(in.getY());
 
                     if (out instanceof Transition) {
                         outX = ((Transition) out).getWidth() / 2 + out.getX();
@@ -1893,7 +1824,6 @@ public class View extends javax.swing.JFrame {
 
                     drawArcSelected((Arc) e, outX, outY, ((Arc) e).getIntercectionX(), ((Arc) e).getIntercectionY());
                 }
-
             }
         }
 
@@ -1915,14 +1845,10 @@ public class View extends javax.swing.JFrame {
                 draggedObject=(Point) o;
                 Arc tempArc=((PetriNet)graph).getArc((Point)draggedObject);
                 selectedElements.add(tempArc);
-                if (deleteBendButton.isSelected()){
-                    
-                    tempArc.removeBendPoint((Point)draggedObject);
-                    
+                if (deleteBendButton.isSelected()){                   
+                    tempArc.removeBendPoint((Point)draggedObject);                   
                     return;
-                }
-                
-                
+                }                             
             }
             Arc a = controller.getLocationArc(x, y);
             if (e != null) {
@@ -1955,9 +1881,7 @@ public class View extends javax.swing.JFrame {
                 // Transition
                 if (rectangleButton.isSelected()) {
                     controller.addTransition("T", x - 43, y - 19);
-                }
-                
-
+                }            
             }
 
             // Dragging preparation & create new arc
@@ -1987,22 +1911,10 @@ public class View extends javax.swing.JFrame {
                         Arc temp = (Arc) currentElement;
                         temp.addBendPoint(new Point(x, y));
                     }
-//                    if (deleteBendButton.isSelected()) {
-//                        System.out.println("mazem");
-//                        Arc temp = (Arc) currentElement;
-//                        temp.removeBendPoint(new Point(x, y));
-//                    }
-
-                    //this.draggedColor=Color.GRAY;
-                    //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
                     propertiesMenu.setVisible(true);
                     PetriNet pn = (PetriNet) graph;
-
                 }
             }
-
-
-
 
             if (selectedElements.isEmpty()) {
                 propertiesMenu.setVisible(false);
@@ -2082,41 +1994,9 @@ public class View extends javax.swing.JFrame {
         private void loadElementProperties(Element currentElement) {
             generalProperties.loadProperties(currentElement, graph, this);
             notes.setText(currentElement.getNote());
-            /*
-             generalProperties.setElementName(currentElement.getName());
-             generalProperties.setElementFontSize(Integer.toString(currentElement.getFontSize()));
-             notes.setText(currentElement.getNote());
-             if(currentElement instanceof AbsPlace)
-             {
-             AbsPlace current= (AbsPlace) currentElement;
-             generalProperties.setElementWidth(Integer.toString(current.getWidth()));
-             generalProperties.setElementHeight(Integer.toString(current.getHeight()));
-             }
-             if(currentElement instanceof Transition)
-             {
-             Transition current= (Transition) currentElement;
-             generalProperties.setElementWidth(Integer.toString(current.getWidth()));
-             generalProperties.setElementHeight(Integer.toString(current.getHeight()));
-             }
-             */
+
         }
 
-        // Set Scale Ration depend on all items
-        // private void setScaleRatioZoomAll(int width,int height) {
-            /*int [] minXYmaxXY=controller.getMinXYMaxXY();
-         if (minXYmaxXY[0]==0 && minXYmaxXY[1]==0 && minXYmaxXY[2]==0 && minXYmaxXY[3]==0 )
-         return;
-            
-         /* Count nonempty net for width and height */
-        /*int minX=minXYmaxXY[0], minY=minXYmaxXY[1], maxX=minXYmaxXY[2], maxY=minXYmaxXY[3];
-         if ((maxX-minX)<width)
-         {
-         scaleRatio[0]=2;                                      
-         scaleRatio[1]=2;
-         }
-         scaleRatio[0]=2;
-         scaleRatio[1]=2;*/
-        // }
         private void autosetWidthHeight() {
             int marginWidth = 20;
             int marginHeight = 20;
@@ -2236,8 +2116,6 @@ public class View extends javax.swing.JFrame {
             if (SwingUtilities.isRightMouseButton(e)) {
                 diagramPanel.mouseRightClick(x, y);
             }
-            /*if (SwingUtilities.isMiddleMouseButton  (e) )
-             System.out.println("stredny "+x+" "+y);*/
         }
 
         @Override
@@ -2246,26 +2124,16 @@ public class View extends javax.swing.JFrame {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 diagramPanel.mouseLeftDragged(e.getX(), e.getY());
             }
-            // Right - but left functionality
-            /*if (SwingUtilities.isRightMouseButton(e)) {
-             //diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
-             diagramPanel.mouseRightDragged(e.getX(), e.getY());
-             }*/
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            // Old location is different from current        
-            //if (x != e.getX()   ||     y != e.getY())
+            // Old location is different from current   
             if (true) {
                 // Left
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     diagramPanel.mouseLeftReleased(x, y, e.getX(), e.getY());
                 }
-                // Right
-                /*if (SwingUtilities.isRightMouseButton(e)) {
-                 //diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
-                 }*/
             }
         }
     }
