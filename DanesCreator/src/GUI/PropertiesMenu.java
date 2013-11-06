@@ -8,14 +8,22 @@ import Core.AbsPlace;
 import Core.Arc;
 import Core.Element;
 import Core.Graph;
+import Core.Logic;
+import Core.Marking;
 import Core.Node;
 import Core.Place;
 import Core.Resource;
 import Core.Transition;
 import GUI.View.DiagramPanel;
 import java.awt.Color;
+import java.awt.Point;
+import java.util.ArrayList;
 import javax.swing.JColorChooser;
+import javax.swing.JSpinner;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
@@ -34,6 +42,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private Graph graph;
     private DiagramPanel window;
     private Element element;
+    private Logic log;
 
     /**
      * Creates new form PropertiesParentMenu
@@ -41,6 +50,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
     public PropertiesMenu() {
         initComponents();
         setListeners();
+        log = new Logic();
     }
 
     private void setListeners() {
@@ -88,16 +98,45 @@ public class PropertiesMenu extends javax.swing.JPanel {
             }
         });
 
-        capacityText.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        capacityText.selectAll();
+        ChangeListener listener = new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {               
+                if(element instanceof Arc){
+                    ((Arc)element).setCapacity((Integer)capacitySpiner.getValue());
+                }
+                if(element instanceof Node){
+                    ((Node)element).setCapacity((Integer)capacitySpiner.getValue());
+                }
+                if(element instanceof Resource){
+                    ((Resource)element).setMarking((Integer)capacitySpiner.getValue());
+                }
+                if(element instanceof Place){
+                    int countOfMarks=(Integer)capacitySpiner.getValue();
+                    Marking tempMark=new Marking(element);
+                    ArrayList<Integer> tempMarking=new ArrayList<Integer>();
+                    for(int i=0;i<countOfMarks;i++){
+                        tempMarking.add(i+1);
                     }
-                });
+                    tempMark.setMarkings(tempMarking);
+                    ((Place)element).setMarkings(tempMark);
+                }
+                window.repaint();
             }
-        });
+        };
+
+        capacitySpiner.addChangeListener(listener);
+
+//
+//        capacityText.addFocusListener(new java.awt.event.FocusAdapter() {
+//            public void focusGained(java.awt.event.FocusEvent evt) {
+//                SwingUtilities.invokeLater(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        capacityText.selectAll();
+//                    }
+//                });
+//            }
+//        });
 
 
     }
@@ -133,7 +172,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
         endCheckBox = new javax.swing.JCheckBox();
         jLabel7 = new javax.swing.JLabel();
         startCheckBox = new javax.swing.JCheckBox();
-        capacityText = new javax.swing.JTextField();
+        capacitySpiner = new javax.swing.JSpinner();
 
         label4.setName(""); // NOI18N
         label4.setText("Width");
@@ -192,6 +231,11 @@ public class PropertiesMenu extends javax.swing.JPanel {
         jLabel4.setText("Font Size");
         jLabel4.setToolTipText("Font Size");
 
+        fontSizeText.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fontSizeTextActionPerformed(evt);
+            }
+        });
         fontSizeText.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 fontSizeTextFocusLost(evt);
@@ -245,22 +289,6 @@ public class PropertiesMenu extends javax.swing.JPanel {
             }
         });
 
-        capacityText.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                capacityTextActionPerformed(evt);
-            }
-        });
-        capacityText.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                capacityTextFocusLost(evt);
-            }
-        });
-        capacityText.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                capacityTextKeyReleased(evt);
-            }
-        });
-
         javax.swing.GroupLayout specificLayout = new javax.swing.GroupLayout(specific);
         specific.setLayout(specificLayout);
         specificLayout.setHorizontalGroup(
@@ -270,8 +298,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
                     .addGroup(specificLayout.createSequentialGroup()
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(capacityText, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(capacitySpiner, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 40, Short.MAX_VALUE))
                     .addComponent(startCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(endCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -281,7 +309,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
             .addGroup(specificLayout.createSequentialGroup()
                 .addGroup(specificLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(capacityText, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(capacitySpiner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(startCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -357,14 +385,10 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private void colorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorLabelMouseClicked
         JColorChooser colorChooser = new JColorChooser();
         elementColor = JColorChooser.showDialog(this, "Vyberte farbu", this.element.getColor());
-        //colorLabel.setBackground(elementColor);
-
         element.setColor(elementColor);
         this.colorLabel.setOpaque(true);
         this.colorLabel.setBackground(elementColor);
         window.repaint();
-        //this.revalidate();
-        //this.repaint();
     }//GEN-LAST:event_colorLabelMouseClicked
 
     private void fontColorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontColorLabelMouseClicked
@@ -374,20 +398,68 @@ public class PropertiesMenu extends javax.swing.JPanel {
         this.fontColorLabel.setOpaque(true);
         this.fontColorLabel.setBackground(elementColor);
         window.repaint();
-        //this.revalidate();
-        //this.repaint();
     }//GEN-LAST:event_fontColorLabelMouseClicked
 
     private void nameTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameTextKeyReleased
+        if (!nameText.getText().equals("")) {
+            element.setName(nameText.getText());
+        }
+        window.repaint();
     }//GEN-LAST:event_nameTextKeyReleased
 
     private void heightTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_heightTextKeyReleased
+        if (!heightText.getText().equals("")) {
+            if (!log.checkNumbString(heightText.getText())) {
+                return;
+            }
+
+            if (element instanceof AbsPlace) {
+                AbsPlace abs = (AbsPlace) element;
+                abs.setHeight(Integer.parseInt(heightText.getText()));
+            }
+            if (element instanceof Transition) {
+                Transition abs = (Transition) element;
+                abs.setHeight(Integer.parseInt(heightText.getText()));
+            }
+            if (element instanceof Node) {
+                Node node = (Node) element;
+                node.setHeight(Integer.parseInt(heightText.getText()));
+            }
+            window.repaint();
+        }
     }//GEN-LAST:event_heightTextKeyReleased
 
     private void widthTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_widthTextKeyReleased
+        if (!widthText.getText().equals("")) {
+            if (!log.checkNumbString(widthText.getText())) {
+                return;
+            }
+
+            if (element instanceof AbsPlace) {
+                AbsPlace abs = (AbsPlace) element;
+                abs.setWidth(Integer.parseInt(widthText.getText()));
+            }
+            if (element instanceof Transition) {
+                Transition abs = (Transition) element;
+                abs.setWidth(Integer.parseInt(widthText.getText()));
+            }
+            if (element instanceof Node) {
+                Node node = (Node) element;
+                node.setWidth(Integer.parseInt(widthText.getText()));
+            }
+            window.repaint();
+        }
     }//GEN-LAST:event_widthTextKeyReleased
 
     private void fontSizeTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fontSizeTextKeyReleased
+        if (!fontSizeText.getText().equals("")) {
+            if (!log.checkNumbString(fontSizeText.getText())) {
+                return;
+            }
+
+            element.setFontSize(Integer.parseInt(fontSizeText.getText()));
+            window.repaint();
+        }
     }//GEN-LAST:event_fontSizeTextKeyReleased
 
     private void startCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startCheckBoxActionPerformed
@@ -413,89 +485,23 @@ public class PropertiesMenu extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_endCheckBoxActionPerformed
 
-    private void capacityTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_capacityTextKeyReleased
-    }//GEN-LAST:event_capacityTextKeyReleased
-
-    private void capacityTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_capacityTextActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_capacityTextActionPerformed
-
     private void nameTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nameTextFocusLost
-        if (!nameText.getText().equals("")) {
-            element.setName(nameText.getText());
-        }
-        window.repaint();
-
     }//GEN-LAST:event_nameTextFocusLost
 
     private void heightTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_heightTextFocusLost
-        if (!heightText.getText().equals("")) {
-            if (element instanceof AbsPlace) {
-                AbsPlace abs = (AbsPlace) element;
-                abs.setHeight(Integer.parseInt(heightText.getText()));
-            }
-            if (element instanceof Transition) {
-                Transition abs = (Transition) element;
-                abs.setHeight(Integer.parseInt(heightText.getText()));
-            }
-            if(element instanceof Node){
-                Node node=(Node) element;
-                node.setHeight(Integer.parseInt(heightText.getText()));
-            }
-            window.repaint();
-        }
     }//GEN-LAST:event_heightTextFocusLost
 
     private void widthTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_widthTextFocusLost
-        if (!widthText.getText().equals("")) {
-            if (element instanceof AbsPlace) {
-                AbsPlace abs = (AbsPlace) element;
-                abs.setWidth(Integer.parseInt(widthText.getText()));
-            }
-            if (element instanceof Transition) {
-                Transition abs = (Transition) element;
-                abs.setWidth(Integer.parseInt(widthText.getText()));
-            }
-            if(element instanceof Node){
-                Node node=(Node) element;
-                node.setWidth(Integer.parseInt(widthText.getText()));
-            }
-            window.repaint();
-        }
     }//GEN-LAST:event_widthTextFocusLost
 
     private void fontSizeTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_fontSizeTextFocusLost
-        if (!fontSizeText.getText().equals("")) {
-            element.setFontSize(Integer.parseInt(fontSizeText.getText()));
-            window.repaint();
-        }
     }//GEN-LAST:event_fontSizeTextFocusLost
 
-    private void capacityTextFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_capacityTextFocusLost
-        if (!capacityText.getText().equals("")) {
-            if (element instanceof AbsPlace) {
-                AbsPlace abs = (AbsPlace) element;
-                abs.setMarking(Integer.parseInt(capacityText.getText()));
-                if (abs instanceof Place) {
-                    Place place = (Place) abs;
-                    place.addMarking(Integer.parseInt(capacityText.getText()));
-                } else if (abs instanceof Resource) {
-                    Resource res = (Resource) abs;
-                    res.setMarking(Integer.parseInt(capacityText.getText()));
-                }
-
-            } else if (element instanceof Arc) {
-                Arc a = (Arc) element;
-                a.setCapacity(Integer.parseInt(capacityText.getText()));
-            }else if(element instanceof Node){
-                Node node=(Node) element;
-                node.setCapacity(Integer.parseInt(capacityText.getText()));           
-            }
-            window.repaint();
-        }
-    }//GEN-LAST:event_capacityTextFocusLost
+    private void fontSizeTextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fontSizeTextActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fontSizeTextActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField capacityText;
+    private javax.swing.JSpinner capacitySpiner;
     private javax.swing.JLabel colorLabel;
     private javax.swing.JCheckBox endCheckBox;
     private javax.swing.JLabel fontColorLabel;
@@ -602,12 +608,12 @@ public class PropertiesMenu extends javax.swing.JPanel {
     public String getElementMarking() {
         return elementMarking;
     }
-
+    
     /**
      * @param elementMarking the elementMarking to set
      */
-    public void setElementMarking(String elementMarking) {
-        this.capacityText.setText(elementMarking);
+    public void setElementMarking(int elementMarking) {
+        capacitySpiner.setValue(new Integer(elementMarking));
     }
 
     /**
@@ -660,10 +666,16 @@ public class PropertiesMenu extends javax.swing.JPanel {
         //notes.setText(currentElement.getNote());
         if (currentElement instanceof AbsPlace) {
             jLabel7.setText("Marking");
+            int marking;
+            if(currentElement instanceof Place){
+                marking=((Place)currentElement).getMarkings().getMarkings().size();
+            }else{
+                marking=((Resource)currentElement).getMarking();
+            }
             AbsPlace current = (AbsPlace) currentElement;
             setElementWidth(Integer.toString(current.getWidth()));
             setElementHeight(Integer.toString(current.getHeight()));
-            setElementMarking(Integer.toString(current.getMarking()));
+            setElementMarking(marking);
             startCheckBox.setVisible(true);
             endCheckBox.setVisible(true);
             setElementEnd(current.isEnd());
@@ -676,7 +688,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
             Node current = (Node) currentElement;
             setElementWidth(Integer.toString(current.getWidth()));
             setElementHeight(Integer.toString(current.getHeight()));
-            setElementMarking(Integer.toString(current.getCapacity()));
+            setElementMarking(current.getCapacity());
             startCheckBox.setVisible(false);
             endCheckBox.setVisible(false);
             specific.setVisible(true);
@@ -695,8 +707,9 @@ public class PropertiesMenu extends javax.swing.JPanel {
             heightText.setEnabled(false);
             heightText.setText("");
             jLabel7.setText("Capacity");
-            capacityText.setText(current.getCapacity() + "");
-            capacityText.setSize(nameText.getHeight(), nameText.getWidth());
+            capacitySpiner.setValue(new Integer(current.getCapacity()));
+            //capacityText.setText(current.getCapacity() + "");                
+            capacitySpiner.setSize(nameText.getHeight(), nameText.getWidth());
             startCheckBox.setVisible(false);
             endCheckBox.setVisible(false);
             specific.setVisible(true);

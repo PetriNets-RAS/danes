@@ -41,10 +41,10 @@ public class Logic {
         return false;
     }
     
-    public static boolean checkNumbString(String input){
+    public boolean checkNumbString(String input){
         
         for(int i=0;i<input.length();i++){
-            if((input.charAt(i)<48)&&(input.charAt(i)>57)){
+            if((input.charAt(i)<48)||(input.charAt(i)>57)){
                 return false;
             }
         }

@@ -291,6 +291,7 @@ public class View extends javax.swing.JFrame {
             }
         });
 
+        toolBar.setFloatable(false);
         toolBar.setRollover(true);
         toolBar.setEnabled(false);
 
@@ -643,9 +644,14 @@ public class View extends javax.swing.JFrame {
 
         int x, y;
 
-        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3)) ||
+                "pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
             FileManager.XMLPetriManager loader = new XMLPetriManager();
-            PetriNet p = loader.getPetriNetFromXML(inputFile);
+            boolean cobaFile=false;
+            if("pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))){
+                cobaFile=true;
+            }
+            PetriNet p = loader.getPetriNetFromXML(inputFile,cobaFile);
             graph = p;
             x = p.getListOfPlaces().get(0).getX();
             y = p.getListOfPlaces().get(0).getY();

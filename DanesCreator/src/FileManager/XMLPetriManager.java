@@ -41,6 +41,7 @@ public class XMLPetriManager {
     private DocumentBuilder docBuilder;
     private Document doc;
     private ArrayList<String> resProf;
+    private boolean cobaFile;
 
     public XMLPetriManager() {
         resProf = new ArrayList<String>();
@@ -103,8 +104,9 @@ public class XMLPetriManager {
         }
     }
 
-    public PetriNet getPetriNetFromXML(File inputFile) {
+    public PetriNet getPetriNetFromXML(File inputFile, boolean fromCoBA) {
         try {
+            cobaFile=fromCoBA;
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(inputFile);
@@ -137,6 +139,11 @@ public class XMLPetriManager {
                 Resource res = new Resource(eElement.getAttribute("name"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
+                if(cobaFile){
+                    x=(x*60)+20;
+                    y=(y*38)+20;
+                }
+                
                 int quantity = Integer.parseInt(eElement.getAttribute("quantity"));
                 if (eElement.getAttribute("width") != "") {
                     res.setWidth(Integer.parseInt(eElement.getAttribute("width")));
@@ -166,7 +173,7 @@ public class XMLPetriManager {
                         Integer.parseInt(eElement.getAttribute("green2")),
                         Integer.parseInt(eElement.getAttribute("blue2"))));
                 }else{
-                    res.setColor(new Color(255,255,255));
+                    res.setColor2(new Color(255,255,255));
                 }
 
                 
@@ -196,6 +203,13 @@ public class XMLPetriManager {
                 int y1 = Integer.parseInt(eElement.getAttribute("y1"));
                 int x2 = Integer.parseInt(eElement.getAttribute("x2"));
                 int y2 = Integer.parseInt(eElement.getAttribute("y2"));
+                if(cobaFile){
+                    x1=(x1*60)+20;
+                    y1=(y1*38)+20;
+                    x2=(x2*60)+20;
+                    y2=(y2*38)+20;
+                }
+                
                 int power = Integer.parseInt(eElement.getAttribute("power"));
                 String type = eElement.getAttribute("type");
                 String resourceProfession = eElement.getAttribute("ResourceProfession");
@@ -239,7 +253,7 @@ public class XMLPetriManager {
                         Integer.parseInt(eElement.getAttribute("green2")),
                         Integer.parseInt(eElement.getAttribute("blue2"))));
                 }else{
-                    a.setColor(new Color(255,255,255));
+                    a.setColor2(new Color(255,255,255));
                 }
                 for (int j = 0; j < eElement.getChildNodes().getLength(); j++) {
                     Node pNode = eElement.getChildNodes().item(j);
@@ -283,7 +297,11 @@ public class XMLPetriManager {
                 //int initialMarking = Integer.parseInt(eElement.getAttribute("tokens"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-
+                if(cobaFile){
+                    x=(x*60)+20;
+                    y=(y*38)+20;
+                }
+ 
                 if ("yes".equals(eElement.getAttribute("start"))) {
                     pl.setStart(true);
                 } else {
@@ -327,7 +345,7 @@ public class XMLPetriManager {
                         Integer.parseInt(eElement.getAttribute("green2")),
                         Integer.parseInt(eElement.getAttribute("blue2"))));
                 }else{
-                    pl.setColor(new Color(255,255,255));
+                    pl.setColor2(new Color(255,255,255));
                 }
                 //pl.setDiagramElement(new DiagramElement(x, y));
                 pn.addPlace(pl);
@@ -346,7 +364,11 @@ public class XMLPetriManager {
                 Transition tr = new Transition(eElement.getAttribute("name"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-
+                if(cobaFile){
+                    x=(x*60)+20;
+                    y=(y*38)+20;
+                }
+                
                 tr.setNote(eElement.getAttribute("note"));
                 tr.setX(x);
                 tr.setY(y);
@@ -367,7 +389,7 @@ public class XMLPetriManager {
                         Integer.parseInt(eElement.getAttribute("green2")),
                         Integer.parseInt(eElement.getAttribute("blue2"))));
                 }else{
-                    tr.setColor(new Color(255,255,255));
+                    tr.setColor2(new Color(255,255,255));
                 }
                 if (eElement.getAttribute("width") != "") {
                     tr.setWidth(Integer.parseInt(eElement.getAttribute("width")));
