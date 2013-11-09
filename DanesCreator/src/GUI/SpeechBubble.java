@@ -46,7 +46,7 @@ public class SpeechBubble {
         int lineLength = lineLength(lines, g);
         Color origColor = g.getColor();
         Font origFont = g.getFont();
-        int width =  lineLength ;
+        int width =  lineLength +17;
         int height = lines.length * 15 + 10;
         if (text.length() < numbOfTokens) {
             width = 5 * text.length() + 10;
@@ -79,10 +79,8 @@ public class SpeechBubble {
         for (int i = 0; i < input.length; i++) {
             AffineTransform affinetransform = new AffineTransform();
             FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
-            Font font = new Font("Times New Roman", Font.PLAIN, g.getFont().getSize());
+            Font font = new Font("Times New Roman", g.getFont().getStyle(), g.getFont().getSize());
             int width = (int) (font.getStringBounds(input[i], frc).getWidth());
-            System.out.println(width);
-
             if (width > maxlength) {
                 maxlength = width;
             }

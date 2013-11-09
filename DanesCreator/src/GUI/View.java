@@ -1268,7 +1268,7 @@ public class View extends javax.swing.JFrame {
                     Object o = controller.getLocationElement((int)(p.x/diagramPanel.scaleRatio[0]), (int)(p.y/diagramPanel.scaleRatio[0]));
 
 
-                    if (o != null) {
+                    if (o != null && !(o instanceof Point)) {
 //                        try {
 //                            Thread.sleep(500);
 //                        } catch (InterruptedException ex) {
