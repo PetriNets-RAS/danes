@@ -771,7 +771,7 @@ public class View extends javax.swing.JFrame {
             }
 
             newXML.createPetriXML(g, selectedFile);
-            System.out.println("UKLADAM PN");
+            //System.out.println("UKLADAM PN");
         } else {
             sufix = ".dpg";
 
@@ -942,8 +942,8 @@ public class View extends javax.swing.JFrame {
         int newY = (int)(minY*this.diagramPanel.scaleRatio[1]);
         
         
-        System.out.println("X: "+minX+""+" Y:"+minY);
-        System.out.println("X: "+e.getName()+""+" Y:"+e2.getName());
+        //System.out.println("X: "+minX+""+" Y:"+minY);
+        //System.out.println("X: "+e.getName()+""+" Y:"+e2.getName());
         /*
         int newX = (int) ((minX-(graphSlant/2))*this.diagramPanel.scaleRatio[0]);
         int newY = (int) ((minY-(graphSlant/2))*this.diagramPanel.scaleRatio[1]);
@@ -1002,8 +1002,8 @@ public class View extends javax.swing.JFrame {
         int newY = (int) ((minY-(graphSlant/2))*this.diagramPanel.scaleRatio[1]);
         */
         
-        System.out.println("X: "+minX+""+" Y:"+minY);
-        System.out.println("X: "+e.getName()+""+" Y:"+e2.getName());
+        //System.out.println("X: "+minX+""+" Y:"+minY);
+        //System.out.println("X: "+e.getName()+""+" Y:"+e2.getName());
         
         int newX = (int) (minX*this.diagramPanel.scaleRatio[0]);
         int newY = (int) (minY*this.diagramPanel.scaleRatio[1]);
@@ -1067,6 +1067,7 @@ public class View extends javax.swing.JFrame {
             this.diagramPanel.scaleRatio[1] = 1;
             this.diagramPanel.scaleRatio[0] = 1;
         }
+        /*
         System.out.println("Uhlopriecky "+ diagramSlant+" " +graphSlant);
         System.out.println("Diagram " + this.diagramScrollPane.getWidth()+" " +this.diagramScrollPane.getHeight());
         System.out.println("Graf" +"("+maxX+" - "+minX+")"+",("+maxY+" - "+minY+")");
@@ -1074,6 +1075,7 @@ public class View extends javax.swing.JFrame {
         System.out.println("Najvyssi: " + minEY.getName());
         System.out.println("Najpravejsi: " + maxEX.getName());
         System.out.println("Najspodnejsi: " + maxEY.getName());
+        */ 
         this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point((int)(minX*this.diagramPanel.scaleRatio[0]),(int)(minY*this.diagramPanel.scaleRatio[1])));
         repaint();
     }//GEN-LAST:event_resetZoomButtonActionPerformed
@@ -2575,7 +2577,7 @@ public class View extends javax.swing.JFrame {
                                     }
                                 Point mousePosition = diagramPanel.getMousePosition();
                                 double scale = (.1 * e.getWheelRotation());
-                                System.out.println(""+mousePosition.x+", "+mousePosition.y+" "+ maxX+" "+maxY);
+                                //System.out.println(""+mousePosition.x+", "+mousePosition.y+" "+ maxX+" "+maxY);
                                 if(diagramPanel.scaleRatio[0] > 0.3 || scale > 0){
                                     diagramPanel.scaleRatio[0] += scale;
                                     diagramPanel.scaleRatio[1] += scale;
@@ -2583,7 +2585,7 @@ public class View extends javax.swing.JFrame {
                                     diagramPanel.scaleRatio[0] = 0.3;
                                     diagramPanel.scaleRatio[1] = 0.3;
                                 }
-                                System.out.println(""+diagramScrollPane.getViewport().getViewPosition().x+"  "+diagramScrollPane.getViewport().getViewPosition().y);
+                                //System.out.println(""+diagramScrollPane.getViewport().getViewPosition().x+"  "+diagramScrollPane.getViewport().getViewPosition().y);
                                 diagramScrollPane.getViewport().setViewPosition(
                                         new java.awt.Point(
                                             (int)(minX*diagramPanel.scaleRatio[0]),
