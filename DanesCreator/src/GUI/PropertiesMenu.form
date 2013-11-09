@@ -226,8 +226,8 @@
                       <Group type="102" attributes="0">
                           <Component id="jLabel7" min="-2" pref="82" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="capacitySpiner" min="-2" pref="42" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="40" max="32767" attributes="0"/>
+                          <Component id="capacitySpiner" min="-2" pref="56" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="26" max="32767" attributes="0"/>
                       </Group>
                       <Component id="startCheckBox" max="32767" attributes="0"/>
                       <Component id="endCheckBox" alignment="0" max="32767" attributes="0"/>

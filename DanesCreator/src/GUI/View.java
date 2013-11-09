@@ -32,6 +32,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
@@ -249,6 +250,14 @@ public class View extends javax.swing.JFrame {
                 notesFocusLost(evt);
             }
         });
+        notes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                notesKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                notesKeyReleased(evt);
+            }
+        });
         propertiesTab.addTab("Notes", notes);
 
         javax.swing.GroupLayout propertiesMenuLayout = new javax.swing.GroupLayout(propertiesMenu);
@@ -288,6 +297,14 @@ public class View extends javax.swing.JFrame {
             }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 diagramScrollPaneMousePressed(evt);
+            }
+        });
+        diagramScrollPane.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                diagramScrollPaneMouseDragged(evt);
+            }
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                diagramScrollPaneMouseMoved(evt);
             }
         });
 
@@ -577,8 +594,6 @@ public class View extends javax.swing.JFrame {
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
 
-
-
         diagramScrollPane.setViewportView(this.diagramPanel);
 
         diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
@@ -644,14 +659,14 @@ public class View extends javax.swing.JFrame {
 
         int x, y;
 
-        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3)) ||
-                "pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))
+                || "pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
             FileManager.XMLPetriManager loader = new XMLPetriManager();
-            boolean cobaFile=false;
-            if("pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))){
-                cobaFile=true;
+            boolean cobaFile = false;
+            if ("pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+                cobaFile = true;
             }
-            PetriNet p = loader.getPetriNetFromXML(inputFile,cobaFile);
+            PetriNet p = loader.getPetriNetFromXML(inputFile, cobaFile);
             graph = p;
             x = p.getListOfPlaces().get(0).getX();
             y = p.getListOfPlaces().get(0).getY();
@@ -883,6 +898,7 @@ public class View extends javax.swing.JFrame {
         lineButton.setSelected(false);
         resuorceButton.setSelected(false);
         rectangleButton.setSelected(false);
+        cursorButton.setSelected(true);
     }//GEN-LAST:event_cursorButtonActionPerformed
 
     private void bendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bendButtonActionPerformed
@@ -931,6 +947,18 @@ public class View extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_deleteBendButtonActionPerformed
+
+    private void diagramScrollPaneMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseMoved
+    }//GEN-LAST:event_diagramScrollPaneMouseMoved
+
+    private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseDragged
+    }//GEN-LAST:event_diagramScrollPaneMouseDragged
+
+    private void notesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyPressed
+    }//GEN-LAST:event_notesKeyPressed
+
+    private void notesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyReleased
+    }//GEN-LAST:event_notesKeyReleased
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
@@ -982,6 +1010,7 @@ public class View extends javax.swing.JFrame {
         boolean isCTRLdown = false;
         private int clickedX;
         private int clickedY;
+        private Element bubbleElement;
 
         /**
          * Creates new form GraphPanel
@@ -1004,6 +1033,46 @@ public class View extends javax.swing.JFrame {
             setBackground(Color.WHITE);
 
             /* Key */
+
+            MouseMotionListener mml = new MouseMotionListener() {
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    Point p = e.getPoint();
+                    Object o = controller.getLocationElement(p.x, p.y);
+
+
+                    if (o != null) {
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException ex) {
+//                            Thread.currentThread().interrupt();
+//                        }
+                        bubbleElement = (Element) o;
+                        repaint();
+                    } else {
+
+                        bubbleElement = null;
+                        repaint();
+                    }
+
+
+                }
+            };
+
+            addMouseMotionListener(mml);
+
+            notes.addKeyListener(new KeyAdapter() {
+                public void keyReleased(KeyEvent event) {
+                    String tempNote = notes.getText();
+                    selectedElements.get(0).setNote(tempNote);
+                }
+            });
+
+
             addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent event) {
                     if (KeyEvent.VK_ENTER == event.getKeyCode()) {
@@ -1025,6 +1094,28 @@ public class View extends javax.swing.JFrame {
             drawGraph();
             drawDraggedObject();
             drawSelectedElements();
+            drawBuble();
+        }
+
+        public void drawBuble() {
+            if (bubbleElement != null && cursorButton.isSelected()) {
+                int width = 0;
+                int height = 0;
+                if (bubbleElement instanceof AbsPlace) {
+                    AbsPlace n = (AbsPlace) bubbleElement;
+                    width = n.getWidth();
+                    height = n.getHeight();
+                } else if (bubbleElement instanceof Transition) {
+                    Transition n = (Transition) bubbleElement;
+                    width = n.getWidth();
+                    height = n.getHeight();
+                } else {
+                    Node n = (Node) bubbleElement;
+                    width = n.getWidth();
+                    height = n.getHeight();
+                }
+                SpeechBubble.drawBubble(g2d, bubbleElement.getX() + width / 2, bubbleElement.getY(), bubbleElement.getNote());
+            }
         }
 
         public void drawPlace(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
@@ -1857,7 +1948,7 @@ public class View extends javax.swing.JFrame {
                         tempArc.removeBendPoint((Point) draggedObject);
                         return;
                     }
-                } else if(graph instanceof PrecedenceGraph){
+                } else if (graph instanceof PrecedenceGraph) {
                     Arc tempArc = ((PrecedenceGraph) graph).getArc((Point) draggedObject);
                     selectedElements.add(tempArc);
                     if (deleteBendButton.isSelected()) {
@@ -2018,54 +2109,53 @@ public class View extends javax.swing.JFrame {
             int marginHeight = 20;
             Font oldfont = g2d.getFont();
             g2d.scale(1, 1);
-
             // Petri net
             if (graph instanceof PetriNet) {
                 for (Place p : ((PetriNet) graph).getListOfPlaces()) {
-                    if (p.getWidth() == -1 && p.getHeight() == -1) {
-                        Font newFont = new Font("Times New Roman", Font.PLAIN, p.getFontSize());
-                        g2d.setFont(newFont);
+                    //if (p.getWidth() == -1 && p.getHeight() == -1) {
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, p.getFontSize());
+                    g2d.setFont(newFont);
 
-                        FontMetrics fm = g2d.getFontMetrics(newFont);
-                        java.awt.geom.Rectangle2D rect = fm.getStringBounds(p.getName() + " :" + p.getMarking(), g2d);
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(p.getName() + " :" + p.getMarking() + "{;}", g2d);
 
-                        double textWidth = (rect.getWidth());
-                        double textHeight = (rect.getHeight());
+                    double textWidth = (rect.getWidth());
+                    double textHeight = (rect.getHeight());
 
-                        p.setWidth((int) (textWidth + marginWidth));
-                        p.setHeight((int) textHeight + marginHeight);
-                    }
+                    p.setWidth((int) (textWidth + marginWidth));
+                    p.setHeight((int) textHeight + marginHeight);
+                    //}
                 }
                 for (Transition t : ((PetriNet) graph).getListOfTransitions()) {
-                    if (t.getWidth() == -1 && t.getHeight() == -1) {
-                        Font newFont = new Font("Times New Roman", Font.PLAIN, t.getFontSize());
-                        g2d.setFont(newFont);
+                    //if (t.getWidth() == -1 && t.getHeight() == -1) {
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, t.getFontSize());
+                    g2d.setFont(newFont);
 
-                        FontMetrics fm = g2d.getFontMetrics(newFont);
-                        java.awt.geom.Rectangle2D rect = fm.getStringBounds(t.getName(), g2d);
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(t.getName(), g2d);
 
-                        double textWidth = (rect.getWidth());
-                        double textHeight = (rect.getHeight());
+                    double textWidth = (rect.getWidth());
+                    double textHeight = (rect.getHeight());
 
-                        t.setWidth((int) (textWidth + marginWidth));
-                        t.setHeight((int) textHeight + marginHeight);
-                    }
+                    t.setWidth((int) (textWidth + marginWidth));
+                    t.setHeight((int) textHeight + marginHeight);
+                    // }
                 }
 
                 for (Resource r : ((PetriNet) graph).getListOfResources()) {
-                    if (r.getWidth() == -1 && r.getHeight() == -1) {
-                        Font newFont = new Font("Times New Roman", Font.PLAIN, r.getFontSize());
-                        g2d.setFont(newFont);
+                    //if (r.getWidth() == -1 && r.getHeight() == -1) {
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, r.getFontSize());
+                    g2d.setFont(newFont);
 
-                        FontMetrics fm = g2d.getFontMetrics(newFont);
-                        java.awt.geom.Rectangle2D rect = fm.getStringBounds(r.getName() + " :" + r.getMarking(), g2d);
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(r.getName() + " :" + r.getMarking(), g2d);
 
-                        int textWidth = (int) (rect.getWidth());
-                        int textHeight = (int) (rect.getHeight());
+                    int textWidth = (int) (rect.getWidth());
+                    int textHeight = (int) (rect.getHeight());
 
-                        r.setWidth(textWidth + marginWidth);
-                        r.setHeight(textHeight + marginHeight);
-                    }
+                    r.setWidth(textWidth + marginWidth);
+                    r.setHeight(textHeight + marginHeight);
+                    //}
                 }
             }
 

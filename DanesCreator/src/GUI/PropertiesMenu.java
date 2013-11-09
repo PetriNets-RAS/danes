@@ -298,8 +298,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
                     .addGroup(specificLayout.createSequentialGroup()
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(capacitySpiner, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 40, Short.MAX_VALUE))
+                        .addComponent(capacitySpiner, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 26, Short.MAX_VALUE))
                     .addComponent(startCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(endCheckBox, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -425,6 +425,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
                 Node node = (Node) element;
                 node.setHeight(Integer.parseInt(heightText.getText()));
             }
+            
             window.repaint();
         }
     }//GEN-LAST:event_heightTextKeyReleased
@@ -455,8 +456,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
         if (!fontSizeText.getText().equals("")) {
             if (!log.checkNumbString(fontSizeText.getText())) {
                 return;
-            }
-
+            }            
             element.setFontSize(Integer.parseInt(fontSizeText.getText()));
             window.repaint();
         }
