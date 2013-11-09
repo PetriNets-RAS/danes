@@ -5,6 +5,7 @@
 package Core;
 
 import StateSpace.State;
+import java.awt.Point;
 import java.util.ArrayList;
 
 /**
@@ -17,6 +18,7 @@ public class PetriNet extends Graph implements Cloneable{
     private ArrayList<Transition> listOfTransitions;
     private ArrayList<Arc> listOfArcs;
     private ArrayList<Resource> listOfResources;    
+    private ArrayList<State> states;    
     private String name;
 
     /**
@@ -348,14 +350,22 @@ public class PetriNet extends Graph implements Cloneable{
             stateMarkings.add(vector);
         }
         for(int i=0;i<listOfResources.size();i++){
-            resourceVector.add(new Integer(listOfResources.get(i).getMarking()));
+            ArrayList<Integer> vector = new ArrayList<Integer>();
+            vector.add(listOfResources.get(i).getMarking());
+            for(int j=0;j<listOfResources.get(i).getProcesMarkings().size();j++){
+                vector.add(new Integer(listOfResources.get(i).getProcesMarkings().get(j)));
+            }
+            stateMarkings.add(vector);
+            
+            
+            //resourceVector.add(new Integer(listOfResources.get(i).getMarking()));
+            
         }
-        stateMarkings.add(resourceVector);
+        //stateMarkings.add(resourceVector);
         return stateMarkings;
     }
     
     public void setState(State state){
-        
         State st=new State(state.getPlaceMarkings(), 0, null, null);
         
         for (int i = 0; i < (listOfPlaces.size()); i++) {
@@ -364,8 +374,53 @@ public class PetriNet extends Graph implements Cloneable{
         
         int lastIndex = (st.getPlaceMarkings().size()-1);
         for (int i = 0; i < listOfResources.size(); i++) {
-            listOfResources.get(i).setMarking(st.getPlaceMarkings().get(lastIndex).get(i));
+            listOfResources.get(i).setMarking(st.getPlaceMarkings().get(i+listOfPlaces.size()).get(0));
+            ArrayList<Integer> tempProc=new ArrayList<Integer>();
+            for(int k=1;k<st.getPlaceMarkings().get(i+listOfPlaces.size()).size();k++){
+                tempProc.add(st.getPlaceMarkings().get(i+listOfPlaces.size()).get(k));
+            }
+            listOfResources.get(i).setProcesMarkings(tempProc);
+            
         }
+        
+        
+//        State st=new State(state.getPlaceMarkings(), 0, null, null);
+//        
+//        for (int i = 0; i < (listOfPlaces.size()); i++) {
+//            listOfPlaces.get(i).getMarkings().setMarkings(st.getPlaceMarkings().get(i));
+//        }
+//        
+//        int lastIndex = (st.getPlaceMarkings().size()-1);
+//        for (int i = 0; i < listOfResources.size(); i++) {
+//            listOfResources.get(i).setMarking(st.getPlaceMarkings().get(lastIndex).get(i));
+//            
+//        }
+    }
+
+    /**
+     * @return the states
+     */
+    public ArrayList<State> getStates() {
+        return states;
+    }
+
+    /**
+     * @param states the states to set
+     */
+    public void setStates(ArrayList<State> states) {
+        this.states = states;
+    }
+    
+    
+    public Arc getArc(Point p){
+        for (Arc a: listOfArcs){
+            for(Point tempPoint : a.getBendPoints()){
+                if(tempPoint==p) return a;
+            }
+            
+        }
+        
+        return null;
     }
        
 }

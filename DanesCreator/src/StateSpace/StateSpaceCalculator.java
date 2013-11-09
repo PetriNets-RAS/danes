@@ -16,10 +16,12 @@ public class StateSpaceCalculator {
 
     PetriNet petriNet;
     private int idCount;
+    private ArrayList<State> result;
 
     public StateSpaceCalculator(PetriNet petriNet) {
         this.petriNet = petriNet;
         idCount=1;
+        result=new ArrayList<State>();
     }
 
     /* Calculate whole stateSpace */
@@ -82,6 +84,7 @@ public class StateSpaceCalculator {
                 State _newState = _currentState.getChilds().get(_currentState.getLastMarkedItem()).getState();
                 _currentState.increaseLastMarkedItem();
                 _currentState = _newState;
+                //_stateSpace.levelOrder();
                 //System.out.println("CRUR po pridani "+_currentState);
                 //_currentState = new State(_newState.getPlaceMarkings(), 0, null);
             } /* No child, go to parent */ else {
@@ -94,9 +97,20 @@ public class StateSpaceCalculator {
 //        System.out.println("***********************************************");
 //        System.out.println("***********************************************");
         /* Write results and revert back original net markings */
-        _stateSpace.levelOrder();
+        result=_stateSpace.levelOrder();
+//        for(State s : result){
+//            System.out.println(result.size());
+//            System.out.println(s);
+//        }
         _net.setState(firstState);
         
         //_net.setState(_intialState);
+    }
+
+    /**
+     * @return the result
+     */
+    public ArrayList<State> getResult() {
+        return result;
     }
 }

@@ -163,8 +163,8 @@ public class Controller {
     }
 
     public void addArc(String name, int x1, int y1, int x2, int y2) {
-        Element out = getLocationElement(x1, y1);
-        Element in = getLocationElement(x2, y2);
+        Element out = (Element) getLocationElement(x1, y1);
+        Element in = (Element) getLocationElement(x2, y2);
         Core.Logic log = new Core.Logic();
 
         // Null
@@ -230,14 +230,22 @@ public class Controller {
             return;
         }
 
-        Element e = getLocationElement(x_old_location, y_old_location);
-        //e.setDiagramElement(new DiagramElement(x_new_location, y_new_location));
-        e.setX(x_new_location);
-        e.setY(y_new_location);
+        Object o = getLocationElement(x_old_location, y_old_location);
+        if (o instanceof Element) {
+            Element e = (Element) o;
+            //Element e = getLocationElement(x_old_location, y_old_location);
+            //e.setDiagramElement(new DiagramElement(x_new_location, y_new_location));
+            e.setX(x_new_location);
+            e.setY(y_new_location);
+        }
+        if(o instanceof Point){
+            Point draggedPoint=(Point) o;
+            draggedPoint.setLocation(x_new_location, y_new_location);
+        }
 
     }
 
-    public Element getLocationElement(int x, int y) {
+    public Object getLocationElement(int x, int y) {
         if (graph instanceof PetriNet) {
             // Place
             for (Element e : ((PetriNet) graph).getListOfPlaces()) {
@@ -272,6 +280,15 @@ public class Controller {
                     return e;
                 }
             }
+            // Arc bend points
+            for (Arc a : ((PetriNet) graph).getListOfArcs()) {
+                Point p = a.getPoint(x, y);
+                if (p != null) {
+                    return p;
+                }
+            }
+
+
         } // End Petri Net
         //Precedencny graf  
         if (graph instanceof PrecedenceGraph) {
@@ -286,6 +303,13 @@ public class Controller {
                     return e;
                 }
             }
+            // Arc bend points
+            for (Arc a : ((PrecedenceGraph) graph).getListOfArcs()) {
+                Point p = a.getPoint(x, y);
+                if (p != null) {
+                    return p;
+                }
+            }
         }
         // Nothing found
         return null;
@@ -293,7 +317,7 @@ public class Controller {
     }
 
     public boolean deleteElement(int x, int y) {
-        Element element = getLocationElement(x, y);
+        Element element = (Element) getLocationElement(x, y);
         if (element == null) {
             return false;
         }
@@ -319,8 +343,8 @@ public class Controller {
     }
 
     public void deleteArc(int x1, int y1, int x2, int y2) {
-        Element out = getLocationElement(x2, y2);
-        Element in = getLocationElement(x1, y1);
+        Element out = (Element) getLocationElement(x2, y2);
+        Element in = (Element) getLocationElement(x1, y1);
 
         if (out == null || in == null) {
             return;
@@ -365,8 +389,6 @@ public class Controller {
         this.graph = graph;
     }
 
-    
-    
 //    public void addPlace(String name, int x, int y) {
 //        // Check if coordinates place is empty  
 //        if (!isLocationEmpty(x, y)) {
@@ -395,7 +417,6 @@ public class Controller {
 //            }
 //        } // Koniec Petri Net
 //    }
-    
     public void addNode(String name, int x, int y) {
         // Check if coordinates place is empty  
         if (!isLocationEmpty(x, y)) {
@@ -429,19 +450,19 @@ public class Controller {
     public Arc getLocationArc(double x, double y) {
         if (graph instanceof PetriNet) {
             double x1, y1, x2, y2;
-            x1=x2=y1=y2=0;
+            x1 = x2 = y1 = y2 = 0;
             // Arcs
             for (Arc a : ((PetriNet) graph).getListOfArcs()) {
                 Element out = a.getOutElement();
                 if (a.getOutElement() instanceof Transition) {
-                    x1= ((Transition) out).getWidth() / 2 + out.getX();
-                    y1= ((Transition) out).getHeight() / 2 + out.getY();
+                    x1 = ((Transition) out).getWidth() / 2 + out.getX();
+                    y1 = ((Transition) out).getHeight() / 2 + out.getY();
                 } else if (out instanceof Place) {
-                    x1= ((Place) out).getWidth() / 2 + out.getX();
-                    y1= ((Place) out).getHeight() / 2 + out.getY();
+                    x1 = ((Place) out).getWidth() / 2 + out.getX();
+                    y1 = ((Place) out).getHeight() / 2 + out.getY();
                 } else if (out instanceof Resource) {
-                    x1= ((Resource) out).getWidth() / 2 + out.getX();
-                    y1= ((Resource) out).getHeight() / 2 + out.getY();
+                    x1 = ((Resource) out).getWidth() / 2 + out.getX();
+                    y1 = ((Resource) out).getHeight() / 2 + out.getY();
                 }
 
 //                x1 = a.getInElement().getX();
@@ -456,8 +477,61 @@ public class Controller {
 //                x2+=25;
 //                y2+=25;
 
+                int inc = 0;
+                double lastX = x1;
+                double lastY = y1;
+                double k1 = 0;
+                double k2 = 0;
+
+                Path2D path = new Path2D.Double();
+
+                for (Point nextPoint : a.getBendPoints()) {
+                    inc++;
+                    // Get line between 2 points
+                    Line2D.Double ln = new Line2D.Double(lastX, lastY, nextPoint.getX(), nextPoint.getY());
+
+                    // Distance from central line
+                    double indent = 10.0;
+                    double length = ln.getP1().distance(ln.getP2());
+
+                    double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+                    double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+
+                    // line moved to the left
+                    double lX1 = ln.getX1() - dy_li;
+                    double lY1 = ln.getY1() + dx_li;
+                    double lX2 = ln.getX2() - dy_li;
+                    double lY2 = ln.getY2() + dx_li;
+
+                    // line moved to the right
+                    double rX1 = ln.getX1() + dy_li;
+                    double rY1 = ln.getY1() - dx_li;
+                    double rX2 = ln.getX2() + dy_li;
+                    double rY2 = ln.getY2() - dx_li;
+
+
+
+                    if (inc == 1) {
+                        path.moveTo(lX1, lY1);
+                        k1 = rX1;
+                        k2 = rY1;
+
+                    }
+                    path.moveTo(lX1, lY1);
+                    path.lineTo(lX1, lY1);
+                    path.lineTo(lX2, lY2);
+                    //path.lineTo(p2X, p2Y);
+                    //path.moveTo(rX2, rY2);
+                    path.lineTo(rX2, rY2);
+                    path.lineTo(rX1, rY1);
+
+                    lastX = nextPoint.getX();
+                    lastY = nextPoint.getY();
+
+                }
+
                 // Get line between 2 points
-                Line2D.Double ln = new Line2D.Double(x1, y1, x2, y2);
+                Line2D.Double ln = new Line2D.Double(lastX, lastY, x2, y2);
 
                 // Distance from central line
                 double indent = 10.0;
@@ -481,21 +555,25 @@ public class Controller {
                 //double p2Y = ln.getY2() + dy_li;
 
                 // line moved to the right
-                double rX1_ = ln.getX1() + dy_li;
+                double rX1 = ln.getX1() + dy_li;
                 double rY1 = ln.getY1() - dx_li;
                 double rX2 = ln.getX2() + dy_li;
                 double rY2 = ln.getY2() - dx_li;
 
-                Path2D path = new Path2D.Double();
+                if (inc == 0) {
+                    //path.moveTo(lX1, lY1);
+                    k1 = rX1;
+                    k2 = rY1;
+                }
                 path.moveTo(lX1, lY1);
-
                 path.lineTo(lX1, lY1);
                 path.lineTo(lX2, lY2);
                 //path.lineTo(p2X, p2Y);
                 path.lineTo(rX2, rY2);
-                path.lineTo(rX1_, rY1);
-                //path.lineTo(p1X, p1Y);
+                path.lineTo(rX1, rY1);
 
+                path.moveTo(k1, k2);
+                path.closePath();
 
 
                 // Check if clickPoint(x,y) lies inside path
@@ -542,6 +620,124 @@ public class Controller {
             // No arc found
             return null;
         }
+
+
+//            public Arc getLocationArc(double x, double y) {
+//        if (graph instanceof PetriNet) {
+//            double x1, y1, x2, y2;
+//            x1=x2=y1=y2=0;
+//            // Arcs
+//            for (Arc a : ((PetriNet) graph).getListOfArcs()) {
+//                Element out = a.getOutElement();
+//                if (a.getOutElement() instanceof Transition) {
+//                    x1= ((Transition) out).getWidth() / 2 + out.getX();
+//                    y1= ((Transition) out).getHeight() / 2 + out.getY();
+//                } else if (out instanceof Place) {
+//                    x1= ((Place) out).getWidth() / 2 + out.getX();
+//                    y1= ((Place) out).getHeight() / 2 + out.getY();
+//                } else if (out instanceof Resource) {
+//                    x1= ((Resource) out).getWidth() / 2 + out.getX();
+//                    y1= ((Resource) out).getHeight() / 2 + out.getY();
+//                }
+//
+////                x1 = a.getInElement().getX();
+////                y1 = a.getInElement().getY();
+////                x2 = a.getOutElement().getX();
+////                y2 = a.getOutElement().getY();
+//                x2 = a.getIntercectionX();
+//                y2 = a.getIntercectionY();
+//                // Width and Height depends on element
+////                x1+=25;
+////                y1+=25;                
+////                x2+=25;
+////                y2+=25;
+//
+//                // Get line between 2 points
+//                Line2D.Double ln = new Line2D.Double(x1, y1, x2, y2);
+//
+//                // Distance from central line
+//                double indent = 10.0;
+//                double length = ln.getP1().distance(ln.getP2());
+//
+//                double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+//                double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+//
+//                // moved p1 point
+//                //double p1X = ln.getX1() - dx_li;
+//                //double p1Y = ln.getY1() - dy_li;
+//
+//                // line moved to the left
+//                double lX1 = ln.getX1() - dy_li;
+//                double lY1 = ln.getY1() + dx_li;
+//                double lX2 = ln.getX2() - dy_li;
+//                double lY2 = ln.getY2() + dx_li;
+//
+//                // moved p2 point
+//                //double p2X = ln.getX2() + dx_li;
+//                //double p2Y = ln.getY2() + dy_li;
+//
+//                // line moved to the right
+//                double rX1_ = ln.getX1() + dy_li;
+//                double rY1 = ln.getY1() - dx_li;
+//                double rX2 = ln.getX2() + dy_li;
+//                double rY2 = ln.getY2() - dx_li;
+//
+//                Path2D path = new Path2D.Double();
+//                path.moveTo(lX1, lY1);
+//
+//                path.lineTo(lX1, lY1);
+//                path.lineTo(lX2, lY2);
+//                //path.lineTo(p2X, p2Y);
+//                path.lineTo(rX2, rY2);
+//                path.lineTo(rX1_, rY1);
+//                //path.lineTo(p1X, p1Y);
+//
+//
+//
+//                // Check if clickPoint(x,y) lies inside path
+//                if (path.contains(new Point((int) x, (int) y))) {
+//                    //System.out.println(("Ano: "+x+" " +y));
+//                    return a;
+//                }
+//
+//
+//                // Draw results
+//                //Area area = new Area();
+//                //area.add(new Area(path));
+//
+//                // g2d.draw(ln);
+//                //g2d.draw(p);            /*Rectangle2D rec=p.getBounds();
+//                //   g2d.draw(area);
+//                //g2d.draw(rec);*/
+//                //}
+//
+//                // System.out.println(Math.ceil(23.46)); // Prints 24
+//                // System.out.println(Math.floor(23.46)); // Prints 23
+///*
+//                 x1=Math.ceil(x1/10.0);
+//                 y1=Math.ceil(y1/10.0);
+//                 x2=Math.ceil(x2/10.0);
+//                 y2=Math.ceil(y2/10.0);
+//                
+//                 double x_round=Math.ceil(x/10.0);
+//                 double y_round=Math.ceil(y/10.0);
+//                                    
+//                 //xx.contains(null);
+//                
+//                 Line2D line=new Line2D.Double(x1, y1, x2, y2);
+//                 // If point X,Y lies on Line(x1,y1,x2,y2)
+//                 //if (line.relativeCCW(x, y)==0)
+//                 if (line.relativeCCW(x_round, y_round)==0)
+//                 {
+//                 System.out.println("Nachadzam sa na arc: "+a.getName());
+//                 return a;
+//                 }
+//                 }
+//                 System.out.println("NEnachadzam sa na arc");*/
+//            }
+//            // No arc found
+//            return null;
+//        }
 
         //Precedencny graf  
         if (graph instanceof PrecedenceGraph) {

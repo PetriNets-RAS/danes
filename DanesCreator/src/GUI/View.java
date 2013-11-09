@@ -39,6 +39,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
@@ -119,6 +120,8 @@ public class View extends javax.swing.JFrame {
         zoomInButton.setVisible(false);
         zoomOutButton.setVisible(false);
         resetZoomButton.setVisible(false);
+        bendButton.setVisible(false);
+        deleteBendButton.setVisible(false);
 
         // Custom init 
         setTitle("DANES Creator");
@@ -186,6 +189,8 @@ public class View extends javax.swing.JFrame {
         zoomInButton = new javax.swing.JButton();
         zoomOutButton = new javax.swing.JButton();
         resetZoomButton = new javax.swing.JButton();
+        bendButton = new javax.swing.JButton();
+        deleteBendButton = new javax.swing.JButton();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newPetriNet = new javax.swing.JMenuItem();
@@ -265,6 +270,14 @@ public class View extends javax.swing.JFrame {
                 notesFocusLost(evt);
             }
         });
+        notes.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                notesKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                notesKeyReleased(evt);
+            }
+        });
         propertiesTab.addTab("Notes", notes);
 
         javax.swing.GroupLayout propertiesMenuLayout = new javax.swing.GroupLayout(propertiesMenu);
@@ -315,17 +328,13 @@ public class View extends javax.swing.JFrame {
                 diagramScrollPaneMousePressed(evt);
             }
         });
-        diagramScrollPane.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseDragged(java.awt.event.MouseEvent evt) {
-                diagramScrollPaneMouseDragged(evt);
-            }
-        });
 
+        toolBar.setFloatable(false);
         toolBar.setRollover(true);
         toolBar.setEnabled(false);
 
         alignTopButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/alignTop.png"))); // NOI18N
-        alignTopButton.setToolTipText("Align Top");
+        alignTopButton.setToolTipText("Align top");
         alignTopButton.setFocusable(false);
         alignTopButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         alignTopButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -385,6 +394,7 @@ public class View extends javax.swing.JFrame {
         toolBar.add(zoomInButton);
 
         zoomOutButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/zoomOut.png"))); // NOI18N
+        zoomOutButton.setToolTipText("Zoom out");
         zoomOutButton.setFocusable(false);
         zoomOutButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         zoomOutButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -396,6 +406,7 @@ public class View extends javax.swing.JFrame {
         toolBar.add(zoomOutButton);
 
         resetZoomButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/magnifier.png"))); // NOI18N
+        resetZoomButton.setToolTipText("Reset zoom");
         resetZoomButton.setFocusable(false);
         resetZoomButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         resetZoomButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -405,6 +416,31 @@ public class View extends javax.swing.JFrame {
             }
         });
         toolBar.add(resetZoomButton);
+
+        bendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/bendLine.png"))); // NOI18N
+        bendButton.setToolTipText("Bend line");
+        bendButton.setActionCommand("BendButton");
+        bendButton.setFocusable(false);
+        bendButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        bendButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        bendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bendButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(bendButton);
+
+        deleteBendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/DeleteLineBend.png"))); // NOI18N
+        deleteBendButton.setToolTipText("Delete bend on line");
+        deleteBendButton.setFocusable(false);
+        deleteBendButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        deleteBendButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        deleteBendButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                deleteBendButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(deleteBendButton);
 
         fileMenu.setText("File");
 
@@ -578,12 +614,8 @@ public class View extends javax.swing.JFrame {
         graph = p;
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
-
-
-
         diagramScrollPane.setViewportView(this.diagramPanel);       
         diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750,4750));
-        
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
@@ -603,6 +635,8 @@ public class View extends javax.swing.JFrame {
         rectangleButton.setVisible(true);
         resuorceButton.setVisible(true);
         cursorButton.setSelected(true);
+        bendButton.setVisible(true);
+        deleteBendButton.setVisible(true);
 
         toolBar.setEnabled(true);
         getInfoAboutModel(graph);
@@ -642,32 +676,37 @@ public class View extends javax.swing.JFrame {
         selectedFile = jFileChooser.getSelectedFile();
         File inputFile = new File(selectedFile.getAbsolutePath());
 
-        int x,y;
-        
-        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+        int x, y;
+
+        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))
+                || "pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
             FileManager.XMLPetriManager loader = new XMLPetriManager();
-            PetriNet p = loader.getPetriNetFromXML(inputFile);
+            boolean cobaFile = false;
+            if ("pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+                cobaFile = true;
+            }
+            PetriNet p = loader.getPetriNetFromXML(inputFile, cobaFile);
             graph = p;
-            x=p.getListOfPlaces().get(0).getX();
-            y=p.getListOfPlaces().get(0).getY();
+            x = p.getListOfPlaces().get(0).getX();
+            y = p.getListOfPlaces().get(0).getY();
         } else {
             FileManager.XMLPrecedenceManager loader = new XMLPrecedenceManager();
             PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
             graph = pg;
-            x=pg.getListOfNodes().get(0).getX();
-            y=pg.getListOfNodes().get(0).getY();
+            x = pg.getListOfNodes().get(0).getX();
+            y = pg.getListOfNodes().get(0).getY();
         }
         getInfoAboutFile(inputFile);
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
         diagramScrollPane.setViewportView(this.diagramPanel);
-        
-        if((x-50)<0 || (y-50<0)){
-            x=0;
-            y=0;
+
+        if ((x - 50) < 0 || (y - 50 < 0)) {
+            x = 0;
+            y = 0;
         }
-        
-        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x-50,y-50));
+
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x - 50, y - 50));
 
         sideMenu.setVisible(true);
         // hide side menu
@@ -685,12 +724,11 @@ public class View extends javax.swing.JFrame {
         zoomOutButton.setVisible(true);
         zoomInButton.setVisible(true);
         resetZoomButton.setVisible(true);
+        deleteBendButton.setVisible(true);
+        bendButton.setVisible(true);
 
         ///
         getInfoAboutModel(graph);
-        
-        
-        
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
@@ -767,7 +805,7 @@ public class View extends javax.swing.JFrame {
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
         diagramScrollPane.setViewportView(this.diagramPanel);
-        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750,4750));
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
@@ -780,6 +818,8 @@ public class View extends javax.swing.JFrame {
         zoomInButton.setVisible(true);
         resetZoomButton.setVisible(true);
         cursorButton.setSelected(true);
+        bendButton.setVisible(true);
+        deleteBendButton.setVisible(true);
 
         rectangleButton.setVisible(false);
         resuorceButton.setVisible(false);
@@ -798,7 +838,7 @@ public class View extends javax.swing.JFrame {
         // hide side menu
         propertiesMenu.setVisible(false);
         getInfoAboutModel(graph);
-        
+
         rectangleButton.setVisible(true);
         resuorceButton.setVisible(true);
     }//GEN-LAST:event_convertActionPerformed
@@ -824,6 +864,8 @@ public class View extends javax.swing.JFrame {
 
         StateSpaceCalculator ssCalc = new StateSpaceCalculator(ssPetriNet);
         ssCalc.calculateStateSpace();
+        ssPetriNet.setStates(ssCalc.getResult());
+
     }//GEN-LAST:event_create_state_diagramActionPerformed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
@@ -1034,11 +1076,12 @@ public class View extends javax.swing.JFrame {
         lineButton.setSelected(false);
         resuorceButton.setSelected(false);
         rectangleButton.setSelected(false);
+        cursorButton.setSelected(true);
     }//GEN-LAST:event_cursorButtonActionPerformed
 
-    private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseDragged
+    private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {                                               
 
-    }//GEN-LAST:event_diagramScrollPaneMouseDragged
+    }                                              
 
     private void updateComponentList(){
         ArrayList<Element> elements = new ArrayList<Element>();
@@ -1070,16 +1113,74 @@ public class View extends javax.swing.JFrame {
     }
     
     
+    private void bendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bendButtonActionPerformed
+        if (bendButton.isSelected()) {
+            bendButton.setSelected(false);
+            bendButton.setFocusCycleRoot(false);
+            bendButton.setFocusPainted(false);
+
+            deleteBendButton.setSelected(false);
+            deleteBendButton.setFocusCycleRoot(false);
+            deleteBendButton.setFocusPainted(false);
+
+        } else {
+
+
+            deleteBendButton.setSelected(false);
+            deleteBendButton.setFocusCycleRoot(false);
+            deleteBendButton.setFocusPainted(false);
+            bendButton.setSelected(true);
+
+
+        }
+
+
+    }//GEN-LAST:event_bendButtonActionPerformed
+
+    private void deleteBendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBendButtonActionPerformed
+        if (deleteBendButton.isSelected()) {
+            deleteBendButton.setSelected(false);
+            deleteBendButton.setFocusCycleRoot(false);
+            deleteBendButton.setFocusPainted(false);
+
+            bendButton.setSelected(false);
+            bendButton.setFocusCycleRoot(false);
+            bendButton.setFocusPainted(false);
+
+        } else {
+            bendButton.setSelected(false);
+            bendButton.setFocusCycleRoot(false);
+            bendButton.setFocusPainted(false);
+
+            deleteBendButton.setSelected(true);
+            //bendButton.setSelected(false);
+
+
+
+        }
+    }//GEN-LAST:event_deleteBendButtonActionPerformed
+
+    private void diagramScrollPaneMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseMoved
+    }//GEN-LAST:event_diagramScrollPaneMouseMoved
+
+    private void notesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyPressed
+    }//GEN-LAST:event_notesKeyPressed
+
+    private void notesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyReleased
+    }//GEN-LAST:event_notesKeyReleased
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
     private javax.swing.JButton alignLeftButton;
     private javax.swing.JButton alignRightButton;
     private javax.swing.JButton alignTopButton;
+    private javax.swing.JButton bendButton;
     private javax.swing.JList componentList;
     private javax.swing.JMenuItem convert;
     private javax.swing.JMenuItem create_state_diagram;
     private javax.swing.JButton cursorButton;
+    private javax.swing.JButton deleteBendButton;
     private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenu;
     private javax.swing.JToggleButton ellipseButton;
@@ -1122,6 +1223,7 @@ public class View extends javax.swing.JFrame {
         private int clickedX;
         private int clickedY;
         private Cursor draggedHandCursor,handCursor;
+        private Element bubbleElement;
 
         /**
          * Creates new form GraphPanel
@@ -1129,26 +1231,12 @@ public class View extends javax.swing.JFrame {
         public DiagramPanel(Graph pa_graph) {
             super();
             setFocusable(true);
-            //addKeyListener(new DiagramKeyAdapter());*/
             this.graph = pa_graph;
-            //this.g2d;//null;
             this.scaleRatio = new double[]{1.0, 1.0};
             this.draggedObject = null;
             this.draggedElement = null;
             this.selectedElements = new ArrayList<Element>();
             this.mouseAdapter = new DiagramMouseAdapter();
-
-
-            /*    Action _ctrlAction = new AbstractAction() {
-             @Override
-             public void actionPerformed(ActionEvent e) {
-             isCTRLdown=true;
-             System.out.println("ctrl pressed");
-             }
-             };
-             getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.CTRL_DOWN_MASK,1,tru),"ctrlPressed");
-             getActionMap().put("ctrlPressed",                _ctrlAction);
-             */
 
             // Click listener, drag listener
             addMouseListener(mouseAdapter);
@@ -1157,7 +1245,48 @@ public class View extends javax.swing.JFrame {
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(10000, 10000));
             setBackground(Color.WHITE);
+
             /* Key */
+
+            MouseMotionListener mml = new MouseMotionListener() {
+                @Override
+                public void mouseDragged(MouseEvent e) {
+                }
+
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                    Point p = e.getPoint();
+                    Object o = controller.getLocationElement(p.x, p.y);
+
+
+                    if (o != null) {
+//                        try {
+//                            Thread.sleep(500);
+//                        } catch (InterruptedException ex) {
+//                            Thread.currentThread().interrupt();
+//                        }
+                        bubbleElement = (Element) o;
+                        repaint();
+                    } else {
+
+                        bubbleElement = null;
+                        repaint();
+                    }
+
+
+                }
+            };
+
+            addMouseMotionListener(mml);
+
+            notes.addKeyListener(new KeyAdapter() {
+                public void keyReleased(KeyEvent event) {
+                    String tempNote = notes.getText();
+                    selectedElements.get(0).setNote(tempNote);
+                }
+            });
+
+
             addKeyListener(new KeyAdapter() {
                 public void keyPressed(KeyEvent event) {
                     if (KeyEvent.VK_ENTER == event.getKeyCode()) {
@@ -1179,37 +1308,38 @@ public class View extends javax.swing.JFrame {
         public void paint(Graphics g) {
             super.paint(g);
             this.g2d = (Graphics2D) g;
-            //g2d.scale(scaleRatio[0], scaleRatio[1]);
-            //g2d.translate(scaleRatio[0], scaleRatio[1]);
-            /*
-             if (g2d==null)
-          
-             else
-             g=this.g2d;*/
+            g2d.scale(scaleRatio[0], scaleRatio[1]);
+            g2d.setStroke(new BasicStroke(3));
             autosetWidthHeight();
             drawGraph();
             drawDraggedObject();
             drawSelectedElements();
+            drawBuble();
         }
-        /*
-         public void drawPlace(int column,int row){
-         drawPlace(column, row, Color.BLACK, Color.WHITE);          
-         }
-         public void drawPlace(int column,int row,Color c1, Color c2){
-         // Place / Ring
-         g2d.setColor(c2);
-         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
-         g2d.setColor(c1);    
-         g2d.draw(new 2D.Double(column+5,row+5,40,40));                
-         }*/
+
+        public void drawBuble() {
+            if (bubbleElement != null && cursorButton.isSelected()) {
+                int width = 0;
+                int height = 0;
+                if (bubbleElement instanceof AbsPlace) {
+                    AbsPlace n = (AbsPlace) bubbleElement;
+                    width = n.getWidth();
+                    height = n.getHeight();
+                } else if (bubbleElement instanceof Transition) {
+                    Transition n = (Transition) bubbleElement;
+                    width = n.getWidth();
+                    height = n.getHeight();
+                } else {
+                    Node n = (Node) bubbleElement;
+                    width = n.getWidth();
+                    height = n.getHeight();
+                }
+                SpeechBubble.drawBubble(g2d, bubbleElement.getX() + width / 2, bubbleElement.getY(), bubbleElement.getNote());
+            }
+        }
 
         public void drawPlace(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
             // Place / Ring
-        /*g2d.setColor(c2);
-             g2d.fill(new Ellipse2D.Double(column+5,row+5,width,height));        
-             g2d.setColor(c1);    
-             g2d.draw(new Ellipse2D.Double(column+5,row+5,width,height));   
-             */
             g2d.setColor(c2);
             g2d.fill(new Ellipse2D.Double(column, row, width, height));
             g2d.setColor(c1);
@@ -1279,16 +1409,6 @@ public class View extends javax.swing.JFrame {
             g2d.setStroke(_oldStroke);
         }
 
-        /*public void drawResource(int column,int row){
-         drawPlace(column, row, Color.BLACK, Color.GRAY);          
-         }
-         public void drawResource(int column,int row,Color c1, Color c2){
-         // Place / Ring
-         g2d.setColor(c2); //white vypln
-         g2d.fill(new Ellipse2D.Double(column+5,row+5,40,40));        
-         g2d.setColor(c1); //black   
-         g2d.draw(new Ellipse2D.Double(column+5,row+5,40,40));                
-         }*/
         public void drawResource(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
             // Place / Ring
             Stroke _oldStroke = g2d.getStroke();
@@ -1333,17 +1453,6 @@ public class View extends javax.swing.JFrame {
             drawResource(column, row, c1alpha, c2alpha, width, height, name, fontSize);
         }
 
-        /*
-         public void drawTransition(int column,int row){
-         drawTransition(column, row ,Color.BLACK,Color.WHITE);
-         }
-         public void drawTransition(int column,int row,Color c1,Color c2){
-         // Transition / Rectangle
-         g2d.setColor(c2);
-         g2d.fill(new Rectangle2D.Float(column+12,row+5,25,40));                
-         g2d.setColor(c1);
-         g2d.draw(new Rectangle2D.Float(column+12,row+5,25,40));                        
-         }*/
         public void drawTransition(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
             // Transition / Rectangle                        
 
@@ -1529,13 +1638,15 @@ public class View extends javax.swing.JFrame {
             }
         }
 
-        public int[] drawArrow(int x1, int y1, int midX, int midY, int x2, int y2, String type, String name, int fontSize, Element e, int width, int height, int capacity) {
+        public int[] drawArrow(Arc a, int x1, int y1, int midX, int midY, int x2, int y2, String type, String name, int fontSize, Element e, int width, int height, int capacity) {
             // Size of arrow in px
             int ARR_SIZE = 8;
             int[] field = solvePointsOfArrow(x1, x2, y1, y2, midX, midY, e, width, height);
             midX = field[0];
             midY = field[1];
 
+            a.setOutPoint(new Point(x1, y1));
+            a.setInPoint(new Point(midX, midY));
 
             double dx = midX - x1;
             double dy = midY - y1;
@@ -1593,6 +1704,9 @@ public class View extends javax.swing.JFrame {
         public void drawArrow(int x1, int y1, int x2, int y2, String type, String name, int fontSize) {
             // Size of arrow in px
             int ARR_SIZE = 8;
+            //System.out.println("HOVADINA");
+            //a.setOutPoint(new Point(x1, y1));
+            //a.setInPoint(new Point(x2, y2));
 
             double dx = x2 - x1;
             double dy = y2 - y1;
@@ -1641,8 +1755,19 @@ public class View extends javax.swing.JFrame {
              */
         }
 
-        public int[] drawArc(int column1, int row1, int width1, int height1, int column2, int row2, int width2, int height2, Color color, String name, int fontSize, Element e, int upperLeftAngleX, int upperLeftAngleY, int capacity) {
+        public int[] drawArc(Arc arc, int column1, int row1, int width1, int height1, int column2, int row2, int width2, int height2) {
             // Arc / Arrow
+            //arc, out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1, arc.getColor(), arc.getName(), arc.getFontSize(), arc.getInElement(), arc.getInElement().getX(), arc.getInElement().getY(), capacity
+            Color color = arc.getColor();
+            String name = arc.getName();
+            int fontSize = arc.getFontSize();
+            Element e = arc.getInElement();
+            int upperLeftAngleX = arc.getInElement().getX();
+            int upperLeftAngleY = arc.getInElement().getY();
+            int capacity = arc.getCapacity();
+            //int from
+
+
             //g2d.setColor(new Color(27,161,226)); // Windows8Blue
 //            System.out.println("x1 "+column1);
 //            System.out.println("y1 "+row1);
@@ -1654,23 +1779,101 @@ public class View extends javax.swing.JFrame {
 //            System.out.println("height out "+height1);
 //            System.out.println("width in "+width2);
 //            System.out.println("height in "+height2);
-            
+
+            Point lastPoint = new Point(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0));
+
             g2d.setColor(color);
             g2d.setStroke(new BasicStroke(3));
+            if (arc.getBendPoints().size() > 0) {
+
+                for (Point nextPoint : arc.getBendPoints()) {
+                    g2d.drawLine((int) lastPoint.getX(), (int) lastPoint.getY(), (int) nextPoint.getX(), (int) nextPoint.getY());
+                    Color tempCol = g2d.getColor();
+                    g2d.setColor(Color.black);
+                    g2d.fillRect((int) nextPoint.getX() - 5, (int) nextPoint.getY() - 5, 10, 10);
+
+
+                    lastPoint = nextPoint;
+                    g2d.setColor(tempCol);
+                }
+
+            }
+
+
             // Draw arrow       
             int intercection[];
-            intercection = drawArrow(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0),
+
+            intercection = drawArrow(arc, (int) lastPoint.getX(), (int) lastPoint.getY(),
                     column2 + (int) (width2 / 2.0), row2 + (int) (height2 / 2.0), upperLeftAngleX, upperLeftAngleY,
                     "short", name, fontSize, e, width2, height2, capacity);
+
+//            intercection = drawArrow(column1 + (int) (width1 / 2.0), row1 + (int) (height1 / 2.0),
+//                    column2 + (int) (width2 / 2.0), row2 + (int) (height2 / 2.0), upperLeftAngleX, upperLeftAngleY,
+//                    "short", name, fontSize, e, width2, height2, capacity);
 
             return intercection;
         }
 
-        public void drawArcSelected(int column1, int row1, int column2, int row2) {
+        public void drawArcSelected(Arc a, int column1, int row1, int column2, int row2) {
             /* Calculating */
             // Get line between 2 points
             //Line2D.Double ln = new Line2D.Double(column1 + 25, row1 + 25, column2 + 25, row2 + 25);
-            Line2D.Double ln = new Line2D.Double(column1, row1, column2, row2);
+            int inc = 0;
+            double lastX = column1;
+            double lastY = row1;
+            double k1 = 0;
+            double k2 = 0;
+
+            Path2D path = new Path2D.Double();
+
+            for (Point nextPoint : a.getBendPoints()) {
+                inc++;
+                // Get line between 2 points
+                Line2D.Double ln = new Line2D.Double(lastX, lastY, nextPoint.getX(), nextPoint.getY());
+
+                // Distance from central line
+                double indent = 10.0;
+                double length = ln.getP1().distance(ln.getP2());
+
+                double dx_li = (ln.getX2() - ln.getX1()) / length * indent;
+                double dy_li = (ln.getY2() - ln.getY1()) / length * indent;
+
+                // line moved to the left
+                double lX1 = ln.getX1() - dy_li;
+                double lY1 = ln.getY1() + dx_li;
+                double lX2 = ln.getX2() - dy_li;
+                double lY2 = ln.getY2() + dx_li;
+
+                // line moved to the right
+                double rX1 = ln.getX1() + dy_li;
+                double rY1 = ln.getY1() - dx_li;
+                double rX2 = ln.getX2() + dy_li;
+                double rY2 = ln.getY2() - dx_li;
+
+
+
+                if (inc == 1) {
+                    path.moveTo(lX1, lY1);
+                    k1 = rX1;
+                    k2 = rY1;
+
+                }
+                path.moveTo(lX1, lY1);
+                path.lineTo(lX1, lY1);
+                path.lineTo(lX2, lY2);
+                //path.lineTo(p2X, p2Y);
+                //path.moveTo(rX2, rY2);
+                path.lineTo(rX2, rY2);
+                path.lineTo(rX1, rY1);
+
+                lastX = nextPoint.getX();
+                lastY = nextPoint.getY();
+
+            }
+
+            // Get line between 2 points
+            Line2D.Double ln = new Line2D.Double(lastX, lastY, column2, row2);
+
             // Distance from central line
             double indent = 10.0;
             double length = ln.getP1().distance(ln.getP2());
@@ -1693,20 +1896,25 @@ public class View extends javax.swing.JFrame {
             //double p2Y = ln.getY2() + dy_li;
 
             // line moved to the right
-            double rX1_ = ln.getX1() + dy_li;
+            double rX1 = ln.getX1() + dy_li;
             double rY1 = ln.getY1() - dx_li;
             double rX2 = ln.getX2() + dy_li;
             double rY2 = ln.getY2() - dx_li;
 
-            Path2D path = new Path2D.Double();
+            if (inc == 0) {
+                //path.moveTo(lX1, lY1);
+                k1 = rX1;
+                k2 = rY1;
+            }
             path.moveTo(lX1, lY1);
-
             path.lineTo(lX1, lY1);
             path.lineTo(lX2, lY2);
             //path.lineTo(p2X, p2Y);
             path.lineTo(rX2, rY2);
-            path.lineTo(rX1_, rY1);
-            //path.lineTo(p1X, p1Y);
+            path.lineTo(rX1, rY1);
+
+            path.moveTo(k1, k2);
+            path.closePath();
 
             // Add result
             Area area = new Area();
@@ -1766,7 +1974,7 @@ public class View extends javax.swing.JFrame {
                     int intersection[];
 
                     //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
-                    intersection = drawArc(out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1, arc.getColor(), arc.getName(), arc.getFontSize(), arc.getInElement(), arc.getInElement().getX(), arc.getInElement().getY(), capacity);
+                    intersection = drawArc(arc, out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1);
                     //drawArc(out.getX(), out.getY(), width1, height1, in.getX(), in.getY(), width2, height2, arc.getColor(), arc.getName(), arc.getFontSize());
                     arc.setIntercectionX(intersection[0]);
                     arc.setIntercectionY(intersection[1]);
@@ -1816,7 +2024,7 @@ public class View extends javax.swing.JFrame {
                     int intersection[];
                     //drawArc(out.getX(),out.getY(),in.getX(),in.getY(),arc.getColor(),arc.getName(),arc.getFontSize());
                     //drawArc(out.getX(), out.getY(), width1, height1, in.getX(), in.getY(), width2, height2, arc.getColor(), arc.getName(), arc.getFontSize());
-                    intersection = drawArc(out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1, arc.getColor(), arc.getName(), arc.getFontSize(), arc.getInElement(), arc.getInElement().getX(), arc.getInElement().getY(), capacity);
+                    intersection = drawArc(arc, out.getX(), out.getY(), width2, height2, in.getX(), in.getY(), width1, height1);
                     arc.setIntercectionX(intersection[0]);
                     arc.setIntercectionY(intersection[1]);
                 }
@@ -1827,7 +2035,7 @@ public class View extends javax.swing.JFrame {
                 }
 
                 return;
-            }   
+            }
 
         }
 
@@ -1867,8 +2075,6 @@ public class View extends javax.swing.JFrame {
                 //drawPlace(x, y, Color.GRAY, Color.gray);
             }
 
-
-
             // Selected is 
             if (draggedObject instanceof Line2D) //if(lineButton.isSelected())
             {
@@ -1876,6 +2082,7 @@ public class View extends javax.swing.JFrame {
                 int y1 = (int) ((Line2D) draggedObject).getY1();
                 int x2 = (int) ((Line2D) draggedObject).getX2();
                 int y2 = (int) ((Line2D) draggedObject).getY2();
+                //Arc a=(Arc) draggedObject;
 
                 // Arc is selected when it is moving
                 //Arc _arc=(Arc)selectedElements.get(0); 
@@ -1883,14 +2090,11 @@ public class View extends javax.swing.JFrame {
             }
 
         }
-//**
 
         private void drawSelectedElements() {
             /* Drah all elements */
             for (Element e : selectedElements) {
                 // Ring
-
-
                 if (e instanceof Place) {
                     Place p = (Place) e;
                     //drawPlaceSelected(e.getDiagramElement().getX(), e.getDiagramElement().getY());
@@ -1915,18 +2119,10 @@ public class View extends javax.swing.JFrame {
                 if (e instanceof Arc) {
                     int outX = 0;
                     int outY = 0;
-                    /*   DiagramElement in  =((Arc)e).getInElement().getDiagramElement();
-                     DiagramElement out =((Arc)e).getOutElement().getDiagramElement();
 
-                     drawArcSelected(out.getX(),out.getY(),in.getX(),in.getY());*/
                     Element in = ((Arc) e).getInElement();
                     Element out = ((Arc) e).getOutElement();
-//                    System.out.println(out);
-//                    System.out.println(out.getX());
-//                    System.out.println(out.getY());
-//                    System.out.println(in);
-//                    System.out.println(in.getX());
-//                    System.out.println(in.getY());
+
                     if (out instanceof Transition) {
                         outX = ((Transition) out).getWidth() / 2 + out.getX();
                         outY = ((Transition) out).getHeight() / 2 + out.getY();
@@ -1943,16 +2139,15 @@ public class View extends javax.swing.JFrame {
                         outX = ((Node) out).getWidth() / 2 + out.getX();
                         outY = ((Node) out).getHeight() / 2 + out.getY();
                     }
-                    drawArcSelected(outX, outY, ((Arc) e).getIntercectionX(), ((Arc) e).getIntercectionY());
-                }
 
+                    drawArcSelected((Arc) e, outX, outY, ((Arc) e).getIntercectionX(), ((Arc) e).getIntercectionY());
+                }
             }
         }
 
         public void mouseLeftClick(int x, int y) {
             // Select 1 element
-            //g2d.drawString(name, x, y);
-            //g2d.drawString(name, po.x, po.y);
+            Point selectedArcPoint = null;
             x = (int) (x / scaleRatio[0]);// +(1-scaleRatio[0])*(x-0));// --scaleRatio[0])*x/2);
             y = (int) (y / scaleRatio[1]);// +(1-scaleRatio[1])*(y-0));// -(1-scaleRatio[1])*y/2);
 
@@ -1960,8 +2155,28 @@ public class View extends javax.swing.JFrame {
             if (isCTRLdown == false) {
                 selectedElements.clear();
             }
-
-            Element e = controller.getLocationElement(x, y);
+            Element e = null;
+            Object o = controller.getLocationElement(x, y);
+            if (o instanceof Element) {
+                e = (Element) o;
+            } else if (o instanceof Point) {
+                draggedObject = (Point) o;
+                if (graph instanceof PetriNet) {
+                    Arc tempArc = ((PetriNet) graph).getArc((Point) draggedObject);
+                    selectedElements.add(tempArc);
+                    if (deleteBendButton.isSelected()) {
+                        tempArc.removeBendPoint((Point) draggedObject);
+                        return;
+                    }
+                } else if (graph instanceof PrecedenceGraph) {
+                    Arc tempArc = ((PrecedenceGraph) graph).getArc((Point) draggedObject);
+                    selectedElements.add(tempArc);
+                    if (deleteBendButton.isSelected()) {
+                        tempArc.removeBendPoint((Point) draggedObject);
+                        return;
+                    }
+                }
+            }
             Arc a = controller.getLocationArc(x, y);
             if (e != null) {
                 selectedElements.add(e);
@@ -1994,7 +2209,6 @@ public class View extends javax.swing.JFrame {
                 if (rectangleButton.isSelected()) {
                     controller.addTransition("T", x - 43, y - 19);
                 }
-
             }
 
             // Dragging preparation & create new arc
@@ -2020,14 +2234,14 @@ public class View extends javax.swing.JFrame {
 
                 // Arc
                 if (currentElement instanceof Arc) {
-                    //this.draggedColor=Color.GRAY;
-                    //this.draggedObject=new Rectangle2D.Float(x, y, 25, elementWidth-10);
+                    if (bendButton.isSelected()) {
+                        Arc temp = (Arc) currentElement;
+                        temp.addBendPoint(new Point(x, y));
+                    }
                     propertiesMenu.setVisible(true);
+                    //PetriNet pn = (PetriNet) graph;
                 }
             }
-
-
-
 
             if (selectedElements.isEmpty()) {
                 propertiesMenu.setVisible(false);
@@ -2045,18 +2259,6 @@ public class View extends javax.swing.JFrame {
             selectedElements.clear();
             updateComponentList();
             repaint();
-            /*Element currentElement=controller.getLocationElement(x/elementWidth,y/elementWidth);
-             if (currentElement!=null)
-             controller.deleteElement(x, y);*/
-            // Arc 
-        /*if (currentElement!=null)//  &&  lineButton.isSelected()  )
-             {
-             this.draggedColor=Color.RED;
-             this.draggedObject=new Line2D.Float(x,y,x,y);
-             }  */
-
-            // Not reapinting ! Deleting single item
-            //repaint();
         }
 
         private void mouseLeftDragged(int x, int y) {
@@ -2085,40 +2287,24 @@ public class View extends javax.swing.JFrame {
                 clickedX = x;
                 clickedY = y;
             }
-            //draggedObject=new Rectangle2D.Float(x, y, 25, 40);
-
-            // Ellipse
-       /* if (draggedObject instanceof Ellipse2D)
-             draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
-             */
-            // Rectangle
-        /*if (draggedObject instanceof Rectangle2D)
-             draggedObject=new Rectangle2D.Float(x, y, 25, 40);
-        
-             // Ellipse
-             if (draggedObject instanceof Ellipse2D)
-             draggedObject=new Ellipse2D.Float(x, y, 40, 40);       
-             */
             // Line
             if (draggedObject instanceof Line2D) {
+
                 int x1 = (int) ((Line2D) draggedObject).getX1();
                 int y1 = (int) ((Line2D) draggedObject).getY1();
                 draggedObject = new Line2D.Float(x1, y1, x, y);
             }
-
+            // Point on a line
+            if (draggedObject instanceof Point) {
+                Point p = (Point) draggedObject;
+                p.setLocation(x, y);
+                clickedX = x;
+                clickedY = y;
+                draggedObject = p;
+            }
             repaint();
         }
 
-        /*private void mouseRightDragged(int x, int y) {
-         // Line
-         /*if (draggedObject instanceof Line2D)
-         {
-         int x1=(int)((Line2D)draggedObject).getX1();
-         int y1=(int)((Line2D)draggedObject).getY1();                
-         draggedObject=new Line2D.Float(x1,y1,x,y);
-         }  
-         repaint();     */
-        //}
         public void mouseLeftReleased(int x_old, int y_old, int x_new, int y_new) {
             x_old = (int) (x_old / this.scaleRatio[0]);
             x_new = (int) (x_new / this.scaleRatio[0]);
@@ -2143,119 +2329,64 @@ public class View extends javax.swing.JFrame {
             repaint();
         }
 
-        /*private void mouseRightReleased(int x_old, int y_old, int x_new, int y_new) {
-         /*
-         // Old and current positions
-         int x_old_location=x_old/elementWidth;
-         int y_old_location=y_old/elementWidth;            
-         int x_new_location=x_new/elementWidth;
-         int y_new_location=y_new/elementWidth;
-        
-         // Select existing 
-         // Same location - delete element
-         if (x_old_location == x_new_location && y_old_location == y_new_location)
-         {
-         controller.deleteElement(x_new_location,y_new_location);
-         }
-        
-         // Delete arc
-         {
-         //controller.deleteArc(x_old_location, y_old_location, x_new_location, y_new_location);            
-         }
-         draggedObject=null;
-         repaint();*/
-        //}
         private void loadElementProperties(Element currentElement) {
             generalProperties.loadProperties(currentElement, graph, this);
             notes.setText(currentElement.getNote());
-            /*
-             generalProperties.setElementName(currentElement.getName());
-             generalProperties.setElementFontSize(Integer.toString(currentElement.getFontSize()));
-             notes.setText(currentElement.getNote());
-             if(currentElement instanceof AbsPlace)
-             {
-             AbsPlace current= (AbsPlace) currentElement;
-             generalProperties.setElementWidth(Integer.toString(current.getWidth()));
-             generalProperties.setElementHeight(Integer.toString(current.getHeight()));
-             }
-             if(currentElement instanceof Transition)
-             {
-             Transition current= (Transition) currentElement;
-             generalProperties.setElementWidth(Integer.toString(current.getWidth()));
-             generalProperties.setElementHeight(Integer.toString(current.getHeight()));
-             }
-             */
+
         }
 
-        // Set Scale Ration depend on all items
-        // private void setScaleRatioZoomAll(int width,int height) {
-            /*int [] minXYmaxXY=controller.getMinXYMaxXY();
-         if (minXYmaxXY[0]==0 && minXYmaxXY[1]==0 && minXYmaxXY[2]==0 && minXYmaxXY[3]==0 )
-         return;
-            
-         /* Count nonempty net for width and height */
-        /*int minX=minXYmaxXY[0], minY=minXYmaxXY[1], maxX=minXYmaxXY[2], maxY=minXYmaxXY[3];
-         if ((maxX-minX)<width)
-         {
-         scaleRatio[0]=2;                                      
-         scaleRatio[1]=2;
-         }
-         scaleRatio[0]=2;
-         scaleRatio[1]=2;*/
-        // }
         private void autosetWidthHeight() {
             int marginWidth = 20;
             int marginHeight = 20;
             Font oldfont = g2d.getFont();
             g2d.scale(1, 1);
-
             // Petri net
             if (graph instanceof PetriNet) {
                 for (Place p : ((PetriNet) graph).getListOfPlaces()) {
-                    if (p.getWidth() == -1 && p.getHeight() == -1) {
-                        Font newFont = new Font("Times New Roman", Font.PLAIN, p.getFontSize());
-                        g2d.setFont(newFont);
+                    //if (p.getWidth() == -1 && p.getHeight() == -1) {
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, p.getFontSize());
+                    g2d.setFont(newFont);
 
-                        FontMetrics fm = g2d.getFontMetrics(newFont);
-                        java.awt.geom.Rectangle2D rect = fm.getStringBounds(p.getName() + " :" + p.getMarking(), g2d);
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(p.getName() + " :" + p.getMarking() + "{;}", g2d);
 
-                        double textWidth = (rect.getWidth());
-                        double textHeight = (rect.getHeight());
+                    double textWidth = (rect.getWidth());
+                    double textHeight = (rect.getHeight());
 
-                        p.setWidth((int) (textWidth + marginWidth));
-                        p.setHeight((int) textHeight + marginHeight);
-                    }
+                    p.setWidth((int) (textWidth + marginWidth));
+                    p.setHeight((int) textHeight + marginHeight);
+                    //}
                 }
                 for (Transition t : ((PetriNet) graph).getListOfTransitions()) {
-                    if (t.getWidth() == -1 && t.getHeight() == -1) {
-                        Font newFont = new Font("Times New Roman", Font.PLAIN, t.getFontSize());
-                        g2d.setFont(newFont);
+                    //if (t.getWidth() == -1 && t.getHeight() == -1) {
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, t.getFontSize());
+                    g2d.setFont(newFont);
 
-                        FontMetrics fm = g2d.getFontMetrics(newFont);
-                        java.awt.geom.Rectangle2D rect = fm.getStringBounds(t.getName(), g2d);
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(t.getName(), g2d);
 
-                        double textWidth = (rect.getWidth());
-                        double textHeight = (rect.getHeight());
+                    double textWidth = (rect.getWidth());
+                    double textHeight = (rect.getHeight());
 
-                        t.setWidth((int) (textWidth + marginWidth));
-                        t.setHeight((int) textHeight + marginHeight);
-                    }
+                    t.setWidth((int) (textWidth + marginWidth));
+                    t.setHeight((int) textHeight + marginHeight);
+                    // }
                 }
 
                 for (Resource r : ((PetriNet) graph).getListOfResources()) {
-                    if (r.getWidth() == -1 && r.getHeight() == -1) {
-                        Font newFont = new Font("Times New Roman", Font.PLAIN, r.getFontSize());
-                        g2d.setFont(newFont);
+                    //if (r.getWidth() == -1 && r.getHeight() == -1) {
+                    Font newFont = new Font("Times New Roman", Font.PLAIN, r.getFontSize());
+                    g2d.setFont(newFont);
 
-                        FontMetrics fm = g2d.getFontMetrics(newFont);
-                        java.awt.geom.Rectangle2D rect = fm.getStringBounds(r.getName() + " :" + r.getMarking(), g2d);
+                    FontMetrics fm = g2d.getFontMetrics(newFont);
+                    java.awt.geom.Rectangle2D rect = fm.getStringBounds(r.getName() + " :" + r.getMarking(), g2d);
 
-                        int textWidth = (int) (rect.getWidth());
-                        int textHeight = (int) (rect.getHeight());
+                    int textWidth = (int) (rect.getWidth());
+                    int textHeight = (int) (rect.getHeight());
 
-                        r.setWidth(textWidth + marginWidth);
-                        r.setHeight(textHeight + marginHeight);
-                    }
+                    r.setWidth(textWidth + marginWidth);
+                    r.setHeight(textHeight + marginHeight);
+                    //}
                 }
             }
 
@@ -2337,8 +2468,6 @@ public class View extends javax.swing.JFrame {
             if (SwingUtilities.isRightMouseButton(e)) {
                 diagramPanel.mouseRightClick(getX(), getY());
             }
-            /*if (SwingUtilities.isMiddleMouseButton  (e) )
-             System.out.println("stredny "+x+" "+y);*/
         }
 
         @Override
@@ -2356,27 +2485,16 @@ public class View extends javax.swing.JFrame {
             else if (SwingUtilities.isLeftMouseButton(e)) {
                 diagramPanel.mouseLeftDragged(e.getX(), e.getY());
             }
-            // Right - but left functionality
-            /*if (SwingUtilities.isRightMouseButton(e)) {
-             //diagramPanel.mouseLeftDragged(e.getX(),e.getY());    
-             diagramPanel.mouseRightDragged(e.getX(), e.getY());
-             }*/
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            // Old location is different from current        
-            //if (x != e.getX()   ||     y != e.getY())
+            // Old location is different from current   
             if (true) {
                 // Left
                 if (SwingUtilities.isLeftMouseButton(e)) {
                     diagramPanel.mouseLeftReleased(getX(), getY(), e.getX(), e.getY());
                 }
-                // Right
-                /*if (SwingUtilities.isRightMouseButton(e)) {
-                 //diagramPanel.mouseRightReleased(x,y,e.getX(),e.getY());
-                 }*/
-                
             }
             diagramPanel.setCursor(diagramPanel.handCursor);
         }
@@ -2480,5 +2598,5 @@ public class View extends javax.swing.JFrame {
         propertiesMenu.setVisible(false);
         this.revalidate();
         this.repaint();
-}
+    }
 }

@@ -171,6 +171,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="fontSizeText">
       <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fontSizeTextActionPerformed"/>
         <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="fontSizeTextFocusLost"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fontSizeTextKeyReleased"/>
       </Events>
@@ -225,8 +226,8 @@
                       <Group type="102" attributes="0">
                           <Component id="jLabel7" min="-2" pref="82" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="capacityText" min="-2" pref="82" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="capacitySpiner" min="-2" pref="56" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="26" max="32767" attributes="0"/>
                       </Group>
                       <Component id="startCheckBox" max="32767" attributes="0"/>
                       <Component id="endCheckBox" alignment="0" max="32767" attributes="0"/>
@@ -240,7 +241,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel7" alignment="3" min="-2" pref="22" max="-2" attributes="0"/>
-                      <Component id="capacityText" alignment="3" max="-2" attributes="0"/>
+                      <Component id="capacitySpiner" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="startCheckBox" min="-2" max="-2" attributes="0"/>
@@ -275,12 +276,7 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="startCheckBoxActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JTextField" name="capacityText">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="capacityTextActionPerformed"/>
-            <EventHandler event="focusLost" listener="java.awt.event.FocusListener" parameters="java.awt.event.FocusEvent" handler="capacityTextFocusLost"/>
-            <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="capacityTextKeyReleased"/>
-          </Events>
+        <Component class="javax.swing.JSpinner" name="capacitySpiner">
         </Component>
       </SubComponents>
     </Container>

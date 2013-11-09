@@ -178,6 +178,8 @@ public class Transition extends Element {
            if (outElement instanceof Resource) {
                int outMarkingOld = outElement.getMarking();
                outElement.setMarking(outMarkingOld - arc.getCapacity());
+               Resource r=(Resource)outElement;
+               r.incrementProcess(marking);        
            }else
            {
                Place outPlace = (Place)outElement;
@@ -190,7 +192,10 @@ public class Transition extends Element {
            AbsPlace inElement=(AbsPlace)arc.getInElement();
            if (inElement instanceof Resource) {
                int inMarkingOld=inElement.getMarking();
-               inElement.setMarking(inMarkingOld+arc.getCapacity());                
+               inElement.setMarking(inMarkingOld+arc.getCapacity());  
+               Resource r=(Resource)inElement;
+               r.decrementProcess(marking);
+
            }else{
                Place inPlace = (Place)inElement;
                inPlace.getMarkings().getMarkings().add(marking);
