@@ -1098,7 +1098,7 @@ public class View extends javax.swing.JFrame {
         }
 
         public void drawBuble() {
-            if (bubbleElement != null && cursorButton.isSelected()) {
+            if (bubbleElement != null && cursorButton.isSelected() && draggedElement==null && draggedObject==null) {
                 int width = 0;
                 int height = 0;
                 if (bubbleElement instanceof AbsPlace) {
