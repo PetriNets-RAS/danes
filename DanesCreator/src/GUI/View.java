@@ -901,6 +901,7 @@ public class View extends javax.swing.JFrame {
         int minY = Integer.MAX_VALUE;
         int maxX = 0;
         int maxY = 0;
+        Element e = null,e2 = null;
         ArrayList<Element> elements = new ArrayList<Element>();
         if(this.graph instanceof PetriNet){
             PetriNet pn = (PetriNet)this.graph;
@@ -919,9 +920,11 @@ public class View extends javax.swing.JFrame {
         for (Element element : elements) {
             if(minX>element.getX()){
                 minX = element.getX();
+                e = element;
             }
             if(minY>element.getY()){
                 minY = element.getY();
+                e2 = element;
             }
             if(maxX<element.getX()){
                 maxX = element.getX();
@@ -930,25 +933,21 @@ public class View extends javax.swing.JFrame {
                 maxY = element.getY();
             }
         }
-        //diagramPanel.scaleRatio[0] = 1;
-        //diagramPanel.scaleRatio[1] = 1;
-        /*
-        System.out.println(diagramPanel.scaleRatio[0]+" - "+diagramPanel.scaleRatio[1]);
-        this.diagramPanel.setAlignmentX(minX);
-        this.diagramPanel.setAlignmentY(minY);
-        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(minX,minY));
-        */ 
         int graphWidth = maxX - minX;
         int graphHeight = maxY - minY;
         int maxGraphSize = Math.max(graphHeight, graphWidth);
         double graphSlant = Math.sqrt((maxGraphSize*maxGraphSize)+(maxGraphSize*maxGraphSize));
         
+        int newX = (int)(minX*this.diagramPanel.scaleRatio[0]);
+        int newY = (int)(minY*this.diagramPanel.scaleRatio[1]);
+        
+        
+        System.out.println("X: "+minX+""+" Y:"+minY);
+        System.out.println("X: "+e.getName()+""+" Y:"+e2.getName());
+        /*
         int newX = (int) ((minX-(graphSlant/2))*this.diagramPanel.scaleRatio[0]);
         int newY = (int) ((minY-(graphSlant/2))*this.diagramPanel.scaleRatio[1]);
-        /*
-        int newX = (int) (minX*this.diagramPanel.scaleRatio[0]);
-        int newY = (int) (minY*this.diagramPanel.scaleRatio[1]);
-        */
+        */ 
         this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX,newY));
         repaint();
     }//GEN-LAST:event_zoomInButtonActionPerformed
@@ -960,6 +959,8 @@ public class View extends javax.swing.JFrame {
         int minY = Integer.MAX_VALUE;
         int maxX = 0;
         int maxY = 0;
+        Element e = null;
+        Element e2 = null;
         ArrayList<Element> elements = new ArrayList<Element>();
         if(this.graph instanceof PetriNet){
             PetriNet pn = (PetriNet)this.graph;
@@ -978,9 +979,11 @@ public class View extends javax.swing.JFrame {
         for (Element element : elements) {
             if(minX>element.getX()){
                 minX = element.getX();
+                e = element;
             }
             if(minY>element.getY()){
                 minY = element.getY();
+                e2 = element;
             }
             if(maxX<element.getX()){
                 maxX = element.getX();
@@ -994,13 +997,17 @@ public class View extends javax.swing.JFrame {
         int maxGraphSize = Math.max(graphHeight, graphWidth);
         double graphSlant = Math.sqrt((maxGraphSize*maxGraphSize)+(maxGraphSize*maxGraphSize));
         
+        /*
         int newX = (int) ((minX-(graphSlant/2))*this.diagramPanel.scaleRatio[0]);
         int newY = (int) ((minY-(graphSlant/2))*this.diagramPanel.scaleRatio[1]);
+        */
         
-        /*
+        System.out.println("X: "+minX+""+" Y:"+minY);
+        System.out.println("X: "+e.getName()+""+" Y:"+e2.getName());
+        
         int newX = (int) (minX*this.diagramPanel.scaleRatio[0]);
         int newY = (int) (minY*this.diagramPanel.scaleRatio[1]);
-        */
+        
         this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX,newY));
         repaint();
     }//GEN-LAST:event_zoomOutButtonActionPerformed
@@ -1256,7 +1263,7 @@ public class View extends javax.swing.JFrame {
                 @Override
                 public void mouseMoved(MouseEvent e) {
                     Point p = e.getPoint();
-                    Object o = controller.getLocationElement(p.x, p.y);
+                    Object o = controller.getLocationElement((int)(p.x/diagramPanel.scaleRatio[0]), (int)(p.y/diagramPanel.scaleRatio[0]));
 
 
                     if (o != null) {
@@ -1308,7 +1315,7 @@ public class View extends javax.swing.JFrame {
         public void paint(Graphics g) {
             super.paint(g);
             this.g2d = (Graphics2D) g;
-            g2d.scale(scaleRatio[0], scaleRatio[1]);
+            //g2d.scale(scaleRatio[0], scaleRatio[1]);
             g2d.setStroke(new BasicStroke(3));
             autosetWidthHeight();
             drawGraph();
