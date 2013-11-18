@@ -14,10 +14,10 @@ import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Resource;
 import Core.Transition;
+import FileManager.XMLCPNManager;
 import FileManager.XMLPetriManager;
 import FileManager.XMLPrecedenceManager;
 import StateSpace.StateSpaceCalculator;
-import java.awt.AWTException;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -26,7 +26,6 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
@@ -50,12 +49,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+import java.util.Timer;
+import java.util.TimerTask;
 //import sun.org.mozilla.javascript.internal.xmlimpl.XML;
 
 /**
@@ -69,7 +68,6 @@ public class View extends javax.swing.JFrame {
     private static final String PRECEDENCE_GRAPH = "Precedence graph";
     private static final String CUSTOM_HAND_CURSOR = "hand_cursor";
     private static final String CUSTOM_MOVE_CURSOR = "move_cursor";
-    
     private Graph graph;
     private DiagramPanel diagramPanel;
     //private DiagramKeyListener diagramKeyListener;
@@ -82,9 +80,8 @@ public class View extends javax.swing.JFrame {
     private String selectedFileName;
     private String selectedFilePath;
     private AffineTransform oldTransform;
-    private int lastMouseClickX,lastMouseClickY;
+    private int lastMouseClickX, lastMouseClickY;
     private DefaultListModel listModel = new DefaultListModel();
-   
 
     public View(PetriNet pa_petriNet, Controller pa_controller) {
         super();
@@ -191,6 +188,7 @@ public class View extends javax.swing.JFrame {
         resetZoomButton = new javax.swing.JButton();
         bendButton = new javax.swing.JButton();
         deleteBendButton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newPetriNet = new javax.swing.JMenuItem();
@@ -442,6 +440,17 @@ public class View extends javax.swing.JFrame {
         });
         toolBar.add(deleteBendButton);
 
+        jButton1.setText("jButton1");
+        jButton1.setFocusable(false);
+        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        toolBar.add(jButton1);
+
         fileMenu.setText("File");
 
         newPetriNet.setText("New Petri net");
@@ -614,8 +623,8 @@ public class View extends javax.swing.JFrame {
         graph = p;
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
-        diagramScrollPane.setViewportView(this.diagramPanel);       
-        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750,4750));
+        diagramScrollPane.setViewportView(this.diagramPanel);
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
@@ -686,6 +695,12 @@ public class View extends javax.swing.JFrame {
                 cobaFile = true;
             }
             PetriNet p = loader.getPetriNetFromXML(inputFile, cobaFile);
+            graph = p;
+            x = p.getListOfPlaces().get(0).getX();
+            y = p.getListOfPlaces().get(0).getY();
+        } else if ("cpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+            XMLCPNManager cpn = new XMLCPNManager();
+            PetriNet p = cpn.getPetriNetFromCPN(inputFile);
             graph = p;
             x = p.getListOfPlaces().get(0).getX();
             y = p.getListOfPlaces().get(0).getY();
@@ -901,54 +916,54 @@ public class View extends javax.swing.JFrame {
         int minY = Integer.MAX_VALUE;
         int maxX = 0;
         int maxY = 0;
-        Element e = null,e2 = null;
+        Element e = null, e2 = null;
         ArrayList<Element> elements = new ArrayList<Element>();
-        if(this.graph instanceof PetriNet){
-            PetriNet pn = (PetriNet)this.graph;
+        if (this.graph instanceof PetriNet) {
+            PetriNet pn = (PetriNet) this.graph;
             elements = new ArrayList<Element>();
             elements.addAll(pn.getListOfArcs());
             elements.addAll(pn.getListOfPlaces());
             elements.addAll(pn.getListOfResources());
             elements.addAll(pn.getListOfTransitions());
         }
-        if(this.graph instanceof PrecedenceGraph){
-            PrecedenceGraph pg = (PrecedenceGraph)this.graph;
+        if (this.graph instanceof PrecedenceGraph) {
+            PrecedenceGraph pg = (PrecedenceGraph) this.graph;
             elements = new ArrayList<Element>();
             elements.addAll(pg.getListOfArcs());
             elements.addAll(pg.getListOfNodes());
         }
         for (Element element : elements) {
-            if(minX>element.getX()){
+            if (minX > element.getX()) {
                 minX = element.getX();
                 e = element;
             }
-            if(minY>element.getY()){
+            if (minY > element.getY()) {
                 minY = element.getY();
                 e2 = element;
             }
-            if(maxX<element.getX()){
+            if (maxX < element.getX()) {
                 maxX = element.getX();
             }
-            if(maxY<element.getY()){
+            if (maxY < element.getY()) {
                 maxY = element.getY();
             }
         }
         int graphWidth = maxX - minX;
         int graphHeight = maxY - minY;
         int maxGraphSize = Math.max(graphHeight, graphWidth);
-        double graphSlant = Math.sqrt((maxGraphSize*maxGraphSize)+(maxGraphSize*maxGraphSize));
-        
-        int newX = (int)(minX*this.diagramPanel.scaleRatio[0]);
-        int newY = (int)(minY*this.diagramPanel.scaleRatio[1]);
-        
-        
+        double graphSlant = Math.sqrt((maxGraphSize * maxGraphSize) + (maxGraphSize * maxGraphSize));
+
+        int newX = (int) (minX * this.diagramPanel.scaleRatio[0]);
+        int newY = (int) (minY * this.diagramPanel.scaleRatio[1]);
+
+
         //System.out.println("X: "+minX+""+" Y:"+minY);
         //System.out.println("X: "+e.getName()+""+" Y:"+e2.getName());
         /*
-        int newX = (int) ((minX-(graphSlant/2))*this.diagramPanel.scaleRatio[0]);
-        int newY = (int) ((minY-(graphSlant/2))*this.diagramPanel.scaleRatio[1]);
-        */ 
-        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX,newY));
+         int newX = (int) ((minX-(graphSlant/2))*this.diagramPanel.scaleRatio[0]);
+         int newY = (int) ((minY-(graphSlant/2))*this.diagramPanel.scaleRatio[1]);
+         */
+        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX, newY));
         repaint();
     }//GEN-LAST:event_zoomInButtonActionPerformed
 
@@ -962,53 +977,53 @@ public class View extends javax.swing.JFrame {
         Element e = null;
         Element e2 = null;
         ArrayList<Element> elements = new ArrayList<Element>();
-        if(this.graph instanceof PetriNet){
-            PetriNet pn = (PetriNet)this.graph;
+        if (this.graph instanceof PetriNet) {
+            PetriNet pn = (PetriNet) this.graph;
             elements = new ArrayList<Element>();
             elements.addAll(pn.getListOfArcs());
             elements.addAll(pn.getListOfPlaces());
             elements.addAll(pn.getListOfResources());
             elements.addAll(pn.getListOfTransitions());
         }
-        if(this.graph instanceof PrecedenceGraph){
-            PrecedenceGraph pg = (PrecedenceGraph)this.graph;
+        if (this.graph instanceof PrecedenceGraph) {
+            PrecedenceGraph pg = (PrecedenceGraph) this.graph;
             elements = new ArrayList<Element>();
             elements.addAll(pg.getListOfArcs());
             elements.addAll(pg.getListOfNodes());
         }
         for (Element element : elements) {
-            if(minX>element.getX()){
+            if (minX > element.getX()) {
                 minX = element.getX();
                 e = element;
             }
-            if(minY>element.getY()){
+            if (minY > element.getY()) {
                 minY = element.getY();
                 e2 = element;
             }
-            if(maxX<element.getX()){
+            if (maxX < element.getX()) {
                 maxX = element.getX();
             }
-            if(maxY<element.getY()){
+            if (maxY < element.getY()) {
                 maxY = element.getY();
             }
         }
         int graphWidth = maxX - minX;
         int graphHeight = maxY - minY;
         int maxGraphSize = Math.max(graphHeight, graphWidth);
-        double graphSlant = Math.sqrt((maxGraphSize*maxGraphSize)+(maxGraphSize*maxGraphSize));
-        
+        double graphSlant = Math.sqrt((maxGraphSize * maxGraphSize) + (maxGraphSize * maxGraphSize));
+
         /*
-        int newX = (int) ((minX-(graphSlant/2))*this.diagramPanel.scaleRatio[0]);
-        int newY = (int) ((minY-(graphSlant/2))*this.diagramPanel.scaleRatio[1]);
-        */
-        
+         int newX = (int) ((minX-(graphSlant/2))*this.diagramPanel.scaleRatio[0]);
+         int newY = (int) ((minY-(graphSlant/2))*this.diagramPanel.scaleRatio[1]);
+         */
+
         //System.out.println("X: "+minX+""+" Y:"+minY);
         //System.out.println("X: "+e.getName()+""+" Y:"+e2.getName());
-        
-        int newX = (int) (minX*this.diagramPanel.scaleRatio[0]);
-        int newY = (int) (minY*this.diagramPanel.scaleRatio[1]);
-        
-        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX,newY));
+
+        int newX = (int) (minX * this.diagramPanel.scaleRatio[0]);
+        int newY = (int) (minY * this.diagramPanel.scaleRatio[1]);
+
+        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX, newY));
         repaint();
     }//GEN-LAST:event_zoomOutButtonActionPerformed
 
@@ -1022,34 +1037,34 @@ public class View extends javax.swing.JFrame {
         Element maxEX = null;
         Element maxEY = null;
         ArrayList<Element> elements = new ArrayList<Element>();
-        if(this.graph instanceof PetriNet){
-            PetriNet pn = (PetriNet)this.graph;
+        if (this.graph instanceof PetriNet) {
+            PetriNet pn = (PetriNet) this.graph;
             elements = new ArrayList<Element>();
             elements.addAll(pn.getListOfArcs());
             elements.addAll(pn.getListOfPlaces());
             elements.addAll(pn.getListOfResources());
             elements.addAll(pn.getListOfTransitions());
         }
-        if(this.graph instanceof PrecedenceGraph){
-            PrecedenceGraph pg = (PrecedenceGraph)this.graph;
+        if (this.graph instanceof PrecedenceGraph) {
+            PrecedenceGraph pg = (PrecedenceGraph) this.graph;
             elements = new ArrayList<Element>();
             elements.addAll(pg.getListOfArcs());
             elements.addAll(pg.getListOfNodes());
         }
         for (Element element : elements) {
-            if(minX>element.getX()){
+            if (minX > element.getX()) {
                 minX = element.getX();
                 minEX = element;
             }
-            if(minY>element.getY()){
+            if (minY > element.getY()) {
                 minY = element.getY();
                 minEY = element;
             }
-            if(maxX<element.getX()){
+            if (maxX < element.getX()) {
                 maxX = element.getX();
                 maxEX = element;
             }
-            if(maxY<element.getY()){
+            if (maxY < element.getY()) {
                 maxY = element.getY();
                 maxEY = element;
             }
@@ -1058,25 +1073,25 @@ public class View extends javax.swing.JFrame {
         int graphHeight = maxY - minY;
         int maxGraphSize = Math.max(graphHeight, graphWidth);
         int minDiagramSize = Math.min(this.diagramScrollPane.getWidth(), this.diagramScrollPane.getHeight());
-        double diagramSlant = Math.sqrt((minDiagramSize*minDiagramSize)+(minDiagramSize*minDiagramSize));
-        double graphSlant = Math.sqrt((maxGraphSize*maxGraphSize)+(maxGraphSize*maxGraphSize));
-        if(graphSlant > diagramSlant){
-            this.diagramPanel.scaleRatio[1] = (diagramSlant/graphSlant) - 0.05;
-            this.diagramPanel.scaleRatio[0] = (diagramSlant/graphSlant) - 0.05;
-        }else{
+        double diagramSlant = Math.sqrt((minDiagramSize * minDiagramSize) + (minDiagramSize * minDiagramSize));
+        double graphSlant = Math.sqrt((maxGraphSize * maxGraphSize) + (maxGraphSize * maxGraphSize));
+        if (graphSlant > diagramSlant) {
+            this.diagramPanel.scaleRatio[1] = (diagramSlant / graphSlant) - 0.05;
+            this.diagramPanel.scaleRatio[0] = (diagramSlant / graphSlant) - 0.05;
+        } else {
             this.diagramPanel.scaleRatio[1] = 1;
             this.diagramPanel.scaleRatio[0] = 1;
         }
         /*
-        System.out.println("Uhlopriecky "+ diagramSlant+" " +graphSlant);
-        System.out.println("Diagram " + this.diagramScrollPane.getWidth()+" " +this.diagramScrollPane.getHeight());
-        System.out.println("Graf" +"("+maxX+" - "+minX+")"+",("+maxY+" - "+minY+")");
-        System.out.println("Najlavejsi: " + minEX.getName());
-        System.out.println("Najvyssi: " + minEY.getName());
-        System.out.println("Najpravejsi: " + maxEX.getName());
-        System.out.println("Najspodnejsi: " + maxEY.getName());
-        */ 
-        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point((int)(minX*this.diagramPanel.scaleRatio[0]),(int)(minY*this.diagramPanel.scaleRatio[1])));
+         System.out.println("Uhlopriecky "+ diagramSlant+" " +graphSlant);
+         System.out.println("Diagram " + this.diagramScrollPane.getWidth()+" " +this.diagramScrollPane.getHeight());
+         System.out.println("Graf" +"("+maxX+" - "+minX+")"+",("+maxY+" - "+minY+")");
+         System.out.println("Najlavejsi: " + minEX.getName());
+         System.out.println("Najvyssi: " + minEY.getName());
+         System.out.println("Najpravejsi: " + maxEX.getName());
+         System.out.println("Najspodnejsi: " + maxEY.getName());
+         */
+        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point((int) (minX * this.diagramPanel.scaleRatio[0]), (int) (minY * this.diagramPanel.scaleRatio[1])));
         repaint();
     }//GEN-LAST:event_resetZoomButtonActionPerformed
 
@@ -1088,22 +1103,21 @@ public class View extends javax.swing.JFrame {
         cursorButton.setSelected(true);
     }//GEN-LAST:event_cursorButtonActionPerformed
 
-    private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {                                               
+    private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {
+    }
 
-    }                                              
-
-    private void updateComponentList(){
+    private void updateComponentList() {
         ArrayList<Element> elements = new ArrayList<Element>();
-        if(this.graph instanceof PetriNet){
-            PetriNet pn = (PetriNet)this.graph;
+        if (this.graph instanceof PetriNet) {
+            PetriNet pn = (PetriNet) this.graph;
             elements = new ArrayList<Element>();
             elements.addAll(pn.getListOfArcs());
             elements.addAll(pn.getListOfPlaces());
             elements.addAll(pn.getListOfResources());
             elements.addAll(pn.getListOfTransitions());
         }
-        if(this.graph instanceof PrecedenceGraph){
-            PrecedenceGraph pg = (PrecedenceGraph)this.graph;
+        if (this.graph instanceof PrecedenceGraph) {
+            PrecedenceGraph pg = (PrecedenceGraph) this.graph;
             elements = new ArrayList<Element>();
             elements.addAll(pg.getListOfArcs());
             elements.addAll(pg.getListOfNodes());
@@ -1114,14 +1128,13 @@ public class View extends javax.swing.JFrame {
             //componentsName.add(element.getName());
             this.listModel.addElement(element.getName());
         }
-        
+
         this.componentList.removeAll();
         this.componentList.setModel(this.listModel);
-        
+
         //this.componentList.add(componentsName);
     }
-    
-    
+
     private void bendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bendButtonActionPerformed
         if (bendButton.isSelected()) {
             bendButton.setSelected(false);
@@ -1178,6 +1191,40 @@ public class View extends javax.swing.JFrame {
     private void notesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyReleased
     }//GEN-LAST:event_notesKeyReleased
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // test load cpn
+        File f = new File("test.cpn");
+        XMLCPNManager cpn = new XMLCPNManager();
+        PetriNet pnn = cpn.getPetriNetFromCPN(f);
+        graph = pnn;
+        controller.setModel(graph);
+        this.diagramPanel = new DiagramPanel(graph);
+        diagramScrollPane.setViewportView(this.diagramPanel);
+
+        sideMenu.setVisible(true);
+        // hide side menu
+        propertiesMenu.setVisible(false);
+
+        /* Show zoom buttos */
+//        btnZoomIn.setVisible(true);
+//        btnZoomOut.setVisible(true);
+//        btnZoomReset.setVisible(true);
+        /* Show align buttons */
+        alignLeftButton.setVisible(true);
+        alignRightButton.setVisible(true);
+        alignTopButton.setVisible(true);
+        alignBottomButton.setVisible(true);
+        zoomOutButton.setVisible(true);
+        zoomInButton.setVisible(true);
+        resetZoomButton.setVisible(true);
+        deleteBendButton.setVisible(true);
+        bendButton.setVisible(true);
+
+        ///
+        getInfoAboutModel(graph);
+
+
+    }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
@@ -1197,6 +1244,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JMenuItem export;
     private javax.swing.JMenu fileMenu;
     private GUI.PropertiesMenu generalProperties;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem loadItem;
@@ -1231,8 +1279,9 @@ public class View extends javax.swing.JFrame {
         boolean isCTRLdown = false;
         private int clickedX;
         private int clickedY;
-        private Cursor draggedHandCursor,handCursor;
+        private Cursor draggedHandCursor, handCursor;
         private Element bubbleElement;
+        private Timer timer;
 
         /**
          * Creates new form GraphPanel
@@ -1264,18 +1313,24 @@ public class View extends javax.swing.JFrame {
 
                 @Override
                 public void mouseMoved(MouseEvent e) {
+                    if (timer != null) {
+                        timer.cancel();
+                    }
+
                     Point p = e.getPoint();
-                    Object o = controller.getLocationElement((int)(p.x/diagramPanel.scaleRatio[0]), (int)(p.y/diagramPanel.scaleRatio[0]));
+                    final Object o = controller.getLocationElement((int) (p.x / diagramPanel.scaleRatio[0]), (int) (p.y / diagramPanel.scaleRatio[0]));
 
 
                     if (o != null && !(o instanceof Point)) {
-//                        try {
-//                            Thread.sleep(500);
-//                        } catch (InterruptedException ex) {
-//                            Thread.currentThread().interrupt();
-//                        }
-                        bubbleElement = (Element) o;
-                        repaint();
+                        timer = new Timer();
+                        timer.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                bubbleElement = (Element) o;
+                                repaint();
+                            }
+                        }, 750);
+
                     } else {
 
                         bubbleElement = null;
@@ -1306,14 +1361,13 @@ public class View extends javax.swing.JFrame {
             Toolkit toolkit = Toolkit.getDefaultToolkit();
             Image cursorImage = toolkit.getImage("Images\\move_hand_trans.png");
             Image cursorImage2 = toolkit.getImage("Images\\trans_hand.png");
-            Point cursorHotSpot = new Point(0,0);
-            this.draggedHandCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot,CUSTOM_MOVE_CURSOR);
+            Point cursorHotSpot = new Point(0, 0);
+            this.draggedHandCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot, CUSTOM_MOVE_CURSOR);
             this.handCursor = toolkit.createCustomCursor(cursorImage2, cursorHotSpot, CUSTOM_HAND_CURSOR);
             this.setCursor(this.handCursor);
         }
 
-        
-        @Override 
+        @Override
         public void paint(Graphics g) {
             super.paint(g);
             this.g2d = (Graphics2D) g;
@@ -1327,7 +1381,7 @@ public class View extends javax.swing.JFrame {
         }
 
         public void drawBuble() {
-            if (bubbleElement != null && cursorButton.isSelected() && draggedElement==null && draggedObject==null) {
+            if (bubbleElement != null && cursorButton.isSelected() && draggedElement == null && draggedObject == null) {
                 int width = 0;
                 int height = 0;
                 if (bubbleElement instanceof AbsPlace) {
@@ -1690,8 +1744,7 @@ public class View extends javax.swing.JFrame {
                 Font newFont = new Font("Times New Roman", Font.PLAIN, fontSize);
                 g2d.setFont(newFont);
 
-                int x = 0;
-                int y = 0;
+                int x, y;
                 if (x1 < midX) {
                     x = x1 + (midX - x1 + width / 2 - 10) / 2;
                     y = y1 + (midY - y1) / 2 + 15;
@@ -2043,7 +2096,6 @@ public class View extends javax.swing.JFrame {
                     drawPlace(e.getX(), e.getY(), e.getColor(), e.getColor2(), ((Node) e).getWidth(), ((Node) e).getHeight(), e.getName() + " :" + ((Node) e).getCapacity(), e.getFontSize());
                 }
 
-                return;
             }
 
         }
@@ -2280,10 +2332,10 @@ public class View extends javax.swing.JFrame {
             if (draggedObject == null && draggedElement == null) {
                 int scrollPositionX = diagramScrollPane.getViewport().getViewPosition().x;
                 int scrollPositionY = diagramScrollPane.getViewport().getViewPosition().y;
-                int offsetX = (this.mouseAdapter.getX() - origX+scrollPositionX);
-                int offsetY = (this.mouseAdapter.getY() - origY+scrollPositionY);
-                if(offsetY > 0 && offsetX > 0){
-                    diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX,offsetY));
+                int offsetX = (this.mouseAdapter.getX() - origX + scrollPositionX);
+                int offsetY = (this.mouseAdapter.getY() - origY + scrollPositionY);
+                if (offsetY > 0 && offsetX > 0) {
+                    diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX, offsetY));
                 }
                 return;
             }
@@ -2456,7 +2508,7 @@ public class View extends javax.swing.JFrame {
         }
     }
 
-    public class DiagramMouseAdapter extends MouseAdapter{
+    public class DiagramMouseAdapter extends MouseAdapter {
 
         private int x;
         private int y;
@@ -2481,16 +2533,15 @@ public class View extends javax.swing.JFrame {
 
         @Override
         public void mouseDragged(MouseEvent e) {
-            if (SwingUtilities.isLeftMouseButton(e)&&e.isControlDown()) {
+            if (SwingUtilities.isLeftMouseButton(e) && e.isControlDown()) {
                 int scrollPositionX = diagramScrollPane.getViewport().getViewPosition().x;
                 int scrollPositionY = diagramScrollPane.getViewport().getViewPosition().y;
-                int offsetX = (getX() - e.getX()+scrollPositionX);
-                int offsetY = (getY() - e.getY()+scrollPositionY);
-                if(offsetY > 0 && offsetX > 0){
-                diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX,offsetY));
+                int offsetX = (getX() - e.getX() + scrollPositionX);
+                int offsetY = (getY() - e.getY() + scrollPositionY);
+                if (offsetY > 0 && offsetX > 0) {
+                    diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX, offsetY));
                 }
-            }
-            // Left
+            } // Left
             else if (SwingUtilities.isLeftMouseButton(e)) {
                 diagramPanel.mouseLeftDragged(e.getX(), e.getY());
             }
@@ -2522,81 +2573,83 @@ public class View extends javax.swing.JFrame {
             return y;
         }
     }
-    	private class ScaleHandler implements MouseWheelListener {
-                @Override
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			if(e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL && e.isControlDown()) {
-                                    ellipseButton.setSelected(false);
-                                    rectangleButton.setSelected(false);
-                                    resuorceButton.setSelected(false);
-                                    rectangleButton.setSelected(false);
-                                    lineButton.setSelected(false);
-                                //diagramPanel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
-                                
-                                /*
-                                int scrollPositionX = diagramScrollPane.getViewport().getViewPosition().x;
-                                int scrollPositionY = diagramScrollPane.getViewport().getViewPosition().y;
-                                int offsetX = (getX() - e.getX()+scrollPositionX);
-                                int offsetY = (getY() - e.getY()+scrollPositionY);
-                                if(offsetY > 0 && offsetX > 0){
-                                    diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX,offsetY));
-                                }
-                                */ 
-                                    int minX = Integer.MAX_VALUE;
-                                    int minY = Integer.MAX_VALUE;
-                                    int maxX = 0;
-                                    int maxY = 0;
-                                    ArrayList<Element> elements = new ArrayList<Element>();
-                                    if(graph instanceof PetriNet){
-                                        PetriNet pn = (PetriNet)graph;
-                                        elements = new ArrayList<Element>();
-                                        elements.addAll(pn.getListOfArcs());
-                                        elements.addAll(pn.getListOfPlaces());
-                                        elements.addAll(pn.getListOfResources());
-                                        elements.addAll(pn.getListOfTransitions());
-                                    }
-                                    if(graph instanceof PrecedenceGraph){
-                                        PrecedenceGraph pg = (PrecedenceGraph)graph;
-                                        elements = new ArrayList<Element>();
-                                        elements.addAll(pg.getListOfArcs());
-                                        elements.addAll(pg.getListOfNodes());
-                                    }
-                                    for (Element element : elements) {
-                                        if(minX>element.getX()){
-                                            minX = element.getX();
-                                        }
-                                        if(minY>element.getY()){
-                                            minY = element.getY();
-                                        }
-                                        if(maxX<element.getX()){
-                                            maxX = element.getX();
-                                        }
-                                        if(maxY<element.getY()){
-                                            maxY = element.getY();
-                                        }
-                                    }
-                                Point mousePosition = diagramPanel.getMousePosition();
-                                double scale = (.1 * e.getWheelRotation());
-                                //System.out.println(""+mousePosition.x+", "+mousePosition.y+" "+ maxX+" "+maxY);
-                                if(diagramPanel.scaleRatio[0] > 0.3 || scale > 0){
-                                    diagramPanel.scaleRatio[0] += scale;
-                                    diagramPanel.scaleRatio[1] += scale;
-                                }else{
-                                    diagramPanel.scaleRatio[0] = 0.3;
-                                    diagramPanel.scaleRatio[1] = 0.3;
-                                }
-                                //System.out.println(""+diagramScrollPane.getViewport().getViewPosition().x+"  "+diagramScrollPane.getViewport().getViewPosition().y);
-                                diagramScrollPane.getViewport().setViewPosition(
-                                        new java.awt.Point(
-                                            (int)(minX*diagramPanel.scaleRatio[0]),
-                                            (int)(minY*diagramPanel.scaleRatio[1])));
-				// don't cross negative threshold.
-				// also, setting scale to 0 has bad effects
-				//canvas.scale = Math.max(0.00001, canvas.scale); 
-				repaint();
-			}
-		}
-	}
+
+    private class ScaleHandler implements MouseWheelListener {
+
+        @Override
+        public void mouseWheelMoved(MouseWheelEvent e) {
+            if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL && e.isControlDown()) {
+                ellipseButton.setSelected(false);
+                rectangleButton.setSelected(false);
+                resuorceButton.setSelected(false);
+                rectangleButton.setSelected(false);
+                lineButton.setSelected(false);
+                //diagramPanel.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
+
+                /*
+                 int scrollPositionX = diagramScrollPane.getViewport().getViewPosition().x;
+                 int scrollPositionY = diagramScrollPane.getViewport().getViewPosition().y;
+                 int offsetX = (getX() - e.getX()+scrollPositionX);
+                 int offsetY = (getY() - e.getY()+scrollPositionY);
+                 if(offsetY > 0 && offsetX > 0){
+                 diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX,offsetY));
+                 }
+                 */
+                int minX = Integer.MAX_VALUE;
+                int minY = Integer.MAX_VALUE;
+                int maxX = 0;
+                int maxY = 0;
+                ArrayList<Element> elements = new ArrayList<Element>();
+                if (graph instanceof PetriNet) {
+                    PetriNet pn = (PetriNet) graph;
+                    elements = new ArrayList<Element>();
+                    elements.addAll(pn.getListOfArcs());
+                    elements.addAll(pn.getListOfPlaces());
+                    elements.addAll(pn.getListOfResources());
+                    elements.addAll(pn.getListOfTransitions());
+                }
+                if (graph instanceof PrecedenceGraph) {
+                    PrecedenceGraph pg = (PrecedenceGraph) graph;
+                    elements = new ArrayList<Element>();
+                    elements.addAll(pg.getListOfArcs());
+                    elements.addAll(pg.getListOfNodes());
+                }
+                for (Element element : elements) {
+                    if (minX > element.getX()) {
+                        minX = element.getX();
+                    }
+                    if (minY > element.getY()) {
+                        minY = element.getY();
+                    }
+                    if (maxX < element.getX()) {
+                        maxX = element.getX();
+                    }
+                    if (maxY < element.getY()) {
+                        maxY = element.getY();
+                    }
+                }
+                Point mousePosition = diagramPanel.getMousePosition();
+                double scale = (.1 * e.getWheelRotation());
+                //System.out.println(""+mousePosition.x+", "+mousePosition.y+" "+ maxX+" "+maxY);
+                if (diagramPanel.scaleRatio[0] > 0.3 || scale > 0) {
+                    diagramPanel.scaleRatio[0] += scale;
+                    diagramPanel.scaleRatio[1] += scale;
+                } else {
+                    diagramPanel.scaleRatio[0] = 0.3;
+                    diagramPanel.scaleRatio[1] = 0.3;
+                }
+                //System.out.println(""+diagramScrollPane.getViewport().getViewPosition().x+"  "+diagramScrollPane.getViewport().getViewPosition().y);
+                diagramScrollPane.getViewport().setViewPosition(
+                        new java.awt.Point(
+                        (int) (minX * diagramPanel.scaleRatio[0]),
+                        (int) (minY * diagramPanel.scaleRatio[1])));
+                // don't cross negative threshold.
+                // also, setting scale to 0 has bad effects
+                //canvas.scale = Math.max(0.00001, canvas.scale); 
+                repaint();
+            }
+        }
+    }
 
     private void resetForm() {
         ellipseButton.setSelected(false);
