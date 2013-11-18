@@ -71,18 +71,6 @@ public class XMLCPNManager {
                 reMoveElements(pn, Math.abs(minX), Math.abs(minY));
             }
 
-
-            for (int k = 0; k < pn.getListOfArcs().size(); k++) {
-                Arc a = pn.getListOfArcs().get(k);
-
-                System.out.println("Arc: " + a.getName());
-                for (int l = 0; l < a.getBendPoints().size(); l++) {
-                    System.out.println(a.getBendPoints().get(l));
-                }
-                System.out.println();
-
-            }
-
             return pn;
         } catch (Exception ex) {
             Logger.getLogger(XMLPetriManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -108,16 +96,46 @@ public class XMLCPNManager {
                 p.setLocation(p.x + x + 30, p.y + y + 30);
             }
         }
+    }
 
+    public void reMoveElementsByX(PetriNet pn, int x) {
+        for (Place p : pn.getListOfPlaces()) {
+            p.setX(p.getX() + x + 30);
+        }
+        for (Transition t : pn.getListOfTransitions()) {
+            t.setX(t.getX() + x + 30);
+        }
+        for (Resource r : pn.getListOfResources()) {
+            r.setX(r.getX() + x + 30);
+        }
+        for (Arc a : pn.getListOfArcs()) {
+            for (Point p : a.getBendPoints()) {
+                p.setLocation(p.x + x + 30, p.y);
+            }
+        }
+    }
 
+    public void reMoveElementsByY(PetriNet pn, int y) {
+        for (Place p : pn.getListOfPlaces()) {
+            p.setY(p.getY() + y + 30);
+        }
+        for (Transition t : pn.getListOfTransitions()) {
+            t.setY(t.getY() + y + 30);
+        }
+        for (Resource r : pn.getListOfResources()) {
+            r.setY(r.getY() + y + 30);
+        }
+        for (Arc a : pn.getListOfArcs()) {
+            for (Point p : a.getBendPoints()) {
+                p.setLocation(p.x, p.y + y + 30);
+            }
+        }
     }
 
     public void getPlacesFromCPN(Document doc, PetriNet pn) {
         NodeList placeList = doc.getElementsByTagName("place");
         for (int i = 0; i < placeList.getLength(); i++) {
             Node nNode = placeList.item(i);
-
-            //System.out.println(nNode.getFirstChild().);
 
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) nNode;
@@ -252,7 +270,7 @@ public class XMLCPNManager {
                         }
 
                         a.addBendPointSimple(new Point(bendX, bendY));
-                        
+
                     }
                 }
                 pn.addArc(a);

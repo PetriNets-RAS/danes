@@ -188,7 +188,6 @@ public class View extends javax.swing.JFrame {
         resetZoomButton = new javax.swing.JButton();
         bendButton = new javax.swing.JButton();
         deleteBendButton = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newPetriNet = new javax.swing.JMenuItem();
@@ -440,17 +439,6 @@ public class View extends javax.swing.JFrame {
         });
         toolBar.add(deleteBendButton);
 
-        jButton1.setText("jButton1");
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        toolBar.add(jButton1);
-
         fileMenu.setText("File");
 
         newPetriNet.setText("New Petri net");
@@ -514,6 +502,11 @@ public class View extends javax.swing.JFrame {
         editMenu.add(convert);
 
         export.setText("Export");
+        export.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                exportActionPerformed(evt);
+            }
+        });
         editMenu.add(export);
 
         create_state_diagram.setText("Create state diagram");
@@ -683,67 +676,69 @@ public class View extends javax.swing.JFrame {
         int openShowDialog = jFileChooser.showOpenDialog(this);
 
         selectedFile = jFileChooser.getSelectedFile();
-        File inputFile = new File(selectedFile.getAbsolutePath());
+        if (selectedFile != null) {
+            File inputFile = new File(selectedFile.getAbsolutePath());
 
-        int x, y;
+            int x, y;
 
-        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))
-                || "pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
-            FileManager.XMLPetriManager loader = new XMLPetriManager();
-            boolean cobaFile = false;
-            if ("pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
-                cobaFile = true;
+            if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))
+                    || "pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+                FileManager.XMLPetriManager loader = new XMLPetriManager();
+                boolean cobaFile = false;
+                if ("pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+                    cobaFile = true;
+                }
+                PetriNet p = loader.getPetriNetFromXML(inputFile, cobaFile);
+                graph = p;
+                x = p.getListOfPlaces().get(0).getX();
+                y = p.getListOfPlaces().get(0).getY();
+            } else if ("cpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+                XMLCPNManager cpn = new XMLCPNManager();
+                PetriNet p = cpn.getPetriNetFromCPN(inputFile);
+                graph = p;
+                x = p.getListOfPlaces().get(0).getX();
+                y = p.getListOfPlaces().get(0).getY();
+            } else {
+                FileManager.XMLPrecedenceManager loader = new XMLPrecedenceManager();
+                PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
+                graph = pg;
+                x = pg.getListOfNodes().get(0).getX();
+                y = pg.getListOfNodes().get(0).getY();
             }
-            PetriNet p = loader.getPetriNetFromXML(inputFile, cobaFile);
-            graph = p;
-            x = p.getListOfPlaces().get(0).getX();
-            y = p.getListOfPlaces().get(0).getY();
-        } else if ("cpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
-            XMLCPNManager cpn = new XMLCPNManager();
-            PetriNet p = cpn.getPetriNetFromCPN(inputFile);
-            graph = p;
-            x = p.getListOfPlaces().get(0).getX();
-            y = p.getListOfPlaces().get(0).getY();
-        } else {
-            FileManager.XMLPrecedenceManager loader = new XMLPrecedenceManager();
-            PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
-            graph = pg;
-            x = pg.getListOfNodes().get(0).getX();
-            y = pg.getListOfNodes().get(0).getY();
-        }
-        getInfoAboutFile(inputFile);
-        controller.setModel(graph);
-        this.diagramPanel = new DiagramPanel(graph);
-        diagramScrollPane.setViewportView(this.diagramPanel);
+            getInfoAboutFile(inputFile);
+            controller.setModel(graph);
+            this.diagramPanel = new DiagramPanel(graph);
+            diagramScrollPane.setViewportView(this.diagramPanel);
 
-        if ((x - 50) < 0 || (y - 50 < 0)) {
-            x = 0;
-            y = 0;
-        }
+            if ((x - 50) < 0 || (y - 50 < 0)) {
+                x = 0;
+                y = 0;
+            }
 
-        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x - 50, y - 50));
+            diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x - 50, y - 50));
 
-        sideMenu.setVisible(true);
-        // hide side menu
-        propertiesMenu.setVisible(false);
+            sideMenu.setVisible(true);
+            // hide side menu
+            propertiesMenu.setVisible(false);
 
-        /* Show zoom buttos */
+            /* Show zoom buttos */
 //        btnZoomIn.setVisible(true);
 //        btnZoomOut.setVisible(true);
 //        btnZoomReset.setVisible(true);
         /* Show align buttons */
-        alignLeftButton.setVisible(true);
-        alignRightButton.setVisible(true);
-        alignTopButton.setVisible(true);
-        alignBottomButton.setVisible(true);
-        zoomOutButton.setVisible(true);
-        zoomInButton.setVisible(true);
-        resetZoomButton.setVisible(true);
-        deleteBendButton.setVisible(true);
-        bendButton.setVisible(true);
+            alignLeftButton.setVisible(true);
+            alignRightButton.setVisible(true);
+            alignTopButton.setVisible(true);
+            alignBottomButton.setVisible(true);
+            zoomOutButton.setVisible(true);
+            zoomInButton.setVisible(true);
+            resetZoomButton.setVisible(true);
+            deleteBendButton.setVisible(true);
+            bendButton.setVisible(true);
 
-        ///
-        getInfoAboutModel(graph);
+            ///
+            getInfoAboutModel(graph);
+        }
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
@@ -843,19 +838,21 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_newPrecedenceNetActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-        PrecedenceGraph pg = (PrecedenceGraph) graph;
-        PetriNet converted = pg.changePrecedenceGraphToPN();
-        graph = converted;
-        controller.setModel(converted);
-        this.diagramPanel = new DiagramPanel(converted);
-        diagramScrollPane.setViewportView(this.diagramPanel);
-        sideMenu.setVisible(true);
-        // hide side menu
-        propertiesMenu.setVisible(false);
-        getInfoAboutModel(graph);
+        if (graph != null) {
+            PrecedenceGraph pg = (PrecedenceGraph) graph;
+            PetriNet converted = pg.changePrecedenceGraphToPN();
+            graph = converted;
+            controller.setModel(converted);
+            this.diagramPanel = new DiagramPanel(converted);
+            diagramScrollPane.setViewportView(this.diagramPanel);
+            sideMenu.setVisible(true);
+            // hide side menu
+            propertiesMenu.setVisible(false);
+            getInfoAboutModel(graph);
 
-        rectangleButton.setVisible(true);
-        resuorceButton.setVisible(true);
+            rectangleButton.setVisible(true);
+            resuorceButton.setVisible(true);
+        }
     }//GEN-LAST:event_convertActionPerformed
 
     private void diagramScrollPaneMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseClicked
@@ -865,22 +862,21 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_diagramScrollPaneMousePressed
 
     private void create_state_diagramActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_create_state_diagramActionPerformed
-        if (graph == null) {
-            return;
-        }
+        if (graph != null) {
 
-        PetriNet ssPetriNet = null;
-        if (graph instanceof PetriNet) {
-            ssPetriNet = (PetriNet) graph;
-        }
-        if (graph instanceof PrecedenceGraph) {
-            ssPetriNet = ((PrecedenceGraph) graph).changePrecedenceGraphToPN();
-        }
 
-        StateSpaceCalculator ssCalc = new StateSpaceCalculator(ssPetriNet);
-        ssCalc.calculateStateSpace();
-        ssPetriNet.setStates(ssCalc.getResult());
+            PetriNet ssPetriNet = null;
+            if (graph instanceof PetriNet) {
+                ssPetriNet = (PetriNet) graph;
+            }
+            if (graph instanceof PrecedenceGraph) {
+                ssPetriNet = ((PrecedenceGraph) graph).changePrecedenceGraphToPN();
+            }
 
+            StateSpaceCalculator ssCalc = new StateSpaceCalculator(ssPetriNet);
+            ssCalc.calculateStateSpace();
+            ssPetriNet.setStates(ssCalc.getResult());
+        }
     }//GEN-LAST:event_create_state_diagramActionPerformed
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
@@ -1191,40 +1187,10 @@ public class View extends javax.swing.JFrame {
     private void notesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyReleased
     }//GEN-LAST:event_notesKeyReleased
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // test load cpn
-        File f = new File("test.cpn");
-        XMLCPNManager cpn = new XMLCPNManager();
-        PetriNet pnn = cpn.getPetriNetFromCPN(f);
-        graph = pnn;
-        controller.setModel(graph);
-        this.diagramPanel = new DiagramPanel(graph);
-        diagramScrollPane.setViewportView(this.diagramPanel);
+    private void exportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_exportActionPerformed
 
-        sideMenu.setVisible(true);
-        // hide side menu
-        propertiesMenu.setVisible(false);
-
-        /* Show zoom buttos */
-//        btnZoomIn.setVisible(true);
-//        btnZoomOut.setVisible(true);
-//        btnZoomReset.setVisible(true);
-        /* Show align buttons */
-        alignLeftButton.setVisible(true);
-        alignRightButton.setVisible(true);
-        alignTopButton.setVisible(true);
-        alignBottomButton.setVisible(true);
-        zoomOutButton.setVisible(true);
-        zoomInButton.setVisible(true);
-        resetZoomButton.setVisible(true);
-        deleteBendButton.setVisible(true);
-        bendButton.setVisible(true);
-
-        ///
-        getInfoAboutModel(graph);
-
-
-    }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
@@ -1244,7 +1210,6 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JMenuItem export;
     private javax.swing.JMenu fileMenu;
     private GUI.PropertiesMenu generalProperties;
-    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem loadItem;
