@@ -48,6 +48,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
@@ -55,6 +56,10 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 //import sun.org.mozilla.javascript.internal.xmlimpl.XML;
 
 /**
@@ -84,13 +89,13 @@ public class View extends javax.swing.JFrame {
     private DefaultListModel listModel = new DefaultListModel();
 
     public View(PetriNet pa_petriNet, Controller pa_controller) {
-        super();
+        super();        
         //this.setLocationRelativeTo(null);
         this.graph = pa_petriNet;
         this.controller = pa_controller;
         this.diagramPanel = null;
         initComponents();
-
+              
         about = new AboutUs(this, rootPaneCheckingEnabled);
         String IconPath = "Images\\icon.png";
         BufferedImage icon = null;
@@ -100,6 +105,7 @@ public class View extends javax.swing.JFrame {
         } catch (IOException e) {
             System.out.print("Image was not found");
         }
+
 
         this.setIconImage(icon);
         // hide side panels
@@ -178,6 +184,7 @@ public class View extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         componentList = new javax.swing.JList();
         diagramScrollPane = new javax.swing.JScrollPane();
+        backgroundImageLabel = new javax.swing.JLabel();
         toolBar = new javax.swing.JToolBar();
         alignTopButton = new javax.swing.JButton();
         alignBottomButton = new javax.swing.JButton();
@@ -314,7 +321,6 @@ public class View extends javax.swing.JFrame {
         sideMenu.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 226, 120));
 
         diagramScrollPane.setBorder(null);
-        diagramScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         diagramScrollPane.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         diagramScrollPane.setWheelScrollingEnabled(false);
         diagramScrollPane.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -325,6 +331,11 @@ public class View extends javax.swing.JFrame {
                 diagramScrollPaneMousePressed(evt);
             }
         });
+
+        backgroundImageLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        backgroundImageLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/big.png"))); // NOI18N
+        backgroundImageLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        diagramScrollPane.setViewportView(backgroundImageLabel);
 
         toolBar.setFloatable(false);
         toolBar.setRollover(true);
@@ -502,11 +513,6 @@ public class View extends javax.swing.JFrame {
         editMenu.add(convert);
 
         export.setText("Export");
-        export.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                exportActionPerformed(evt);
-            }
-        });
         editMenu.add(export);
 
         create_state_diagram.setText("Create state diagram");
@@ -537,11 +543,9 @@ public class View extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 298, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(diagramScrollPane)
-                        .addGap(29, 29, 29)))
+                        .addGap(0, 336, Short.MAX_VALUE))
+                    .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
@@ -1190,15 +1194,13 @@ public class View extends javax.swing.JFrame {
     private void notesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyReleased
     }//GEN-LAST:event_notesKeyReleased
 
-    private void exportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_exportActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
     private javax.swing.JButton alignLeftButton;
     private javax.swing.JButton alignRightButton;
     private javax.swing.JButton alignTopButton;
+    private javax.swing.JLabel backgroundImageLabel;
     private javax.swing.JButton bendButton;
     private javax.swing.JList componentList;
     private javax.swing.JMenuItem convert;
