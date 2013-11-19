@@ -57,6 +57,7 @@ public class XMLCPNManager {
         try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            
             doc = dBuilder.parse(inputFile);
             doc.getDocumentElement().normalize();
 
@@ -70,6 +71,7 @@ public class XMLCPNManager {
             if (minX < 0 || minY < 0) {
                 reMoveElements(pn, Math.abs(minX), Math.abs(minY));
             }
+            
 
             return pn;
         } catch (Exception ex) {
@@ -97,40 +99,7 @@ public class XMLCPNManager {
             }
         }
     }
-
-    public void reMoveElementsByX(PetriNet pn, int x) {
-        for (Place p : pn.getListOfPlaces()) {
-            p.setX(p.getX() + x + 30);
-        }
-        for (Transition t : pn.getListOfTransitions()) {
-            t.setX(t.getX() + x + 30);
-        }
-        for (Resource r : pn.getListOfResources()) {
-            r.setX(r.getX() + x + 30);
-        }
-        for (Arc a : pn.getListOfArcs()) {
-            for (Point p : a.getBendPoints()) {
-                p.setLocation(p.x + x + 30, p.y);
-            }
-        }
-    }
-
-    public void reMoveElementsByY(PetriNet pn, int y) {
-        for (Place p : pn.getListOfPlaces()) {
-            p.setY(p.getY() + y + 30);
-        }
-        for (Transition t : pn.getListOfTransitions()) {
-            t.setY(t.getY() + y + 30);
-        }
-        for (Resource r : pn.getListOfResources()) {
-            r.setY(r.getY() + y + 30);
-        }
-        for (Arc a : pn.getListOfArcs()) {
-            for (Point p : a.getBendPoints()) {
-                p.setLocation(p.x, p.y + y + 30);
-            }
-        }
-    }
+    
 
     public void getPlacesFromCPN(Document doc, PetriNet pn) {
         NodeList placeList = doc.getElementsByTagName("place");

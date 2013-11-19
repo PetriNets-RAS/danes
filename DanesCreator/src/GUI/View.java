@@ -569,29 +569,31 @@ public class View extends javax.swing.JFrame {
         JFileChooser fileChooser = new JFileChooser();
         int showOpenDialog = fileChooser.showSaveDialog(this);
         selectedFile = fileChooser.getSelectedFile();
-        if (!selectedFile.exists()) {
-            selectedFile = new File(selectedFile.getAbsolutePath());
-            try {
-                selectedFile.createNewFile();
-            } catch (IOException e) {
-                System.out.print("Chyba pri praci so suborom");
+        if (selectedFile != null) {
+            if (!selectedFile.exists()) {
+                selectedFile = new File(selectedFile.getAbsolutePath());
+                try {
+                    selectedFile.createNewFile();
+                } catch (IOException e) {
+                    System.out.print("Chyba pri praci so suborom");
+                }
             }
+            getInfoAboutFile(selectedFile);
+            /*
+             if (g instanceof PetriNet) {
+             FileManager.XMLPetriManager newXML = new XMLPetriManager();
+             newXML.createPetriXML(g, selectedFile);
+             System.out.println("UKLADAM PN");
+             } else {
+             FileManager.XMLPrecedenceManager newXML = new XMLPrecedenceManager();
+             newXML.createPrecedenceXML(g, selectedFile);
+             }
+             */
+            if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
+            checkAndSave(graph, selectedFile);
         }
-        getInfoAboutFile(selectedFile);
-        /*
-         if (g instanceof PetriNet) {
-         FileManager.XMLPetriManager newXML = new XMLPetriManager();
-         newXML.createPetriXML(g, selectedFile);
-         System.out.println("UKLADAM PN");
-         } else {
-         FileManager.XMLPrecedenceManager newXML = new XMLPrecedenceManager();
-         newXML.createPrecedenceXML(g, selectedFile);
-         }
-         */
-        if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
-            return;
-        }
-        checkAndSave(graph, selectedFile);
     }//GEN-LAST:event_saveAsItemActionPerformed
 
     private void getInfoAboutFile(File file) {
@@ -845,6 +847,7 @@ public class View extends javax.swing.JFrame {
             controller.setModel(converted);
             this.diagramPanel = new DiagramPanel(converted);
             diagramScrollPane.setViewportView(this.diagramPanel);
+            diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
             sideMenu.setVisible(true);
             // hide side menu
             propertiesMenu.setVisible(false);
@@ -1190,7 +1193,6 @@ public class View extends javax.swing.JFrame {
     private void exportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exportActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_exportActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
@@ -1327,9 +1329,9 @@ public class View extends javax.swing.JFrame {
             Image cursorImage = toolkit.getImage("Images\\move_hand_trans.png");
             Image cursorImage2 = toolkit.getImage("Images\\trans_hand.png");
             Point cursorHotSpot = new Point(0, 0);
-            this.draggedHandCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot, CUSTOM_MOVE_CURSOR);
-            this.handCursor = toolkit.createCustomCursor(cursorImage2, cursorHotSpot, CUSTOM_HAND_CURSOR);
-            this.setCursor(this.handCursor);
+            /*this.draggedHandCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot, CUSTOM_MOVE_CURSOR);
+             this.handCursor = toolkit.createCustomCursor(cursorImage2, cursorHotSpot, CUSTOM_HAND_CURSOR);
+             this.setCursor(this.handCursor);*/
         }
 
         @Override
@@ -2378,9 +2380,12 @@ public class View extends javax.swing.JFrame {
 
                     double textWidth = (rect.getWidth());
                     double textHeight = (rect.getHeight());
-
-                    p.setWidth((int) (textWidth + marginWidth));
-                    p.setHeight((int) textHeight + marginHeight);
+                    if ((textWidth + marginWidth) > p.getWidth()) {
+                        p.setWidth((int) (textWidth + marginWidth));
+                    }
+                    if ((textHeight + marginHeight) > p.getHeight()) {
+                        p.setHeight((int) textHeight + marginHeight);
+                    }
                     //}
                 }
                 for (Transition t : ((PetriNet) graph).getListOfTransitions()) {
@@ -2394,8 +2399,12 @@ public class View extends javax.swing.JFrame {
                     double textWidth = (rect.getWidth());
                     double textHeight = (rect.getHeight());
 
-                    t.setWidth((int) (textWidth + marginWidth));
-                    t.setHeight((int) textHeight + marginHeight);
+                    if ((textWidth + marginWidth) > t.getWidth()) {
+                        t.setWidth((int) (textWidth + marginWidth));
+                    }
+                    if ((textHeight + marginHeight) > t.getHeight()) {
+                        t.setHeight((int) textHeight + marginHeight);
+                    }
                     // }
                 }
 
@@ -2410,8 +2419,12 @@ public class View extends javax.swing.JFrame {
                     int textWidth = (int) (rect.getWidth());
                     int textHeight = (int) (rect.getHeight());
 
-                    r.setWidth(textWidth + marginWidth);
-                    r.setHeight(textHeight + marginHeight);
+                    if ((textWidth + marginWidth) > r.getWidth()) {
+                        r.setWidth((int) (textWidth + marginWidth));
+                    }
+                    if ((textHeight + marginHeight) > r.getHeight()) {
+                        r.setHeight((int) textHeight + marginHeight);
+                    }
                     //}
                 }
             }
@@ -2429,8 +2442,12 @@ public class View extends javax.swing.JFrame {
                         int textWidth = (int) (rect.getWidth());
                         int textHeight = (int) (rect.getHeight());
 
-                        n.setWidth(textWidth + marginWidth);
-                        n.setHeight(textHeight + marginHeight);
+                        if ((textWidth + marginWidth) > n.getWidth()) {
+                            n.setWidth((int) (textWidth + marginWidth));
+                        }
+                        if ((textHeight + marginHeight) > n.getHeight()) {
+                            n.setHeight((int) textHeight + marginHeight);
+                        }
                     }
                 }
             }

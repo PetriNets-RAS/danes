@@ -412,7 +412,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
             if (!log.checkNumbString(heightText.getText())) {
                 return;
             }
-
+            
             if (element instanceof AbsPlace) {
                 AbsPlace abs = (AbsPlace) element;
                 abs.setHeight(Integer.parseInt(heightText.getText()));
@@ -435,7 +435,6 @@ public class PropertiesMenu extends javax.swing.JPanel {
             if (!log.checkNumbString(widthText.getText())) {
                 return;
             }
-
             if (element instanceof AbsPlace) {
                 AbsPlace abs = (AbsPlace) element;
                 abs.setWidth(Integer.parseInt(widthText.getText()));
