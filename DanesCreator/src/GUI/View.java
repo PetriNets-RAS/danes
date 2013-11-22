@@ -844,7 +844,7 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_newPrecedenceNetActionPerformed
 
     private void convertActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_convertActionPerformed
-        if (graph != null) {
+        if (graph != null && graph instanceof PrecedenceGraph) {
             PrecedenceGraph pg = (PrecedenceGraph) graph;
             PetriNet converted = pg.changePrecedenceGraphToPN();
             graph = converted;
@@ -2273,6 +2273,11 @@ public class View extends javax.swing.JFrame {
                 }
             }
 
+            if (selectedElements.size()>1) {
+                loadMultipleProperties(selectedElements);
+                //propertiesMenu.setVisible(true);
+            }
+            
             if (selectedElements.isEmpty()) {
                 propertiesMenu.setVisible(false);
             }
@@ -2363,6 +2368,10 @@ public class View extends javax.swing.JFrame {
             generalProperties.loadProperties(currentElement, graph, this);
             notes.setText(currentElement.getNote());
 
+        }
+        private void loadMultipleProperties(ArrayList<Element> currentElements) {
+            generalProperties.loadMultipleProperties(currentElements, graph, this);
+            //notes.setText(currentElement.getNote());
         }
 
         private void autosetWidthHeight() {

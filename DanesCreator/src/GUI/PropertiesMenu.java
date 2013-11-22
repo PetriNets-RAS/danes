@@ -11,6 +11,7 @@ import Core.Graph;
 import Core.Logic;
 import Core.Marking;
 import Core.Node;
+import Core.PetriNet;
 import Core.Place;
 import Core.Resource;
 import Core.Transition;
@@ -43,6 +44,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private DiagramPanel window;
     private Element element;
     private Logic log;
+    private ArrayList<Element> listOfElements;
 
     /**
      * Creates new form PropertiesParentMenu
@@ -100,25 +102,25 @@ public class PropertiesMenu extends javax.swing.JPanel {
 
         ChangeListener listener = new ChangeListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {               
-                if(element instanceof Arc){
-                    ((Arc)element).setCapacity((Integer)capacitySpiner.getValue());
+            public void stateChanged(ChangeEvent e) {
+                if (element instanceof Arc) {
+                    ((Arc) element).setCapacity((Integer) capacitySpiner.getValue());
                 }
-                if(element instanceof Node){
-                    ((Node)element).setCapacity((Integer)capacitySpiner.getValue());
+                if (element instanceof Node) {
+                    ((Node) element).setCapacity((Integer) capacitySpiner.getValue());
                 }
-                if(element instanceof Resource){
-                    ((Resource)element).setMarking((Integer)capacitySpiner.getValue());
+                if (element instanceof Resource) {
+                    ((Resource) element).setMarking((Integer) capacitySpiner.getValue());
                 }
-                if(element instanceof Place){
-                    int countOfMarks=(Integer)capacitySpiner.getValue();
-                    Marking tempMark=new Marking(element);
-                    ArrayList<Integer> tempMarking=new ArrayList<Integer>();
-                    for(int i=0;i<countOfMarks;i++){
-                        tempMarking.add(i+1);
+                if (element instanceof Place) {
+                    int countOfMarks = (Integer) capacitySpiner.getValue();
+                    Marking tempMark = new Marking(element);
+                    ArrayList<Integer> tempMarking = new ArrayList<Integer>();
+                    for (int i = 0; i < countOfMarks; i++) {
+                        tempMarking.add(i + 1);
                     }
                     tempMark.setMarkings(tempMarking);
-                    ((Place)element).setMarkings(tempMark);
+                    ((Place) element).setMarkings(tempMark);
                 }
                 window.repaint();
             }
@@ -385,19 +387,40 @@ public class PropertiesMenu extends javax.swing.JPanel {
     private void colorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_colorLabelMouseClicked
         JColorChooser colorChooser = new JColorChooser();
         elementColor = JColorChooser.showDialog(this, "Vyberte farbu", this.element.getColor());
-        element.setColor(elementColor);
-        this.colorLabel.setOpaque(true);
-        this.colorLabel.setBackground(elementColor);
-        window.repaint();
+
+        if (listOfElements != null && listOfElements.size() > 1) {
+            for (Element e : listOfElements) {
+                e.setColor(elementColor);
+            }
+            this.colorLabel.setOpaque(true);
+            this.colorLabel.setBackground(elementColor);
+            window.repaint();
+        } else {
+            element.setColor(elementColor);
+            this.colorLabel.setOpaque(true);
+            this.colorLabel.setBackground(elementColor);
+            window.repaint();
+        }
     }//GEN-LAST:event_colorLabelMouseClicked
 
     private void fontColorLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_fontColorLabelMouseClicked
         JColorChooser colorChooser = new JColorChooser();
         elementColor = JColorChooser.showDialog(this, "Vyberte farbu", this.element.getColor2());
-        element.setColor2(elementColor);
-        this.fontColorLabel.setOpaque(true);
-        this.fontColorLabel.setBackground(elementColor);
-        window.repaint();
+
+        if (listOfElements != null && listOfElements.size() > 1) {
+            for (Element e : listOfElements) {
+                e.setColor2(elementColor);
+            }
+            this.fontColorLabel.setOpaque(true);
+            this.fontColorLabel.setBackground(elementColor);
+            window.repaint();
+        } else {
+            element.setColor2(elementColor);
+            this.fontColorLabel.setOpaque(true);
+            this.fontColorLabel.setBackground(elementColor);
+            window.repaint();
+        }
+
     }//GEN-LAST:event_fontColorLabelMouseClicked
 
     private void nameTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nameTextKeyReleased
@@ -408,24 +431,40 @@ public class PropertiesMenu extends javax.swing.JPanel {
     }//GEN-LAST:event_nameTextKeyReleased
 
     private void heightTextKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_heightTextKeyReleased
+
         if (!heightText.getText().equals("")) {
             if (!log.checkNumbString(heightText.getText())) {
                 return;
             }
-            
-            if (element instanceof AbsPlace) {
-                AbsPlace abs = (AbsPlace) element;
-                abs.setHeight(Integer.parseInt(heightText.getText()));
+            if (listOfElements != null && listOfElements.size() > 1) {
+                for (Element e : listOfElements) {
+                    if (e instanceof AbsPlace) {
+                        AbsPlace abs = (AbsPlace) e;
+                        abs.setHeight(Integer.parseInt(heightText.getText()));
+                    }
+                    if (e instanceof Transition) {
+                        Transition abs = (Transition) e;
+                        abs.setHeight(Integer.parseInt(heightText.getText()));
+                    }
+                    if (e instanceof Node) {
+                        Node node = (Node) e;
+                        node.setHeight(Integer.parseInt(heightText.getText()));
+                    }
+                }
+            } else {
+                if (element instanceof AbsPlace) {
+                    AbsPlace abs = (AbsPlace) element;
+                    abs.setHeight(Integer.parseInt(heightText.getText()));
+                }
+                if (element instanceof Transition) {
+                    Transition abs = (Transition) element;
+                    abs.setHeight(Integer.parseInt(heightText.getText()));
+                }
+                if (element instanceof Node) {
+                    Node node = (Node) element;
+                    node.setHeight(Integer.parseInt(heightText.getText()));
+                }
             }
-            if (element instanceof Transition) {
-                Transition abs = (Transition) element;
-                abs.setHeight(Integer.parseInt(heightText.getText()));
-            }
-            if (element instanceof Node) {
-                Node node = (Node) element;
-                node.setHeight(Integer.parseInt(heightText.getText()));
-            }
-            
             window.repaint();
         }
     }//GEN-LAST:event_heightTextKeyReleased
@@ -435,17 +474,34 @@ public class PropertiesMenu extends javax.swing.JPanel {
             if (!log.checkNumbString(widthText.getText())) {
                 return;
             }
-            if (element instanceof AbsPlace) {
-                AbsPlace abs = (AbsPlace) element;
-                abs.setWidth(Integer.parseInt(widthText.getText()));
-            }
-            if (element instanceof Transition) {
-                Transition abs = (Transition) element;
-                abs.setWidth(Integer.parseInt(widthText.getText()));
-            }
-            if (element instanceof Node) {
-                Node node = (Node) element;
-                node.setWidth(Integer.parseInt(widthText.getText()));
+            if (listOfElements != null && listOfElements.size() > 1) {
+                for (Element e : listOfElements) {
+                    if (e instanceof AbsPlace) {
+                        AbsPlace abs = (AbsPlace) e;
+                        abs.setWidth(Integer.parseInt(widthText.getText()));
+                    }
+                    if (e instanceof Transition) {
+                        Transition abs = (Transition) e;
+                        abs.setWidth(Integer.parseInt(widthText.getText()));
+                    }
+                    if (e instanceof Node) {
+                        Node node = (Node) e;
+                        node.setWidth(Integer.parseInt(widthText.getText()));
+                    }
+                }
+            } else {
+                if (element instanceof AbsPlace) {
+                    AbsPlace abs = (AbsPlace) element;
+                    abs.setWidth(Integer.parseInt(widthText.getText()));
+                }
+                if (element instanceof Transition) {
+                    Transition abs = (Transition) element;
+                    abs.setWidth(Integer.parseInt(widthText.getText()));
+                }
+                if (element instanceof Node) {
+                    Node node = (Node) element;
+                    node.setWidth(Integer.parseInt(widthText.getText()));
+                }
             }
             window.repaint();
         }
@@ -455,8 +511,15 @@ public class PropertiesMenu extends javax.swing.JPanel {
         if (!fontSizeText.getText().equals("")) {
             if (!log.checkNumbString(fontSizeText.getText())) {
                 return;
-            }            
-            element.setFontSize(Integer.parseInt(fontSizeText.getText()));
+            }
+            if (listOfElements != null && listOfElements.size() > 1) {
+                for (Element e : listOfElements) {
+                    e.setFontSize(Integer.parseInt(fontSizeText.getText()));
+                }
+
+            } else {
+                element.setFontSize(Integer.parseInt(fontSizeText.getText()));
+            }
             window.repaint();
         }
     }//GEN-LAST:event_fontSizeTextKeyReleased
@@ -607,7 +670,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
     public String getElementMarking() {
         return elementMarking;
     }
-    
+
     /**
      * @param elementMarking the elementMarking to set
      */
@@ -651,7 +714,123 @@ public class PropertiesMenu extends javax.swing.JPanel {
         }
     }
 
+    public void loadMultipleProperties(ArrayList<Element> selectedElements, Graph graph, DiagramPanel window) {
+        listOfElements = selectedElements;
+        boolean arcExists = false;
+        boolean sameTextSize = true;
+        int textSize = selectedElements.get(0).getFontSize();
+        boolean sameWidth = true;
+        int w = -1;
+        boolean sameHeight = true;
+        int h = -1;
+        boolean sameColor1 = true;
+        Color c1 = selectedElements.get(0).getColor();
+        boolean sameColor2 = true;
+        Color fontColor = selectedElements.get(0).getColor2();
+
+        for (Element e : selectedElements) {
+            int actFontSize = e.getFontSize();
+            if (actFontSize != textSize) {
+                sameTextSize = false;
+            }
+            if (!e.getColor().equals(c1)) {
+                sameColor1 = false;
+            }
+            if (!e.getColor2().equals(fontColor)) {
+                sameColor2 = false;
+            }
+            if (e instanceof Arc) {
+                arcExists = true;
+            }
+        }
+
+        if (!arcExists) {
+            int inc = 0;
+            for (Element e : selectedElements) {
+                if (graph instanceof PetriNet) {
+                    if (e instanceof AbsPlace) {
+                        AbsPlace ap = (AbsPlace) e;
+                        if (inc == 0) {
+                            w = ap.getWidth();
+                            h = ap.getHeight();
+                        }
+                        if (w != ap.getWidth()) {
+                            sameWidth = false;
+                        }
+                        if (h != ap.getHeight()) {
+                            sameHeight = false;
+                        }
+
+                    } else if (e instanceof Transition) {
+                        Transition t = (Transition) e;
+                        if (inc == 0) {
+                            w = t.getWidth();
+                            h = t.getHeight();
+                        }
+                        if (w != t.getWidth()) {
+                            sameWidth = false;
+                        }
+                        if (h != t.getHeight()) {
+                            sameHeight = false;
+                        }
+                    }
+                } else {
+                    if (e instanceof Node) {
+                        Node n = (Node) e;
+                        if (inc == 0) {
+                            w = n.getWidth();
+                            h = n.getHeight();
+                        }
+                        if (w != n.getWidth()) {
+                            sameWidth = false;
+                        }
+                        if (h != n.getHeight()) {
+                            sameHeight = false;
+                        }
+                    }
+                }
+                inc++;
+            }
+        }
+        nameText.setText("");
+        nameText.setEnabled(false);
+        specific.setVisible(false);
+
+        if (sameWidth) {
+            widthText.setText(w + "");
+        } else {
+            widthText.setText("");
+        }
+        if (sameHeight) {
+            heightText.setText(h + "");
+        } else {
+            heightText.setText("");
+        }
+        if (sameTextSize) {
+            fontSizeText.setText(textSize + "");
+        } else {
+            fontSizeText.setText("");
+        }
+        if (sameColor1) {
+            colorLabel.setBackground(c1);
+        } else {
+            colorLabel.setBackground(Color.BLACK);
+        }
+        if (sameColor2) {
+            fontColorLabel.setBackground(fontColor);
+        } else {
+            fontColorLabel.setBackground(Color.WHITE);
+        }
+        if (arcExists) {
+            heightText.setText("");
+            widthText.setText("");
+        }
+    }
+
     public void loadProperties(Element currentElement, Graph graph, DiagramPanel window) {
+        nameText.setEnabled(true);
+        widthText.setEnabled(true);
+        heightText.setEnabled(true);
         this.element = currentElement;
         heightText.setEnabled(true);
         widthText.setEnabled(true);
@@ -666,10 +845,10 @@ public class PropertiesMenu extends javax.swing.JPanel {
         if (currentElement instanceof AbsPlace) {
             jLabel7.setText("Marking");
             int marking;
-            if(currentElement instanceof Place){
-                marking=((Place)currentElement).getMarkings().getMarkings().size();
-            }else{
-                marking=((Resource)currentElement).getMarking();
+            if (currentElement instanceof Place) {
+                marking = ((Place) currentElement).getMarkings().getMarkings().size();
+            } else {
+                marking = ((Resource) currentElement).getMarking();
             }
             AbsPlace current = (AbsPlace) currentElement;
             setElementWidth(Integer.toString(current.getWidth()));
