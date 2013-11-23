@@ -120,6 +120,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
                     tempMark.setMarkings(tempMarking);
                     ((Place)element).setMarkings(tempMark);
                 }
+                window.updateComponentListFromDiagram();
                 window.repaint();
             }
         };
@@ -404,6 +405,7 @@ public class PropertiesMenu extends javax.swing.JPanel {
         if (!nameText.getText().equals("")) {
             element.setName(nameText.getText());
         }
+        window.updateComponentListFromDiagram();
         window.repaint();
     }//GEN-LAST:event_nameTextKeyReleased
 

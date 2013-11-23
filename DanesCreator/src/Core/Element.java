@@ -125,6 +125,18 @@ public class Element{
     public void setY(int y) {
         this.y = y;
     }
+    @Override
+    public String toString(){
+        String ret;
+        ret = getName();
+        if(this instanceof Resource){
+            ret+=": { "+((Resource)this).getMarking()+" }";
+        }
+        else if(this instanceof Place){
+            ret+=": "+((Place)this).getMarkings().toString();
+        }
+        return ret;
+    }
     
     
 }
