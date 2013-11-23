@@ -88,8 +88,8 @@ public class Trie {
 
     public ArrayList<State> levelOrder() {
         ArrayList<State> result=new ArrayList<State>();
-        System.out.println("Count:"+ getCount()+" ");
-        System.out.println("Lever order :");
+        //System.out.println("Count:"+ getCount()+" ");
+        //System.out.println("Lever order :");
         Queue q = new LinkedList();
         if (root != null);
         q.add(root);
@@ -98,7 +98,7 @@ public class Trie {
             TrieNode temp = (TrieNode) q.remove();
             if (temp.getState()!=null) {
                 result.add(temp.getState());
-                System.out.println(temp.getState().toString());
+                //System.out.println(temp.getState().toString());
                 
                 //String out="ID: "+(temp.getIDnode()+1)+ " "+ temp.getName()+ "Parent ";
                 //System.out.print("ID: "+(temp.getIDnode())+ " "+ temp.getName()+ "Parent ");

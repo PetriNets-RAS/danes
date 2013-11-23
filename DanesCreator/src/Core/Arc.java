@@ -133,7 +133,7 @@ public class Arc extends Element {
         this.bendPoints = bendPoints;
     }
 
-    public void addBendPoints(Point p) {
+    public void addBendPointSimple(Point p) {
         bendPoints.add(p);
     }
 
@@ -196,6 +196,7 @@ public class Arc extends Element {
                 bendPoints.add(i + 1, p);
                 bendPoints.remove(in);
                 bendPoints.remove(out);
+                System.out.println("ADDED");
                 return;
             }
 
