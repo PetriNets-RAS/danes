@@ -46,11 +46,7 @@ public class DiagramMouseAdapter extends MouseAdapter{
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        /*
-        if(cursorButton.isSelected()){
-            this.diagramPanel.setCursor(moveHandCursor);
-        }
-        */
+        this.diagramPanel.setMoveHandCursor();
         if (SwingUtilities.isLeftMouseButton(e)&&e.isControlDown()) {
             int scrollPositionX = this.diagramScrollPane.getViewport().getViewPosition().x;
             int scrollPositionY = this.diagramScrollPane.getViewport().getViewPosition().y;
@@ -68,6 +64,7 @@ public class DiagramMouseAdapter extends MouseAdapter{
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        this.diagramPanel.setHandCursor();
         // Old location is different from current
         if (true) {
             // Left
