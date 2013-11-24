@@ -4,6 +4,10 @@
  */
 package GUI;
 
+import ConfigManagers.ShortcutsManager;
+import java.awt.event.KeyEvent;
+import javax.swing.SwingUtilities;
+
 /**
  *
  * @author MISO
@@ -23,6 +27,47 @@ public class ShortcutConfig extends javax.swing.JDialog {
             this.shortcutsManager = ((View)parent).getShortcutsManager();
         }
         initComponents();
+        
+        placeKey.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        placeKey.selectAll();
+                    }
+                });
+            }
+        });
+        arcKey.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        arcKey.selectAll();
+                    }
+                });
+            }
+        });
+        resKey.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        resKey.selectAll();
+                    }
+                });
+            }
+        });
+        transKey.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        transKey.selectAll();
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -52,6 +97,9 @@ public class ShortcutConfig extends javax.swing.JDialog {
         });
 
         arcKey.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                arcKeyKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 arcKeyKeyReleased(evt);
             }
@@ -64,12 +112,18 @@ public class ShortcutConfig extends javax.swing.JDialog {
         transKeyLabel.setText("Transition");
 
         transKey.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                transKeyKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 transKeyKeyReleased(evt);
             }
         });
 
         resKey.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                resKeyKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 resKeyKeyReleased(evt);
             }
@@ -82,6 +136,9 @@ public class ShortcutConfig extends javax.swing.JDialog {
         placeKeyLabel.setText("Place");
 
         placeKey.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                placeKeyKeyPressed(evt);
+            }
             public void keyReleased(java.awt.event.KeyEvent evt) {
                 placeKeyKeyReleased(evt);
             }
@@ -174,7 +231,6 @@ public class ShortcutConfig extends javax.swing.JDialog {
     }//GEN-LAST:event_arcKeyKeyReleased
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        System.out.print(this.shortcutsManager.toString());
         this.arcKey.setText(""+(char)this.shortcutsManager.getAddArcKey());
         this.resKey.setText(""+(char)this.shortcutsManager.getAddResourceKey());
         this.transKey.setText(""+(char)this.shortcutsManager.getAddTransitionKey());
@@ -184,6 +240,30 @@ public class ShortcutConfig extends javax.swing.JDialog {
         this.transCode = this.transKey.getText().codePointAt(0);
         this.resCode = this.resKey.getText().codePointAt(0);
     }//GEN-LAST:event_formWindowOpened
+
+    private void placeKeyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_placeKeyKeyPressed
+        if(evt.getKeyCode() != KeyEvent.VK_TAB){
+            this.placeKey.setText("");
+        }
+    }//GEN-LAST:event_placeKeyKeyPressed
+
+    private void resKeyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_resKeyKeyPressed
+        if(evt.getKeyCode() != KeyEvent.VK_TAB){
+            this.resKey.setText("");
+        }
+    }//GEN-LAST:event_resKeyKeyPressed
+
+    private void transKeyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_transKeyKeyPressed
+        if(evt.getKeyCode() != KeyEvent.VK_TAB){
+            this.transKey.setText("");
+        }
+    }//GEN-LAST:event_transKeyKeyPressed
+
+    private void arcKeyKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_arcKeyKeyPressed
+        if(evt.getKeyCode() != KeyEvent.VK_TAB){
+            this.arcKey.setText("");
+        }
+    }//GEN-LAST:event_arcKeyKeyPressed
 
     /**
      * @param args the command line arguments

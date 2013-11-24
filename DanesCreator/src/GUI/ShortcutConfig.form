@@ -85,6 +85,7 @@
   <SubComponents>
     <Component class="javax.swing.JTextField" name="arcKey">
       <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="arcKeyKeyPressed"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="arcKeyKeyReleased"/>
       </Events>
     </Component>
@@ -106,11 +107,13 @@
     </Component>
     <Component class="javax.swing.JTextField" name="transKey">
       <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="transKeyKeyPressed"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="transKeyKeyReleased"/>
       </Events>
     </Component>
     <Component class="javax.swing.JTextField" name="resKey">
       <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="resKeyKeyPressed"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="resKeyKeyReleased"/>
       </Events>
     </Component>
@@ -132,6 +135,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="placeKey">
       <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="placeKeyKeyPressed"/>
         <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="placeKeyKeyReleased"/>
       </Events>
     </Component>

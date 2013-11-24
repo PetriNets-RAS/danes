@@ -2,11 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package GUI;
+package DiagramAdapters;
 
+import Core.Element;
+import GUI.Controller;
 import GUI.View.DiagramPanel;
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 
@@ -17,6 +22,7 @@ import javax.swing.SwingUtilities;
 public class DiagramMouseAdapter extends MouseAdapter{
     private DiagramPanel diagramPanel;
     private JScrollPane diagramScrollPane;
+    private Controller controller;
     private int x;
     private int y;
     
@@ -24,9 +30,10 @@ public class DiagramMouseAdapter extends MouseAdapter{
      *
      * @param pDiagramPanel
      */
-    public DiagramMouseAdapter(DiagramPanel pDiagramPanel, JScrollPane pDiagramScrollPane) {
+    public DiagramMouseAdapter(DiagramPanel pDiagramPanel, JScrollPane pDiagramScrollPane, Controller pController) {
         this.diagramPanel = pDiagramPanel;
         this.diagramScrollPane = pDiagramScrollPane;
+        this.controller = pController;
     }
     @Override
     public void mousePressed(MouseEvent e) {
@@ -64,7 +71,6 @@ public class DiagramMouseAdapter extends MouseAdapter{
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        this.diagramPanel.setHandCursor();
         // Old location is different from current
         if (true) {
             // Left
@@ -76,12 +82,36 @@ public class DiagramMouseAdapter extends MouseAdapter{
                 this.diagramPanel.getPopUpMenu().show(e.getComponent(), e.getX(), e.getY());
             }
         }
-        /*
-        if(cursorButton.isSelected()){
-            diagramPanel.setCursor(handCursor);
-        }
-        */ 
+        this.diagramPanel.setDiagramCursor();
     }
+    
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        if (this.diagramPanel.getTimer() != null) {
+            this.diagramPanel.getTimer().cancel();
+        }
+
+        Point p = e.getPoint();
+        final Object o = this.controller.getLocationElement((int)(p.x/diagramPanel.getScaleRatio()[0]), (int)(p.y/diagramPanel.getScaleRatio()[0]));
+
+
+        if (o != null && !(o instanceof Point)) {
+            this.diagramPanel.setTimer(new Timer());
+            this.diagramPanel.getTimer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    diagramPanel.setBubbleElement((Element) o);
+                    diagramPanel.repaint();
+                }
+            }, 750);
+
+        } else {
+
+            this.diagramPanel.setBubbleElement(null);
+            this.diagramPanel.repaint();
+        }
+    }
+    
     /**
      * @return the x
      */

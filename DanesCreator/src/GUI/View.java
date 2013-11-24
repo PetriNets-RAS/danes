@@ -4,6 +4,9 @@
  */
 package GUI;
 
+import ConfigManagers.ShortcutsManager;
+import DiagramAdapters.DiagramMouseWheelAdapter;
+import DiagramAdapters.DiagramMouseAdapter;
 import Core.AbsPlace;
 import Core.Arc;
 import Core.Element;
@@ -15,6 +18,7 @@ import Core.Place;
 import Core.PrecedenceGraph;
 import Core.Resource;
 import Core.Transition;
+import DiagramAdapters.DiagramKeyAdapter;
 import FileManager.XMLCPNManager;
 import FileManager.XMLPetriManager;
 import FileManager.XMLPrecedenceManager;
@@ -61,12 +65,15 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import FileManager.FileManager;
+import java.awt.Component;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JToggleButton;
 //import sun.org.mozilla.javascript.internal.xmlimpl.XML;
 
 /**
@@ -78,21 +85,17 @@ public class View extends javax.swing.JFrame {
     private static final String APP_NAME = "Danes Creator";
     private static final String PETRI_NAME = "Petri net";
     private static final String PRECEDENCE_GRAPH = "Precedence graph";
-    private static final String CUSTOM_HAND_CURSOR = "hand_cursor";
-    private static final String CUSTOM_MOVE_CURSOR = "move_cursor";
-    private static final String CUSTOM_ELLIPSE_CURSOR = "ellipse_cursor";
-    private static final String CUSTOM_RES_CURSOR = "res_cursor";
-    private static final String CUSTOM_TRANSITION_CURSOR = "trans_cursor";
-    private static final String CUSTOM_ARROW_CURSOR = "arrow_cursor";
+    private static final int CUSTOM_ELLIPSE_CURSOR = 1;
+    private static final int CUSTOM_RES_CURSOR = 2;
+    private static final int CUSTOM_TRANSITION_CURSOR = 3;
+    private static final int CUSTOM_ARROW_CURSOR = 4;
+    private static final int CUSTOM_HAND_CURSOR = 5;
+    private static final int CUSTOM_MOVE_CURSOR = 6;
     
     private Graph graph;
     private DiagramPanel diagramPanel;
-    //private DiagramKeyListener diagramKeyListener;
     private Controller controller;
     private AboutUs about;
-    //private Graph g;
-    //private PetriNet p;
-    //private PrecedenceGraph pg;
     private File selectedFile;
     private String selectedFileName;
     private String selectedFilePath;
@@ -114,14 +117,12 @@ public class View extends javax.swing.JFrame {
         initComponents();
         Toolkit toolkit = Toolkit.getDefaultToolkit();      
         Point cursorHotSpot = new Point(0,0);
-        this.ellipseCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_place.png"), cursorHotSpot, CUSTOM_ELLIPSE_CURSOR);
-        this.resCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_res.png"), cursorHotSpot, CUSTOM_RES_CURSOR);
-        this.transitionCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_trans.png"), cursorHotSpot, CUSTOM_TRANSITION_CURSOR);
-        this.arcCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_arrow.png"), cursorHotSpot, CUSTOM_ARROW_CURSOR);
-        this.arcCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_arrow.png"), cursorHotSpot, CUSTOM_ARROW_CURSOR);
-        this.arcCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_arrow.png"), cursorHotSpot, CUSTOM_ARROW_CURSOR);
-        this.moveHandCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\move_hand.png"), cursorHotSpot,CUSTOM_MOVE_CURSOR);
-        this.handCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand.png"), cursorHotSpot, CUSTOM_HAND_CURSOR);
+        this.ellipseCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_place.png"), cursorHotSpot, "ellipse_cursor");
+        this.resCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_res.png"), cursorHotSpot, "res_cursor");
+        this.transitionCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_trans.png"), cursorHotSpot, "trans_cursor");
+        this.arcCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_arrow.png"), cursorHotSpot, "arrow_cursor");
+        this.moveHandCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\move_hand.png"), cursorHotSpot,"move_cursor");
+        this.handCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand.png"), cursorHotSpot, "hand_cursor");
         
         this.fileManager = new FileManager();
         this.shortcutsManager = new ShortcutsManager();
@@ -204,18 +205,21 @@ public class View extends javax.swing.JFrame {
     private void initComponents() {
 
         sideMenu = new javax.swing.JPanel();
-        ellipseButton = new javax.swing.JToggleButton();
-        rectangleButton = new javax.swing.JToggleButton();
-        lineButton = new javax.swing.JToggleButton();
-        resuorceButton = new javax.swing.JToggleButton();
         propertiesMenu = new javax.swing.JPanel();
         propertiesTab = new javax.swing.JTabbedPane();
         generalProperties = new GUI.PropertiesMenu();
         notes = new javax.swing.JTextArea();
-        modelInfo = new javax.swing.JLabel();
-        cursorButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         componentList = new javax.swing.JList();
+        buttonsPanel = new javax.swing.JPanel();
+        ellipseButton = new javax.swing.JToggleButton();
+        rectangleButton = new javax.swing.JToggleButton();
+        lineButton = new javax.swing.JToggleButton();
+        resuorceButton = new javax.swing.JToggleButton();
+        cursorButton = new javax.swing.JButton();
+        horizontalMagnetButton = new javax.swing.JToggleButton();
+        verticalMagnetButton = new javax.swing.JToggleButton();
+        modelInfo = new javax.swing.JLabel();
         diagramScrollPane = new javax.swing.JScrollPane();
         backgroundImageLabel = new javax.swing.JLabel();
         toolBar = new javax.swing.JToolBar();
@@ -251,45 +255,8 @@ public class View extends javax.swing.JFrame {
             }
         });
 
-        sideMenu.setBorder(javax.swing.BorderFactory.createBevelBorder(0));
+        sideMenu.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         sideMenu.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        ellipseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/EllipseIcon.png"))); // NOI18N
-        ellipseButton.setToolTipText("Add new place/node");
-        ellipseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ellipseButtonActionPerformed(evt);
-            }
-        });
-        sideMenu.add(ellipseButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 70, 82, 23));
-
-        rectangleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/RectangleIcon.png"))); // NOI18N
-        rectangleButton.setToolTipText("Add new transiton");
-        rectangleButton.setBorder(null);
-        rectangleButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                rectangleButtonActionPerformed(evt);
-            }
-        });
-        sideMenu.add(rectangleButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, 82, 23));
-
-        lineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/lineIcon.png"))); // NOI18N
-        lineButton.setToolTipText("Add new arc");
-        lineButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                lineButtonActionPerformed(evt);
-            }
-        });
-        sideMenu.add(lineButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 40, 82, 23));
-
-        resuorceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Resources.png"))); // NOI18N
-        resuorceButton.setToolTipText("Add new resource");
-        resuorceButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                resuorceButtonActionPerformed(evt);
-            }
-        });
-        sideMenu.add(resuorceButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 70, 82, 23));
 
         propertiesTab.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -297,6 +264,7 @@ public class View extends javax.swing.JFrame {
         generalProperties.setFocusCycleRoot(true);
         generalProperties.setFocusTraversalPolicyProvider(true);
         generalProperties.setName(""); // NOI18N
+        generalProperties.setPreferredSize(new java.awt.Dimension(188, 500));
         propertiesTab.addTab("Properties", generalProperties);
 
         notes.setColumns(20);
@@ -322,28 +290,21 @@ public class View extends javax.swing.JFrame {
         propertiesMenu.setLayout(propertiesMenuLayout);
         propertiesMenuLayout.setHorizontalGroup(
             propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(propertiesMenuLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, propertiesMenuLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(propertiesTab, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 14, Short.MAX_VALUE))
+                .addContainerGap())
         );
         propertiesMenuLayout.setVerticalGroup(
             propertiesMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(propertiesTab, javax.swing.GroupLayout.PREFERRED_SIZE, 294, Short.MAX_VALUE)
+            .addGroup(propertiesMenuLayout.createSequentialGroup()
+                .addComponent(propertiesTab, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 13, Short.MAX_VALUE))
         );
 
         propertiesTab.getAccessibleContext().setAccessibleName("Properties");
 
-        sideMenu.add(propertiesMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(12, 105, 240, 290));
-        sideMenu.add(modelInfo, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 170, 20));
-
-        cursorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cursor.png"))); // NOI18N
-        cursorButton.setToolTipText("Free move");
-        cursorButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cursorButtonActionPerformed(evt);
-            }
-        });
-        sideMenu.add(cursorButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 40, 50, -1));
+        sideMenu.add(propertiesMenu, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 240, 310));
 
         componentList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
@@ -362,7 +323,118 @@ public class View extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(componentList);
 
-        sideMenu.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 430, 226, 120));
+        sideMenu.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 440, 226, 120));
+
+        ellipseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/EllipseIcon.png"))); // NOI18N
+        ellipseButton.setToolTipText("Add new place/node");
+        ellipseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ellipseButtonActionPerformed(evt);
+            }
+        });
+
+        rectangleButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/RectangleIcon.png"))); // NOI18N
+        rectangleButton.setToolTipText("Add new transiton");
+        rectangleButton.setBorder(null);
+        rectangleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rectangleButtonActionPerformed(evt);
+            }
+        });
+
+        lineButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/lineIcon.png"))); // NOI18N
+        lineButton.setToolTipText("Add new arc");
+        lineButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                lineButtonActionPerformed(evt);
+            }
+        });
+
+        resuorceButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/Resources.png"))); // NOI18N
+        resuorceButton.setToolTipText("Add new resource");
+        resuorceButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resuorceButtonActionPerformed(evt);
+            }
+        });
+
+        cursorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cursor.png"))); // NOI18N
+        cursorButton.setToolTipText("Free move");
+        cursorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cursorButtonActionPerformed(evt);
+            }
+        });
+
+        horizontalMagnetButton.setText("horizont");
+        horizontalMagnetButton.setToolTipText("Add horizontal megnetic line");
+        horizontalMagnetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                horizontalMagnetButtonActionPerformed(evt);
+            }
+        });
+
+        verticalMagnetButton.setText("vertical");
+        verticalMagnetButton.setToolTipText("Add new place/node");
+        verticalMagnetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                verticalMagnetButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout buttonsPanelLayout = new javax.swing.GroupLayout(buttonsPanel);
+        buttonsPanel.setLayout(buttonsPanelLayout);
+        buttonsPanelLayout.setHorizontalGroup(
+            buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(buttonsPanelLayout.createSequentialGroup()
+                        .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(buttonsPanelLayout.createSequentialGroup()
+                                .addComponent(cursorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(buttonsPanelLayout.createSequentialGroup()
+                                        .addComponent(lineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(buttonsPanelLayout.createSequentialGroup()
+                                        .addGap(2, 2, 2)
+                                        .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(resuorceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(buttonsPanelLayout.createSequentialGroup()
+                                .addGap(58, 58, 58)
+                                .addComponent(horizontalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(verticalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 12, Short.MAX_VALUE))
+                    .addGroup(buttonsPanelLayout.createSequentialGroup()
+                        .addComponent(modelInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        buttonsPanelLayout.setVerticalGroup(
+            buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonsPanelLayout.createSequentialGroup()
+                .addComponent(modelInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cursorButton)
+                    .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(resuorceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(verticalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(horizontalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(13, 13, 13))
+        );
+
+        sideMenu.add(buttonsPanel, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 250, 110));
 
         diagramScrollPane.setBorder(null);
         diagramScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -602,7 +674,7 @@ public class View extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 292, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(diagramScrollPane)))
@@ -612,15 +684,13 @@ public class View extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(diagramScrollPane))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE)))
+                .addComponent(toolBar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(diagramScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(sideMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -695,27 +765,15 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_aboutUsMouseClicked
 
     private void ellipseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ellipseButtonActionPerformed
-        rectangleButton.setSelected(false);
-        lineButton.setSelected(false);
-        resuorceButton.setSelected(false);
-        cursorButton.setSelected(false);
-        this.diagramPanel.setCursor(this.ellipseCursor);
+        this.toggleButtons(evt);
     }//GEN-LAST:event_ellipseButtonActionPerformed
 
     private void rectangleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rectangleButtonActionPerformed
-        ellipseButton.setSelected(false);
-        lineButton.setSelected(false);
-        resuorceButton.setSelected(false);
-        cursorButton.setSelected(false);
-        this.diagramPanel.setCursor(this.transitionCursor);
+        this.toggleButtons(evt);
     }//GEN-LAST:event_rectangleButtonActionPerformed
 
     private void lineButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lineButtonActionPerformed
-        ellipseButton.setSelected(false);
-        rectangleButton.setSelected(false);
-        resuorceButton.setSelected(false);
-        cursorButton.setSelected(false);
-        this.diagramPanel.setCursor(this.arcCursor);
+        this.toggleButtons(evt);
     }//GEN-LAST:event_lineButtonActionPerformed
 
     private void loadItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadItemActionPerformed
@@ -861,11 +919,7 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_notesFocusLost
 
     private void resuorceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resuorceButtonActionPerformed
-        lineButton.setSelected(false);
-        rectangleButton.setSelected(false);
-        ellipseButton.setSelected(false);
-        cursorButton.setSelected(false);
-        this.diagramPanel.setCursor(this.resCursor);
+        this.toggleButtons(evt);
     }//GEN-LAST:event_resuorceButtonActionPerformed
 
     private void newPrecedenceNetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newPrecedenceNetActionPerformed
@@ -1128,12 +1182,7 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_resetZoomButtonActionPerformed
 
     private void cursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorButtonActionPerformed
-        ellipseButton.setSelected(false);
-        lineButton.setSelected(false);
-        resuorceButton.setSelected(false);
-        rectangleButton.setSelected(false);
-        cursorButton.setSelected(true);
-        this.diagramPanel.setCursor(this.handCursor);
+        this.toggleButtons(evt);
     }//GEN-LAST:event_cursorButtonActionPerformed
 
     private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {
@@ -1167,50 +1216,11 @@ public class View extends javax.swing.JFrame {
     }
 
     private void bendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bendButtonActionPerformed
-        if (bendButton.isSelected()) {
-            bendButton.setSelected(false);
-            bendButton.setFocusCycleRoot(false);
-            bendButton.setFocusPainted(false);
-
-            deleteBendButton.setSelected(false);
-            deleteBendButton.setFocusCycleRoot(false);
-            deleteBendButton.setFocusPainted(false);
-
-        } else {
-
-
-            deleteBendButton.setSelected(false);
-            deleteBendButton.setFocusCycleRoot(false);
-            deleteBendButton.setFocusPainted(false);
-            bendButton.setSelected(true);
-
-
-        }
-
-
+        this.toggleButtons(evt);
     }//GEN-LAST:event_bendButtonActionPerformed
 
     private void deleteBendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteBendButtonActionPerformed
-        if (deleteBendButton.isSelected()) {
-            deleteBendButton.setSelected(false);
-            deleteBendButton.setFocusCycleRoot(false);
-            deleteBendButton.setFocusPainted(false);
-
-            bendButton.setSelected(false);
-            bendButton.setFocusCycleRoot(false);
-            bendButton.setFocusPainted(false);
-
-        } else {
-            bendButton.setSelected(false);
-            bendButton.setFocusCycleRoot(false);
-            bendButton.setFocusPainted(false);
-
-            deleteBendButton.setSelected(true);
-            //bendButton.setSelected(false);
-
-
-
-        }
+        this.toggleButtons(evt);
     }//GEN-LAST:event_deleteBendButtonActionPerformed
 
     private void diagramScrollPaneMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseMoved
@@ -1254,6 +1264,14 @@ public class View extends javax.swing.JFrame {
         shortcutConfig.setVisible(true);
     }//GEN-LAST:event_shorcutConfigActionPerformed
 
+    private void horizontalMagnetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalMagnetButtonActionPerformed
+        this.toggleButtons(evt);
+    }//GEN-LAST:event_horizontalMagnetButtonActionPerformed
+
+    private void verticalMagnetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalMagnetButtonActionPerformed
+        this.toggleButtons(evt);
+    }//GEN-LAST:event_verticalMagnetButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
@@ -1262,6 +1280,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JButton alignTopButton;
     private javax.swing.JLabel backgroundImageLabel;
     private javax.swing.JButton bendButton;
+    private javax.swing.JPanel buttonsPanel;
     private javax.swing.JList componentList;
     private javax.swing.JMenuItem convert;
     private javax.swing.JMenuItem create_state_diagram;
@@ -1274,6 +1293,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JMenuItem export;
     private javax.swing.JMenu fileMenu;
     private GUI.PropertiesMenu generalProperties;
+    private javax.swing.JToggleButton horizontalMagnetButton;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToggleButton lineButton;
     private javax.swing.JMenuItem loadItem;
@@ -1292,6 +1312,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JPanel sideMenu;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JMenuBar topMenu;
+    private javax.swing.JToggleButton verticalMagnetButton;
     private javax.swing.JButton zoomInButton;
     private javax.swing.JButton zoomOutButton;
     // End of variables declaration//GEN-END:variables
@@ -1324,7 +1345,7 @@ public class View extends javax.swing.JFrame {
         this.popMenu = popMenu;
     }
 
-    class DiagramPanel extends javax.swing.JPanel {
+    public class DiagramPanel extends javax.swing.JPanel {
 
         private DiagramMouseAdapter mouseAdapter;
         private Graph graph;
@@ -1335,7 +1356,7 @@ public class View extends javax.swing.JFrame {
         private Object draggedObject;
         private Color draggedColor;
         private double[] scaleRatio;
-        boolean isCTRLdown = false;
+        private boolean isCTRLdown = false;
         private int clickedX;
         private int clickedY;
         private Element bubbleElement;
@@ -1345,6 +1366,7 @@ public class View extends javax.swing.JFrame {
         PairValue<Element,Element,Arc> pair;
         int offset = 50;
         private Timer timer;
+        private ArrayList<MagneticLine> magneticLines;
 
         /**
          * Creates new form GraphPanel
@@ -1357,72 +1379,23 @@ public class View extends javax.swing.JFrame {
             this.draggedElement = null;
             this.selectedElements = new ArrayList<Element>();
             this.copiedElements = new ArrayList<Element>();
-            this.mouseAdapter = new DiagramMouseAdapter(this,diagramScrollPane);
-            
+            this.mouseAdapter = new DiagramMouseAdapter(this,diagramScrollPane,controller);
             // Click listener, drag listener
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
-            addMouseWheelListener(new ScaleHandler(this,diagramScrollPane));
-            addKeyListener(new DiagramKeyAdapter());
+            addMouseWheelListener(new DiagramMouseWheelAdapter(this,diagramScrollPane));
+            addKeyListener(new DiagramKeyAdapter(this,shortcutsManager));
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(10000, 10000));
             setBackground(Color.WHITE);
             
-            /* Key */
-
-            MouseMotionListener mml = new MouseMotionListener() {
-                @Override
-                public void mouseDragged(MouseEvent e) {
-                }
-
-                @Override
-                public void mouseMoved(MouseEvent e) {
-                    if (timer != null) {
-                        timer.cancel();
-                    }
-
-                    Point p = e.getPoint();
-                    final Object o = controller.getLocationElement((int)(p.x/diagramPanel.getScaleRatio()[0]), (int)(p.y/diagramPanel.getScaleRatio()[0]));
-
-
-                    if (o != null && !(o instanceof Point)) {
-                        timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                bubbleElement = (Element) o;
-                                repaint();
-                            }
-                        }, 750);
-
-                    } else {
-
-                        bubbleElement = null;
-                        repaint();
-                    }
-
-
-                }
-            };
-
-            addMouseMotionListener(mml);
-
             notes.addKeyListener(new KeyAdapter() {
                 public void keyReleased(KeyEvent event) {
                     String tempNote = notes.getText();
                     selectedElements.get(0).setNote(tempNote);
                 }
             });
-            /*
-            Toolkit toolkit = Toolkit.getDefaultToolkit();
-            Image cursorImage = toolkit.getImage("Images\\move_hand.png");
-            Image cursorImage2 = toolkit.getImage("Images\\hand_with_arrow.png");
-            Point cursorHotSpot = new Point(0,0);
-            this.draggedHandCursor = toolkit.createCustomCursor(cursorImage, cursorHotSpot,CUSTOM_MOVE_CURSOR);
-            this.handCursor = toolkit.createCustomCursor(cursorImage2, cursorHotSpot, CUSTOM_HAND_CURSOR);
-            this.setCursor(this.handCursor);
-            */
-            this.setCursor(handCursor);
+            this.magneticLines = new ArrayList<MagneticLine>();
         }
 
         @Override
@@ -1436,6 +1409,8 @@ public class View extends javax.swing.JFrame {
             drawDraggedObject();
             drawSelectedElements();
             drawBuble();
+            drawMagneticLines();
+            this.repaint();
         }
 
         public void saveGraph(){
@@ -1451,33 +1426,33 @@ public class View extends javax.swing.JFrame {
         }
         
         public void drawBuble() {
-            if (bubbleElement != null && cursorButton.isSelected() && draggedElement == null && draggedObject == null) {
+            if (getBubbleElement() != null && cursorButton.isSelected() && draggedElement == null && draggedObject == null) {
                 int width = 0;
                 int height = 0;
-                if (bubbleElement instanceof AbsPlace) {
-                    AbsPlace n = (AbsPlace) bubbleElement;
+                if (getBubbleElement() instanceof AbsPlace) {
+                    AbsPlace n = (AbsPlace) getBubbleElement();
                     width = n.getWidth();
                     height = n.getHeight();
-                } else if (bubbleElement instanceof Transition) {
-                    Transition n = (Transition) bubbleElement;
+                } else if (getBubbleElement() instanceof Transition) {
+                    Transition n = (Transition) getBubbleElement();
                     width = n.getWidth();
                     height = n.getHeight();
                 } else {
-                    Node n = (Node) bubbleElement;
+                    Node n = (Node) getBubbleElement();
                     width = n.getWidth();
                     height = n.getHeight();
                 }
-                SpeechBubble.drawBubble(g2d, bubbleElement.getX() + width / 2, bubbleElement.getY(), bubbleElement.getNote());
+                SpeechBubble.drawBubble(g2d, getBubbleElement().getX() + width / 2, getBubbleElement().getY(), getBubbleElement().getNote());
             }
         }
 
+        
         public void drawPlace(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
             // Place / Ring
             g2d.setColor(c2);
             g2d.fill(new Ellipse2D.Double(column, row, width, height));
             g2d.setColor(c1);
             g2d.draw(new Ellipse2D.Double(column, row, width, height));
-
 
             // Remember old
             Font oldFont = g2d.getFont();
@@ -2275,6 +2250,21 @@ public class View extends javax.swing.JFrame {
                 }
             }
         }
+        
+        public void drawMagneticLines(){
+            for (MagneticLine magneticLine : this.magneticLines) {
+                magneticLine.drawMagneticLine(this.getWidth());
+                /*
+                if(magneticLine instanceof HorizontalMagneticLine){
+                    g2d.drawLine(magneticLine.x, magneticLine.y, this.getWidth(), magneticLine.y);
+                }
+                if(magneticLine instanceof VerticalMagneticLine){
+                    g2d.drawLine(magneticLine.x, magneticLine.y, magneticLine.x, this.getHeight());
+                }
+                */ 
+                
+            }
+        }
 
         public void mouseLeftClick(int x, int y) {
             // Select 1 element
@@ -2283,7 +2273,7 @@ public class View extends javax.swing.JFrame {
             y = (int) (y / getScaleRatio()[1]);// +(1-scaleRatio[1])*(y-0));// -(1-scaleRatio[1])*y/2);
 
             /* If CTRL is pressed, dont clear list, just add item */
-            if (isCTRLdown == false) {
+            if (isIsCTRLdown() == false) {
                 selectedElements.clear();
             }
             Element e = null;
@@ -2340,6 +2330,14 @@ public class View extends javax.swing.JFrame {
                 if (rectangleButton.isSelected()) {
                     controller.addTransition("T", x - 43, y - 19);
                 }
+                //vertical magnetic line
+                if (verticalMagnetButton.isSelected()) {
+                    this.magneticLines.add(new VerticalMagneticLine(this.g2d, x));
+                }
+                // horizontal magnetic line
+                if (horizontalMagnetButton.isSelected()) {
+                    this.magneticLines.add(new HorizontalMagneticLine(this.g2d,y));
+                }
             }
 
             // Dragging preparation & create new arc
@@ -2391,7 +2389,7 @@ public class View extends javax.swing.JFrame {
             y = (int) (y / getScaleRatio()[1]);
             Element e = null;
             Object o = controller.getLocationElement(x, y);
-            if(!this.isCTRLdown){
+            if(!this.isIsCTRLdown()){
                 selectedElements.clear();
             }
             if (o instanceof Element) {
@@ -2667,7 +2665,6 @@ public class View extends javax.swing.JFrame {
             }
             // Vytvorim nove vztahy
             for (PairValue<Element, Element, Arc> pairsElement : inToOutElement) {
-                System.out.println(pairsElement.getLeft().getName()+"  "+pairsElement.getRight().getName());
                 Arc arc = new Arc("Arc"+(((PetriNet)getGraph()).getListOfArcs().size()+1), pairsElement.getLeft(), pairsElement.getRight());
                 arc.setColor(pairsElement.getData().getColor());
                 arc.setColor2(pairsElement.getData().getColor2());
@@ -2713,6 +2710,10 @@ public class View extends javax.swing.JFrame {
                 resetForm();
                 repaint();
         }
+        
+        public void setDiagramCursor(){
+            setCustomCursor();
+        }
 
         public PopUpMenu getPopUpMenu(){
             return getPopMenu();
@@ -2721,6 +2722,37 @@ public class View extends javax.swing.JFrame {
         public void updateComponentListFromDiagram(){
             updateComponentList();
         }
+        
+        public void setEllipseButtonSelected(Boolean selected){
+            disableButtons();
+            ellipseButton.setSelected(selected);
+            this.setDiagramCursor();
+        }
+        
+        public void setTransitionButtonSelected(Boolean selected){
+            disableButtons();
+            rectangleButton.setSelected(selected);
+            this.setDiagramCursor();
+        }
+        
+        public void setResourceButtonSelected(Boolean selected){
+            disableButtons();
+            resuorceButton.setSelected(selected);
+            this.setDiagramCursor();
+        }
+        
+        public void setArcButtonSelected(Boolean selected){
+            disableButtons();
+            lineButton.setSelected(selected);
+            this.setDiagramCursor();
+        }
+        
+        public void setCursorButtonSelected(Boolean selected) {
+            disableButtons();
+            cursorButton.setSelected(selected);
+            this.setDiagramCursor();
+        }
+
 
         /**
          * @return the graph
@@ -2757,91 +2789,122 @@ public class View extends javax.swing.JFrame {
         public void setHandCursor(){
             this.setCursor(handCursor);
         }
-    }
-
-    public class DiagramKeyAdapter extends KeyAdapter {//implements KeyListener{
-
-        //@Override
-        public void keyTyped(KeyEvent ke) {
-            //diagramPanel.isCTRLdown=ke.isControlDown();            
-        }
-
-        // @Override
-        public void keyPressed(KeyEvent ke) {
-            diagramPanel.isCTRLdown = ke.isControlDown();            
-            if(ke.isControlDown() && ke.getKeyCode() == KeyEvent.VK_V){
-                diagramPanel.pasteSelectedElements(0,0);
-            }
-            if(ke.isControlDown() && ke.getKeyCode() == KeyEvent.VK_C){
-                diagramPanel.copySelectedElements();
-            }
-            if(ke.getKeyCode() == KeyEvent.VK_DELETE){
-                diagramPanel.deleteSelectedElements();
-            }
-            
-            if(ke.getKeyCode() == KeyEvent.VK_ESCAPE){
-                resetForm();
-            }
-            
-            if(ke.getKeyCode() == shortcutsManager.getAddArcKey()){
-                ellipseButton.setSelected(false);
-                rectangleButton.setSelected(false);
-                resuorceButton.setSelected(false);
-                rectangleButton.setSelected(false);
-                lineButton.setSelected(true);
-                bendButton.setSelected(false);
-                deleteBendButton.setSelected(false);
-            }
-            if(ke.getKeyCode() == shortcutsManager.getAddPlaceKey()){
-                ellipseButton.setSelected(true);
-                rectangleButton.setSelected(false);
-                resuorceButton.setSelected(false);
-                rectangleButton.setSelected(false);
-                lineButton.setSelected(false);
-                bendButton.setSelected(false);
-                deleteBendButton.setSelected(false);
-            }
-            if(ke.getKeyCode() == shortcutsManager.getAddResourceKey()){
-                ellipseButton.setSelected(false);
-                rectangleButton.setSelected(false);
-                resuorceButton.setSelected(true);
-                rectangleButton.setSelected(false);
-                lineButton.setSelected(false);
-                bendButton.setSelected(false);
-                deleteBendButton.setSelected(false);
-            }
-            if(ke.getKeyCode() == shortcutsManager.getAddTransitionKey()){
-                ellipseButton.setSelected(false);
-                rectangleButton.setSelected(false);
-                resuorceButton.setSelected(false);
-                rectangleButton.setSelected(true);
-                lineButton.setSelected(false);
-                bendButton.setSelected(false);
-                deleteBendButton.setSelected(false);
-            }
-            
-            repaint();
-        }
-
-        //@Override
-        public void keyReleased(KeyEvent ke) {
-            diagramPanel.isCTRLdown = false;
-        }
         
+        public void resetAllButtons(){
+            resetForm();
+        }
+
+        /**
+         * @return the isCTRLdown
+         */
+        public boolean isIsCTRLdown() {
+            return isCTRLdown;
+        }
+
+        /**
+         * @param isCTRLdown the isCTRLdown to set
+         */
+        public void setIsCTRLdown(boolean isCTRLdown) {
+            this.isCTRLdown = isCTRLdown;
+        }
+
+        /**
+         * @return the bubbleElement
+         */
+        public Element getBubbleElement() {
+            return bubbleElement;
+        }
+
+        /**
+         * @param bubbleElement the bubbleElement to set
+         */
+        public void setBubbleElement(Element bubbleElement) {
+            this.bubbleElement = bubbleElement;
+        }
+
+        /**
+         * @return the timer
+         */
+        public Timer getTimer() {
+            return timer;
+        }
+
+        /**
+         * @param timer the timer to set
+         */
+        public void setTimer(Timer timer) {
+            this.timer = timer;
+        }
     }
     
     private void resetForm() {
-        ellipseButton.setSelected(false);
-        rectangleButton.setSelected(false);
-        resuorceButton.setSelected(false);
-        rectangleButton.setSelected(false);
-        lineButton.setSelected(false);
-        bendButton.setSelected(false);
-        deleteBendButton.setSelected(false);
+        this.disableButtons();
         cursorButton.setSelected(true);
         propertiesMenu.setVisible(false);
         this.diagramPanel.setCursor(this.handCursor);
         this.revalidate();
         this.repaint();
+    }
+    
+    /**
+     * 
+     * @param evt button or toggleButton
+     * 
+     */
+    public void toggleButtons(java.awt.event.ActionEvent evt){
+        this.disableButtons();
+        if(evt.getSource() instanceof JToggleButton){
+            ((JToggleButton)evt.getSource()).setSelected(true);
+        }
+        if(evt.getSource() instanceof JButton){
+            ((JButton)evt.getSource()).setSelected(true);
+        }
+        this.setCustomCursor();
+    }
+    
+    /**
+     * Set custom cursors to diagramPanel
+     */
+    public void setCustomCursor(){
+        if (this.ellipseButton.isSelected()) {
+            this.diagramPanel.setCursor(this.ellipseCursor);
+        } 
+        else if ((this.resuorceButton.isSelected())) {
+            this.diagramPanel.setCursor(this.resCursor);
+        }
+        else if ((this.rectangleButton.isSelected())) {
+            this.diagramPanel.setCursor(this.transitionCursor);
+        }
+        else if ((this.lineButton.isSelected())) {
+            this.diagramPanel.setCursor(this.arcCursor);
+        }
+        else if ((this.bendButton.isSelected())) {
+            this.diagramPanel.setCursor(this.handCursor);
+        }
+        else if ((this.deleteBendButton.isSelected())) {
+            this.diagramPanel.setCursor(this.handCursor);
+        }
+        else {
+            this.diagramPanel.setCursor(this.handCursor);
+        }
+    }
+    
+    
+    /**
+     * Disable all buttons in buttonsPanel and toolBar
+     */
+    public void disableButtons(){
+        for (Component button : this.buttonsPanel.getComponents()) {
+            if(button instanceof JToggleButton){
+                ((JToggleButton)button).setSelected(false);
+            }
+        }
+        for (Component button : this.toolBar.getComponents()) {
+            if(button instanceof JButton){
+                ((JButton)button).setFocusCycleRoot(false);
+                ((JButton)button).setFocusPainted(false);
+                ((JButton)button).setSelected(false);
+            }
+        }
     }
 }

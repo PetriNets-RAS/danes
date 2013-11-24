@@ -2,13 +2,13 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package GUI;
+package DiagramAdapters;
 
 import Core.Element;
 import Core.PetriNet;
 import Core.PrecedenceGraph;
-import GUI.View.DiagramPanel;
 import java.awt.Point;
+import GUI.View.DiagramPanel;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.ArrayList;
@@ -18,10 +18,10 @@ import javax.swing.JScrollPane;
  *
  * @author SYSTEM
  */
-public class ScaleHandler implements MouseWheelListener{
+public class DiagramMouseWheelAdapter implements MouseWheelListener{
     private DiagramPanel diagramPanel;
     private JScrollPane diagramScrollPane;
-    public ScaleHandler(DiagramPanel pDiagramPanel,JScrollPane pScrollPane){
+    public DiagramMouseWheelAdapter(DiagramPanel pDiagramPanel,JScrollPane pScrollPane){
         this.diagramPanel = pDiagramPanel;
         this.diagramScrollPane = pScrollPane;
     }
