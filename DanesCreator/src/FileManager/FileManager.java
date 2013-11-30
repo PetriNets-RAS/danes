@@ -17,15 +17,16 @@ import javax.swing.JFileChooser;
  * @author MISO
  */
 public class FileManager {
+
     private Graph graph;
     private File selectedFile;
     private String selectedFileName;
     private String selectedFilePath;
-    
-    public FileManager(){
+
+    public FileManager() {
     }
-    
-    public void saveGraph(Graph graph, Component c){
+
+    public void saveGraph(Graph graph, Component c) {
         this.graph = graph;
         XMLPetriManager newXML = new XMLPetriManager();
         if (getSelectedFile() == null) {
@@ -49,8 +50,8 @@ public class FileManager {
         }
         getInfoAboutFile(getSelectedFile());
     }
-    
-    public void saveGraphAs(Graph graph, Component c){
+
+    public void saveGraphAs(Graph graph, Component c) {
         this.graph = graph;
         JFileChooser fileChooser = new JFileChooser();
         int showOpenDialog = fileChooser.showSaveDialog(c);
@@ -67,9 +68,9 @@ public class FileManager {
         if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
             return;
         }
-        checkAndSave(getSelectedFile());        
+        checkAndSave(getSelectedFile());
     }
-    
+
     private void checkAndSave(File selectFile) {
         String sufix;
         if (this.graph instanceof PetriNet) {
@@ -97,8 +98,8 @@ public class FileManager {
         }
         getInfoAboutFile(selectFile);
     }
-    
-    public Graph loadGraph(Component c){
+
+    public Graph loadGraph(Component c) {
         JFileChooser jFileChooser = new JFileChooser();
         int openShowDialog = jFileChooser.showOpenDialog(c);
 
@@ -118,6 +119,13 @@ public class FileManager {
             this.graph = p;
             x = p.getListOfPlaces().get(0).getX();
             y = p.getListOfPlaces().get(0).getY();
+        } else if ("cpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+            XMLCPNManager loader = new XMLCPNManager();
+            PetriNet p = loader.getPetriNetFromCPN(inputFile);
+            this.graph = p;
+            x = p.getListOfPlaces().get(0).getX();
+            y = p.getListOfPlaces().get(0).getY();
+
         } else {
             XMLPrecedenceManager loader = new XMLPrecedenceManager();
             PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
@@ -128,7 +136,7 @@ public class FileManager {
         getInfoAboutFile(inputFile);
         return this.graph;
     }
-    
+
     private void getInfoAboutFile(File file) {
         setSelectedFileName(file.getName());
         setSelectedFilePath(file.getPath());

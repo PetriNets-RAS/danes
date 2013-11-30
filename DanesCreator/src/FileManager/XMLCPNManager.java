@@ -12,6 +12,8 @@ import Core.Transition;
 import java.awt.Color;
 import java.awt.Point;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -24,6 +26,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -66,6 +71,15 @@ public class XMLCPNManager {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
+            dBuilder.setEntityResolver(new EntityResolver() {
+                @Override
+                public InputSource resolveEntity(String publicId,
+                        String systemId) throws SAXException, IOException {
+                    return new InputSource(new StringReader(""));
+                }
+            });
+
+
             doc = dBuilder.parse(inputFile);
             doc.getDocumentElement().normalize();
 
@@ -78,10 +92,10 @@ public class XMLCPNManager {
             this.getArcsFromCPN(doc, pn);
             findResource(pn);
             /*
-            for (int i = 0; i < pn.getListOfPlaces().size(); i++) {
-                System.out.println(pn.getListOfPlaces().get(i).getMarkings());
-            }
-            */
+             for (int i = 0; i < pn.getListOfPlaces().size(); i++) {
+             System.out.println(pn.getListOfPlaces().get(i).getMarkings());
+             }
+             */
 
             if (minX < 0 || minY < 0) {
                 reMoveElements(pn, minX, maxY);
@@ -116,20 +130,20 @@ public class XMLCPNManager {
                 listOfResourceTypes.add(i);
             }
         }
-/*
-        System.out.println("List of all");
-        for (int i = 0; i < placesInfo.size(); i++) {
-            System.out.println(i + " - " + placesInfo.get(i).getPlace().getName());
-        }
-        System.out.println("List of places");
-        for (int i = 0; i < listOfPlaceTypes.size(); i++) {
-            System.out.println(" - " + listOfPlaceTypes.get(i));
-        }
-        System.out.println("List of resources");
-        for (int i = 0; i < listOfResourceTypes.size(); i++) {
-            System.out.println(" + " + listOfResourceTypes.get(i));
-        }
-*/
+        /*
+         System.out.println("List of all");
+         for (int i = 0; i < placesInfo.size(); i++) {
+         System.out.println(i + " - " + placesInfo.get(i).getPlace().getName());
+         }
+         System.out.println("List of places");
+         for (int i = 0; i < listOfPlaceTypes.size(); i++) {
+         System.out.println(" - " + listOfPlaceTypes.get(i));
+         }
+         System.out.println("List of resources");
+         for (int i = 0; i < listOfResourceTypes.size(); i++) {
+         System.out.println(" + " + listOfResourceTypes.get(i));
+         }
+         */
 
         for (int index : listOfPlaceTypes) {
             setPlaceMarking(placesInfo.get(index));
@@ -161,7 +175,7 @@ public class XMLCPNManager {
                 pn.addResource(r);
             }
         } else if (type2 != null) {
-            ArrayList<Resource> listOfAddedResources=new ArrayList<Resource>();
+            ArrayList<Resource> listOfAddedResources = new ArrayList<Resource>();
             NotUsedPlaceInfo nupi = placesInfo.get(listOfResourceTypes.get(0));
             String[] tokens = nupi.getInitmarking().split("\\+\\+");
             for (int i = 0; i < tokens.length; i++) {
@@ -170,39 +184,40 @@ public class XMLCPNManager {
                     count = ((Number) NumberFormat.getInstance().parse(tokens[i])).intValue();
                 } catch (ParseException ex) {
                 }
-                String[] markingPart = nupi.getInitmarking().split("`");
+                //String[] markingPart = nupi.getInitmarking().split("`");
+                String[] markingPart = tokens[i].split("`");
                 String name = markingPart[1];
                 Resource r = new Resource(nupi.getPlace().getName() + "_" + name);
                 r.setX(nupi.getPlace().getX());
-                r.setY(nupi.getPlace().getY() + i * 70);
+                r.setY(nupi.getPlace().getY() - i * 70);
                 r.setWidth(nupi.getPlace().getWidth());
                 r.setHeight(nupi.getPlace().getHeight());
                 r.setColor(nupi.getPlace().getColor());
                 r.setColor2(nupi.getPlace().getColor2());
                 r.setMarking(count);
 
-                for (Arc a : placesInfo.get(listOfResourceTypes.get(i)).getPlace().getListOfOutArcs()) {
+                for (Arc a : placesInfo.get(listOfResourceTypes.get(0)).getPlace().getListOfOutArcs()) {
                     for (AdditionalArcInfo aai : arcsInfo) {
-                        if(aai.getArc()==a && aai.getText().equals(name)){
+                        if (aai.getArc() == a && aai.getText().equals(name)) {
                             a.setOutElement(r);
                             r.getListOfOutArcs().add(a);
                         }
-                    }                   
+                    }
                 }
-                for (Arc a : placesInfo.get(listOfResourceTypes.get(i)).getPlace().getListOfInArcs()) {
+                for (Arc a : placesInfo.get(listOfResourceTypes.get(0)).getPlace().getListOfInArcs()) {
                     for (AdditionalArcInfo aai : arcsInfo) {
-                        if(aai.getArc()==a && aai.getText().equals(name)){
+                        if (aai.getArc() == a && aai.getText().equals(name)) {
                             a.setInElement(r);
                             r.getListOfInArcs().add(a);
                         }
-                    }                   
+                    }
                 }
                 listOfAddedResources.add(r);
 
 
             }
             pn.getListOfPlaces().remove(nupi.getPlace());
-            for(int i=0;i<listOfAddedResources.size();i++){
+            for (int i = 0; i < listOfAddedResources.size(); i++) {
                 pn.addResource(listOfAddedResources.get(i));
             }
         }
@@ -384,7 +399,7 @@ public class XMLCPNManager {
                 }
 
                 if (text.length() >= 3) {
-                    
+
                     String[] markingPart = text.split("`");
                     String markingName = markingPart[1];
                     arcsInfo.add(new AdditionalArcInfo(a, markingName));
@@ -412,8 +427,12 @@ public class XMLCPNManager {
                             maxY = y;
                         }
 
-                        a.addBendPointSimple(new Point(bendX, bendY));
-
+                        if (arcOrientation.equals("PtoT")) {
+                            a.getBendPoints().add(0, new Point(bendX,bendY));
+                            
+                        } else {
+                            a.getBendPoints().add(new Point(bendX,bendY));
+                        }
                     }
                 }
                 pn.addArc(a);
