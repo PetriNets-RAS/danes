@@ -60,8 +60,9 @@ public class XMLPetriManager {
         };
     }
 
-    public boolean createPetriXML(Core.Graph g, File outputFile) {
+    public boolean createPetriXML(Core.Graph g, File outputFile, boolean coba) {
         try {
+            cobaFile = coba;
             PetriNet pn = (PetriNet) g;
             doc = (Document) docBuilder.newDocument();
             Element rootElement = doc.createElement("process");
@@ -106,7 +107,7 @@ public class XMLPetriManager {
 
     public PetriNet getPetriNetFromXML(File inputFile, boolean fromCoBA) {
         try {
-            cobaFile=fromCoBA;
+            cobaFile = fromCoBA;
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             doc = dBuilder.parse(inputFile);
@@ -139,11 +140,11 @@ public class XMLPetriManager {
                 Resource res = new Resource(eElement.getAttribute("name"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-                if(cobaFile){
-                    x=(x*60)+20;
-                    y=(y*38)+20;
+                if (cobaFile) {
+                    x = (x * 60) + 20;
+                    y = (y * 38) + 20;
                 }
-                
+
                 int quantity = Integer.parseInt(eElement.getAttribute("quantity"));
                 if (eElement.getAttribute("width") != "") {
                     res.setWidth(Integer.parseInt(eElement.getAttribute("width")));
@@ -165,18 +166,18 @@ public class XMLPetriManager {
                     res.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
                             Integer.parseInt(eElement.getAttribute("green1")),
                             Integer.parseInt(eElement.getAttribute("blue1"))));
-                }else{
-                    res.setColor(new Color(10,10,10));
+                } else {
+                    res.setColor(new Color(10, 10, 10));
                 }
-                if(eElement.getAttribute("red2")!=""){
+                if (eElement.getAttribute("red2") != "") {
                     res.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
-                        Integer.parseInt(eElement.getAttribute("green2")),
-                        Integer.parseInt(eElement.getAttribute("blue2"))));
-                }else{
-                    res.setColor2(new Color(255,255,255));
+                            Integer.parseInt(eElement.getAttribute("green2")),
+                            Integer.parseInt(eElement.getAttribute("blue2"))));
+                } else {
+                    res.setColor2(new Color(255, 255, 255));
                 }
 
-                
+
                 res.setMarking(quantity);
                 res.setX(x);
                 res.setY(y);
@@ -203,13 +204,13 @@ public class XMLPetriManager {
                 int y1 = Integer.parseInt(eElement.getAttribute("y1"));
                 int x2 = Integer.parseInt(eElement.getAttribute("x2"));
                 int y2 = Integer.parseInt(eElement.getAttribute("y2"));
-                if(cobaFile){
-                    x1=(x1*60)+20;
-                    y1=(y1*38)+20;
-                    x2=(x2*60)+20;
-                    y2=(y2*38)+20;
+                if (cobaFile) {
+                    x1 = (x1 * 60) + 20;
+                    y1 = (y1 * 38) + 20;
+                    x2 = (x2 * 60) + 20;
+                    y2 = (y2 * 38) + 20;
                 }
-                
+
                 int power = Integer.parseInt(eElement.getAttribute("power"));
                 String type = eElement.getAttribute("type");
                 String resourceProfession = eElement.getAttribute("ResourceProfession");
@@ -245,15 +246,15 @@ public class XMLPetriManager {
                     a.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
                             Integer.parseInt(eElement.getAttribute("green1")),
                             Integer.parseInt(eElement.getAttribute("blue1"))));
-                }else{
-                    a.setColor(new Color(10,10,10));
+                } else {
+                    a.setColor(new Color(10, 10, 10));
                 }
-                if(eElement.getAttribute("red2")!=""){
+                if (eElement.getAttribute("red2") != "") {
                     a.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
-                        Integer.parseInt(eElement.getAttribute("green2")),
-                        Integer.parseInt(eElement.getAttribute("blue2"))));
-                }else{
-                    a.setColor2(new Color(255,255,255));
+                            Integer.parseInt(eElement.getAttribute("green2")),
+                            Integer.parseInt(eElement.getAttribute("blue2"))));
+                } else {
+                    a.setColor2(new Color(255, 255, 255));
                 }
                 for (int j = 0; j < eElement.getChildNodes().getLength(); j++) {
                     Node pNode = eElement.getChildNodes().item(j);
@@ -297,11 +298,11 @@ public class XMLPetriManager {
                 //int initialMarking = Integer.parseInt(eElement.getAttribute("tokens"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-                if(cobaFile){
-                    x=(x*60)+20;
-                    y=(y*38)+20;
+                if (cobaFile) {
+                    x = (x * 60) + 20;
+                    y = (y * 38) + 20;
                 }
- 
+
                 if ("yes".equals(eElement.getAttribute("start"))) {
                     pl.setStart(true);
                 } else {
@@ -337,15 +338,15 @@ public class XMLPetriManager {
                     pl.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
                             Integer.parseInt(eElement.getAttribute("green1")),
                             Integer.parseInt(eElement.getAttribute("blue1"))));
-                }else{
-                    pl.setColor(new Color(10,10,10));
+                } else {
+                    pl.setColor(new Color(10, 10, 10));
                 }
-                if(eElement.getAttribute("red2")!=""){
+                if (eElement.getAttribute("red2") != "") {
                     pl.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
-                        Integer.parseInt(eElement.getAttribute("green2")),
-                        Integer.parseInt(eElement.getAttribute("blue2"))));
-                }else{
-                    pl.setColor2(new Color(255,255,255));
+                            Integer.parseInt(eElement.getAttribute("green2")),
+                            Integer.parseInt(eElement.getAttribute("blue2"))));
+                } else {
+                    pl.setColor2(new Color(255, 255, 255));
                 }
                 //pl.setDiagramElement(new DiagramElement(x, y));
                 pn.addPlace(pl);
@@ -364,11 +365,11 @@ public class XMLPetriManager {
                 Transition tr = new Transition(eElement.getAttribute("name"));
                 int x = Integer.parseInt(eElement.getAttribute("x"));
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-                if(cobaFile){
-                    x=(x*60)+20;
-                    y=(y*38)+20;
+                if (cobaFile) {
+                    x = (x * 60) + 20;
+                    y = (y * 38) + 20;
                 }
-                
+
                 tr.setNote(eElement.getAttribute("note"));
                 tr.setX(x);
                 tr.setY(y);
@@ -381,15 +382,15 @@ public class XMLPetriManager {
                     tr.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
                             Integer.parseInt(eElement.getAttribute("green1")),
                             Integer.parseInt(eElement.getAttribute("blue1"))));
-                }else{
-                    tr.setColor(new Color(10,10,10));
+                } else {
+                    tr.setColor(new Color(10, 10, 10));
                 }
-                if(eElement.getAttribute("red2")!=""){
+                if (eElement.getAttribute("red2") != "") {
                     tr.setColor2(new Color(Integer.parseInt(eElement.getAttribute("red2")),
-                        Integer.parseInt(eElement.getAttribute("green2")),
-                        Integer.parseInt(eElement.getAttribute("blue2"))));
-                }else{
-                    tr.setColor2(new Color(255,255,255));
+                            Integer.parseInt(eElement.getAttribute("green2")),
+                            Integer.parseInt(eElement.getAttribute("blue2"))));
+                } else {
+                    tr.setColor2(new Color(255, 255, 255));
                 }
                 if (eElement.getAttribute("width") != "") {
                     tr.setWidth(Integer.parseInt(eElement.getAttribute("width")));
@@ -430,27 +431,35 @@ public class XMLPetriManager {
                     resourceType = "P_" + a.getInElement().getName();
                     insertProf("P_" + a.getInElement().getName());
                 }
-                /*X1.setValue(a.getInElement().getDiagramElement().getX() + "");
-                 Y1.setValue(a.getInElement().getDiagramElement().getY() + "");
-                 X2.setValue(a.getOutElement().getDiagramElement().getX() + "");
-                 Y2.setValue(a.getOutElement().getDiagramElement().getY() + "");*/
-                X1.setValue(a.getInElement().getX() + "");
-                Y1.setValue(a.getInElement().getY() + "");
-                X2.setValue(a.getOutElement().getX() + "");
-                Y2.setValue(a.getOutElement().getY() + "");
+                if (cobaFile) {
+                    X1.setValue((a.getInElement().getX() / 10) + "");
+                    Y1.setValue((a.getInElement().getY() / 10) + "");
+                    X2.setValue((a.getOutElement().getX() / 10) + "");
+                    Y2.setValue((a.getOutElement().getY() / 10) + "");
+                } else {
+                    X1.setValue(a.getInElement().getX() + "");
+                    Y1.setValue(a.getInElement().getY() + "");
+                    X2.setValue(a.getOutElement().getX() + "");
+                    Y2.setValue(a.getOutElement().getY() + "");
+                }
+
             } else {
                 type = "PT";
                 if (a.getOutElement() instanceof Resource) {
                     resourceType = "P_" + a.getOutElement().getName();
                 }
-                /*X1.setValue(a.getOutElement().getDiagramElement().getX() + "");
-                 Y1.setValue(a.getOutElement().getDiagramElement().getY() + "");
-                 X2.setValue(a.getInElement().getDiagramElement().getX() + "");
-                 Y2.setValue(a.getInElement().getDiagramElement().getY() + "");*/
-                X1.setValue(a.getOutElement().getX() + "");
-                Y1.setValue(a.getOutElement().getY() + "");
-                X2.setValue(a.getInElement().getX() + "");
-                Y2.setValue(a.getInElement().getY() + "");
+                if (cobaFile) {
+                    X1.setValue((a.getOutElement().getX() / 10) + "");
+                    Y1.setValue((a.getOutElement().getY() / 10) + "");
+                    X2.setValue((a.getInElement().getX() / 10) + "");
+                    Y2.setValue((a.getInElement().getY() / 10) + "");
+                } else {
+                    X1.setValue(a.getOutElement().getX() + "");
+                    Y1.setValue(a.getOutElement().getY() + "");
+                    X2.setValue(a.getInElement().getX() + "");
+                    Y2.setValue(a.getInElement().getY() + "");
+                }
+
             }
             edgeType.setValue(type);
             edge.setAttributeNode(edgeType);
@@ -501,9 +510,15 @@ public class XMLPetriManager {
             for (Point p : a.getBendPoints()) {
                 Element bendPoint = doc.createElement("bendPoint");
                 Attr x = doc.createAttribute("x");
-                x.setValue(p.x + "");
                 Attr y = doc.createAttribute("y");
-                y.setValue(p.y + "");
+                if (cobaFile) {
+                    x.setValue((p.x/10) + "");
+                    y.setValue((p.y/10) + "");
+                } else {
+                    x.setValue(p.x + "");
+                    y.setValue(p.y + "");
+                }
+
                 bendPoint.setAttributeNode(x);
                 bendPoint.setAttributeNode(y);
                 edge.appendChild(bendPoint);
@@ -564,15 +579,17 @@ public class XMLPetriManager {
             place.setAttributeNode(name);
 
             Attr X = doc.createAttribute("x");
+            Attr Y = doc.createAttribute("y");
             //X.setValue(t.getDiagramElement().getX() + "");
-            X.setValue(p.getX() + "");
+            if (cobaFile) {
+                X.setValue((p.getX() / 10) + "");
+                Y.setValue((p.getY() / 10) + "");
+            } else {
+                X.setValue(p.getX() + "");
+                Y.setValue(p.getY() + "");
+            }
             //X.setValue("");
             place.setAttributeNode(X);
-
-            Attr Y = doc.createAttribute("y");
-            //Y.setValue(t.getDiagramElement().getY() + "");
-            Y.setValue(p.getY() + "");
-            //Y.setValue("");
             place.setAttributeNode(Y);
 
             Attr tokens = doc.createAttribute("tokens");
@@ -661,15 +678,17 @@ public class XMLPetriManager {
             transition.setAttributeNode(name);
 
             Attr X = doc.createAttribute("x");
-            //X.setValue(t.getDiagramElement().getX() + "");
-            X.setValue(t.getX() + "");
-            //X.setValue("");
-            transition.setAttributeNode(X);
-
             Attr Y = doc.createAttribute("y");
-            //Y.setValue(t.getDiagramElement().getY() + "");
-            Y.setValue(t.getY() + "");
-            //Y.setValue("");
+            //X.setValue(t.getDiagramElement().getX() + "");
+            if (cobaFile) {
+                X.setValue((t.getX() / 10) + "");
+                Y.setValue((t.getY() / 10) + "");
+            } else {
+                X.setValue(t.getX() + "");
+                Y.setValue(t.getY() + "");
+            }
+
+            transition.setAttributeNode(X);
             transition.setAttributeNode(Y);
 
             Attr width = doc.createAttribute("width");

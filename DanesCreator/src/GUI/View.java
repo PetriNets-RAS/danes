@@ -125,6 +125,7 @@ public class View extends javax.swing.JFrame {
         this.handCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand.png"), cursorHotSpot, "hand_cursor");
         
         this.fileManager = new FileManager();
+        
         this.shortcutsManager = new ShortcutsManager();
         
         about = new AboutUs(this, rootPaneCheckingEnabled);
@@ -880,11 +881,12 @@ public class View extends javax.swing.JFrame {
             //newXML.createPetriXML(g, new File(selectedFile.getAbsolutePath()));
             checkAndSave(graph, selectedFile);
         }*/
+        
         this.fileManager.saveGraph(graph, this);
         getInfoAboutFile(this.fileManager.getSelectedFile());
         
     }//GEN-LAST:event_saveItemActionPerformed
-
+/*
     private void checkAndSave(Graph g, File selectFile) {
         String sufix;
         if (g instanceof PetriNet) {
@@ -912,7 +914,7 @@ public class View extends javax.swing.JFrame {
         }
         getInfoAboutFile(selectFile);
     }
-
+*/
     private void notesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_notesFocusLost
         //currentElement.setNote(notes.getText());
         // System.out.print("notes");
@@ -1243,6 +1245,14 @@ public class View extends javax.swing.JFrame {
         for (Element element : elements) {
             this.diagramPanel.selectedElements.add(element);
         }
+        if(diagramPanel.selectedElements.size()==1){
+            diagramPanel.loadElementProperties(diagramPanel.selectedElements.get(0));
+            propertiesMenu.setVisible(true);
+        }else if(diagramPanel.selectedElements.size()>1){
+            diagramPanel.loadMultipleProperties(diagramPanel.selectedElements);
+            propertiesMenu.setVisible(true);
+        }
+        
         this.diagramPanel.repaint();
     }//GEN-LAST:event_componentListValueChanged
 

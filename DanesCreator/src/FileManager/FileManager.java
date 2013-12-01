@@ -11,6 +11,8 @@ import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -44,9 +46,9 @@ public class FileManager {
             if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
                 return;
             }
-            checkAndSave(getSelectedFile());
+            checkAndSave(getSelectedFile(),null);
         } else {
-            checkAndSave(getSelectedFile());
+            checkAndSave(getSelectedFile(),null);
         }
         getInfoAboutFile(getSelectedFile());
     }
@@ -54,6 +56,13 @@ public class FileManager {
     public void saveGraphAs(Graph graph, Component c) {
         this.graph = graph;
         JFileChooser fileChooser = new JFileChooser();
+        if (graph instanceof PetriNet) {
+            fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Danes PetriNet files", "dpn"));
+            fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CoBA PetriNet files", "pn2"));
+            fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CPN Tools PetriNet files", "cpn"));
+        } else {
+            fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
+        }
         int showOpenDialog = fileChooser.showSaveDialog(c);
         setSelectedFile(fileChooser.getSelectedFile());
         if (!selectedFile.exists()) {
@@ -64,26 +73,38 @@ public class FileManager {
                 System.out.print("Chyba pri praci so suborom");
             }
         }
-        getInfoAboutFile(getSelectedFile());
-        if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
-            return;
+        FileFilter ff=fileChooser.getFileFilter();
+        if (getSelectedFile() != null) {
+            getInfoAboutFile(getSelectedFile());
+            if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
+                return;
+            }
+            checkAndSave(getSelectedFile(), ff);
         }
-        checkAndSave(getSelectedFile());
     }
 
-    private void checkAndSave(File selectFile) {
+    private void checkAndSave(File selectFile,FileFilter ff) {
         String sufix;
         if (this.graph instanceof PetriNet) {
             sufix = ".dpn";
             XMLPetriManager newXML = new XMLPetriManager();
-
             if ((getSelectedFile().getName().length() < 5) || (!"dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
                 File temp = getSelectedFile();
-                setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
-                temp.delete();
+                if(!"CoBA PetriNet files".equals(ff.getDescription())){
+                    setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
+                    temp.delete();
+                    newXML.createPetriXML(this.graph, getSelectedFile(),false);
+                }else{
+                    sufix=".pn2";
+                    setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
+                    temp.delete();
+                    newXML.createPetriXML(this.graph, getSelectedFile(),true);
+                }
+                
+                
             }
 
-            newXML.createPetriXML(this.graph, getSelectedFile());
+            
             //System.out.println("UKLADAM PN");
         } else {
             sufix = ".dpg";
