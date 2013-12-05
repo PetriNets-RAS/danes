@@ -128,6 +128,7 @@ public class XMLPrecedenceManager {
                 inNode.getListOfInArcs().add(a);
                 inNode.getListOfInNodes().add(outNode);
 
+                a.setCapacity(power);
                 a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
                 a.setColor(new Color(Integer.parseInt(eElement.getAttribute("red1")),
                         Integer.parseInt(eElement.getAttribute("green1")),

@@ -33,8 +33,17 @@ public class FileManager {
         XMLPetriManager newXML = new XMLPetriManager();
         if (getSelectedFile() == null) {
             JFileChooser fileChooser = new JFileChooser();
+            if (graph instanceof PetriNet) {
+                fileChooser.setAcceptAllFileFilterUsed(false);
+                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Danes PetriNet files", "dpn"));
+                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CoBA PetriNet files", "pn2"));
+                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CPN Tools PetriNet files", "cpn"));
+            } else {
+                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
+            }
             int showOpenDialog = fileChooser.showOpenDialog(c);
             setSelectedFile(fileChooser.getSelectedFile());
+            if(selectedFile==null)return ;
             if (!selectedFile.exists()) {
                 setSelectedFile(new File(getSelectedFile().getAbsolutePath()));
                 try {
@@ -42,13 +51,14 @@ public class FileManager {
                 } catch (IOException e) {
                     System.out.print("Chyba pri praci so suborom");
                 }
+            }else{
             }
             if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
                 return;
             }
-            checkAndSave(getSelectedFile(),null);
+            checkAndSave(getSelectedFile(), null);
         } else {
-            checkAndSave(getSelectedFile(),null);
+            checkAndSave(getSelectedFile(), null);
         }
         getInfoAboutFile(getSelectedFile());
     }
@@ -57,6 +67,7 @@ public class FileManager {
         this.graph = graph;
         JFileChooser fileChooser = new JFileChooser();
         if (graph instanceof PetriNet) {
+            fileChooser.setAcceptAllFileFilterUsed(false);
             fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Danes PetriNet files", "dpn"));
             fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CoBA PetriNet files", "pn2"));
             fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CPN Tools PetriNet files", "cpn"));
@@ -65,6 +76,7 @@ public class FileManager {
         }
         int showOpenDialog = fileChooser.showSaveDialog(c);
         setSelectedFile(fileChooser.getSelectedFile());
+        if(selectedFile==null) return ;
         if (!selectedFile.exists()) {
             setSelectedFile(new File(getSelectedFile().getAbsolutePath()));
             try {
@@ -73,7 +85,7 @@ public class FileManager {
                 System.out.print("Chyba pri praci so suborom");
             }
         }
-        FileFilter ff=fileChooser.getFileFilter();
+        FileFilter ff = fileChooser.getFileFilter();
         if (getSelectedFile() != null) {
             getInfoAboutFile(getSelectedFile());
             if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
@@ -83,28 +95,28 @@ public class FileManager {
         }
     }
 
-    private void checkAndSave(File selectFile,FileFilter ff) {
+    private void checkAndSave(File selectFile, FileFilter ff) {
         String sufix;
         if (this.graph instanceof PetriNet) {
             sufix = ".dpn";
             XMLPetriManager newXML = new XMLPetriManager();
             if ((getSelectedFile().getName().length() < 5) || (!"dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
                 File temp = getSelectedFile();
-                if(!"CoBA PetriNet files".equals(ff.getDescription())){
+                if (!"CoBA PetriNet files".equals(ff.getDescription())) {
                     setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
                     temp.delete();
-                    newXML.createPetriXML(this.graph, getSelectedFile(),false);
-                }else{
-                    sufix=".pn2";
+                    newXML.createPetriXML(this.graph, getSelectedFile(), false);
+                } else {
+                    sufix = ".pn2";
                     setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
                     temp.delete();
-                    newXML.createPetriXML(this.graph, getSelectedFile(),true);
+                    newXML.createPetriXML(this.graph, getSelectedFile(), true);
                 }
-                
-                
+
+
             }
 
-            
+
             //System.out.println("UKLADAM PN");
         } else {
             sufix = ".dpg";
@@ -125,8 +137,8 @@ public class FileManager {
         int openShowDialog = jFileChooser.showOpenDialog(c);
 
         selectedFile = jFileChooser.getSelectedFile();
+        if(selectedFile==null) return null;
         File inputFile = new File(selectedFile.getAbsolutePath());
-
         int x, y;
 
         if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))

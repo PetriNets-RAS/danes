@@ -60,6 +60,13 @@ public class XMLPetriManager {
         };
     }
 
+    public Point setCoBAPoint(int x, int y) {
+        //x = (x * 60) + 20;
+        //y = (y * 38) + 20;
+        return new Point((x - 20) / 60, (y - 20) / 60);
+
+    }
+
     public boolean createPetriXML(Core.Graph g, File outputFile, boolean coba) {
         try {
             cobaFile = coba;
@@ -237,6 +244,9 @@ public class XMLPetriManager {
                         a = new Arc("ARC" + i, r, t);
                     }
                 }
+                
+                a.setCapacity(power);
+                
                 if (eElement.getAttribute("fontSize") != "") {
                     a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
                 } else {
@@ -432,10 +442,16 @@ public class XMLPetriManager {
                     insertProf("P_" + a.getInElement().getName());
                 }
                 if (cobaFile) {
-                    X1.setValue((a.getInElement().getX() / 10) + "");
-                    Y1.setValue((a.getInElement().getY() / 10) + "");
-                    X2.setValue((a.getOutElement().getX() / 10) + "");
-                    Y2.setValue((a.getOutElement().getY() / 10) + "");
+                    //X1.setValue(tranform(a.getInElement().getX()) + "");
+                    //Y1.setValue(tranform(a.getInElement().getY()) + "");
+                    //X2.setValue(tranform(a.getOutElement().getX()) + "");
+                    //Y2.setValue(tranform(a.getOutElement().getY()) + "");
+                    Point tempPoint = setCoBAPoint(a.getInElement().getX(), a.getInElement().getY());
+                    X1.setValue(tempPoint.x + "");
+                    Y1.setValue(tempPoint.y + "");
+                    tempPoint = setCoBAPoint(a.getOutElement().getX(), a.getOutElement().getY());
+                    X2.setValue(tempPoint.x + "");
+                    Y2.setValue(tempPoint.y + "");
                 } else {
                     X1.setValue(a.getInElement().getX() + "");
                     Y1.setValue(a.getInElement().getY() + "");
@@ -449,10 +465,18 @@ public class XMLPetriManager {
                     resourceType = "P_" + a.getOutElement().getName();
                 }
                 if (cobaFile) {
-                    X1.setValue((a.getOutElement().getX() / 10) + "");
-                    Y1.setValue((a.getOutElement().getY() / 10) + "");
-                    X2.setValue((a.getInElement().getX() / 10) + "");
-                    Y2.setValue((a.getInElement().getY() / 10) + "");
+                    /*
+                    X1.setValue(tranform(a.getOutElement().getX()) + "");
+                    Y1.setValue(tranform(a.getOutElement().getY()) + "");
+                    X2.setValue(tranform(a.getInElement().getX()) + "");
+                    Y2.setValue(tranform(a.getInElement().getY()) + "");
+                    */
+                    Point tempPoint = setCoBAPoint(a.getOutElement().getX(), a.getOutElement().getY());
+                    X1.setValue(tempPoint.x + "");
+                    Y1.setValue(tempPoint.y + "");
+                    tempPoint = setCoBAPoint(a.getInElement().getX(), a.getInElement().getY());
+                    X2.setValue(tempPoint.x + "");
+                    Y2.setValue(tempPoint.y + "");
                 } else {
                     X1.setValue(a.getOutElement().getX() + "");
                     Y1.setValue(a.getOutElement().getY() + "");
@@ -512,8 +536,11 @@ public class XMLPetriManager {
                 Attr x = doc.createAttribute("x");
                 Attr y = doc.createAttribute("y");
                 if (cobaFile) {
-                    x.setValue((p.x/10) + "");
-                    y.setValue((p.y/10) + "");
+                    //x.setValue(tranform(p.x) + "");
+                    //y.setValue(tranform(p.y) + "");
+                    Point tempPoint = setCoBAPoint(p.x, p.y);
+                    x.setValue(tempPoint.x + "");
+                    y.setValue(tempPoint.y + "");
                 } else {
                     x.setValue(p.x + "");
                     y.setValue(p.y + "");
@@ -582,8 +609,11 @@ public class XMLPetriManager {
             Attr Y = doc.createAttribute("y");
             //X.setValue(t.getDiagramElement().getX() + "");
             if (cobaFile) {
-                X.setValue((p.getX() / 10) + "");
-                Y.setValue((p.getY() / 10) + "");
+                //X.setValue(tranform(p.getX()) + "");
+                //Y.setValue(tranform(p.getY()) + "");
+                Point tempPoint = setCoBAPoint(p.getX(), p.getY());
+                X.setValue(tempPoint.x + "");
+                Y.setValue(tempPoint.y + "");
             } else {
                 X.setValue(p.getX() + "");
                 Y.setValue(p.getY() + "");
@@ -667,6 +697,12 @@ public class XMLPetriManager {
         return places;
     }
 
+    public int tranform(int x) {
+        int y = (int) Math.round((double) x / 50.0);
+        return y;
+
+    }
+
     private Element getTransationsElement(ArrayList<Transition> listOfTransitions, Document doc) {
         Element transitions = doc.createElement("transitions");
 
@@ -681,8 +717,11 @@ public class XMLPetriManager {
             Attr Y = doc.createAttribute("y");
             //X.setValue(t.getDiagramElement().getX() + "");
             if (cobaFile) {
-                X.setValue((t.getX() / 10) + "");
-                Y.setValue((t.getY() / 10) + "");
+                //X.setValue(tranform(t.getX()) + "");
+                //Y.setValue(tranform(t.getY()) + "");
+                Point tempPoint = setCoBAPoint(t.getX(), t.getY());
+                X.setValue(tempPoint.x + "");
+                Y.setValue(tempPoint.y + "");
             } else {
                 X.setValue(t.getX() + "");
                 Y.setValue(t.getY() + "");
@@ -759,6 +798,18 @@ public class XMLPetriManager {
             Attr resY = doc.createAttribute("y");
             //resY.setValue(r.getDiagramElement().getY() + "");
             resY.setValue(r.getY() + "");
+
+            if (cobaFile) {
+                //resX.setValue(tranform(r.getX()) + "");
+                //resY.setValue(tranform(r.getY()) + "");
+                Point tempPoint = setCoBAPoint(r.getX(), r.getY());
+                resX.setValue(tempPoint.x + "");
+                resY.setValue(tempPoint.y + "");
+            } else {
+                resX.setValue(r.getX() + "");
+                resY.setValue(r.getY() + "");
+            }
+
             //resY.setValue("");
             resource.setAttributeNode(resY);
 

@@ -776,6 +776,7 @@ public class View extends javax.swing.JFrame {
 
     private void loadItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadItemActionPerformed
         graph = this.fileManager.loadGraph(this);
+        if (graph==null) return ;
         getInfoAboutFile(this.fileManager.getSelectedFile());
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
