@@ -34,6 +34,20 @@ public class Marking {
         this.markings = markings;
     }
     
+    public String getCPNMarking(){
+        StringBuilder sb=new StringBuilder();
+        int inc=1;
+        for(Integer i:markings){
+            sb.append("1'"+i);
+            if(inc<markings.size()){
+                sb.append("++");
+            }
+            inc++;
+        }
+        return sb.toString();
+    }
+    
+    
     @Override
     public String toString()
     {

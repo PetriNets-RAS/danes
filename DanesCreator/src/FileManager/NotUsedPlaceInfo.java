@@ -4,6 +4,7 @@
  */
 package FileManager;
 
+import Core.AbsPlace;
 import Core.Place;
 
 /**
@@ -11,17 +12,24 @@ import Core.Place;
  * @author Michal
  */
 public class NotUsedPlaceInfo {
-    
+
     private String type;
     private String initmarking;
     private int ID;
-    private Place place;
-    
-    public NotUsedPlaceInfo(int paID,String patype, String paMarking,Place paP){
-        this.ID=paID;
-        this.type=patype;
-        this.initmarking=paMarking;
-        this.place=paP;
+    private AbsPlace place;
+
+    public NotUsedPlaceInfo(int paID, String patype, String paMarking, AbsPlace paP) {
+        this.ID = paID;
+        this.type = patype;
+        this.initmarking = paMarking;
+        this.place = paP;
+    }
+
+    public NotUsedPlaceInfo(int paID,  AbsPlace paP) {
+        this.ID = paID;
+        this.type = null;
+        this.initmarking = null;
+        this.place = paP;
     }
 
     /**
@@ -69,7 +77,7 @@ public class NotUsedPlaceInfo {
     /**
      * @return the place
      */
-    public Place getPlace() {
+    public AbsPlace getPlace() {
         return place;
     }
 
@@ -79,6 +87,4 @@ public class NotUsedPlaceInfo {
     public void setPlace(Place place) {
         this.place = place;
     }
-    
-    
 }

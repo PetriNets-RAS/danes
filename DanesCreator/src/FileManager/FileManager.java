@@ -9,7 +9,12 @@ import Core.PetriNet;
 import Core.PrecedenceGraph;
 import java.awt.Component;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -43,7 +48,9 @@ public class FileManager {
             }
             int showOpenDialog = fileChooser.showOpenDialog(c);
             setSelectedFile(fileChooser.getSelectedFile());
-            if(selectedFile==null)return ;
+            if (selectedFile == null) {
+                return;
+            }
             if (!selectedFile.exists()) {
                 setSelectedFile(new File(getSelectedFile().getAbsolutePath()));
                 try {
@@ -51,7 +58,7 @@ public class FileManager {
                 } catch (IOException e) {
                     System.out.print("Chyba pri praci so suborom");
                 }
-            }else{
+            } else {
             }
             if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
                 return;
@@ -76,7 +83,9 @@ public class FileManager {
         }
         int showOpenDialog = fileChooser.showSaveDialog(c);
         setSelectedFile(fileChooser.getSelectedFile());
-        if(selectedFile==null) return ;
+        if (selectedFile == null) {
+            return;
+        }
         if (!selectedFile.exists()) {
             setSelectedFile(new File(getSelectedFile().getAbsolutePath()));
             try {
@@ -102,15 +111,26 @@ public class FileManager {
             XMLPetriManager newXML = new XMLPetriManager();
             if ((getSelectedFile().getName().length() < 5) || (!"dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
                 File temp = getSelectedFile();
-                if (!"CoBA PetriNet files".equals(ff.getDescription())) {
+                if ("Danes PetriNet files".equals(ff.getDescription())) {
                     setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
                     temp.delete();
                     newXML.createPetriXML(this.graph, getSelectedFile(), false);
-                } else {
+                } else if ("CoBA PetriNet files".equals(ff.getDescription())) {
                     sufix = ".pn2";
                     setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
                     temp.delete();
                     newXML.createPetriXML(this.graph, getSelectedFile(), true);
+                } else {
+                    System.out.println("UKLADAM CPN");
+                    sufix = ".cpn";
+                    setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
+                    //add copy of clean 
+                    createCleanCPNNetTo(getSelectedFile());
+                    
+                    
+                    temp.delete();
+                    XMLCPNManager cpnm = new XMLCPNManager();
+                    cpnm.createPetriXML(this.graph, getSelectedFile());
                 }
 
 
@@ -132,12 +152,48 @@ public class FileManager {
         getInfoAboutFile(selectFile);
     }
 
+    public void createCleanCPNNetTo(File destination){
+    	FileOutputStream outStream = null;
+        FileInputStream inStream = null;
+        try {
+            File cleanNet=new File("cleanCPNNet.xml");
+            System.out.println(cleanNet.getAbsolutePath());
+            
+            inStream = new FileInputStream(cleanNet);
+            outStream = new FileOutputStream(destination);
+            byte[] buffer = new byte[1024];
+ 
+    	    int length;
+    	    //copy the file content in bytes 
+    	    while ((length = inStream.read(buffer)) > 0){
+ 
+    	    	outStream.write(buffer, 0, length);
+ 
+    	    }
+    	    inStream.close();
+    	    outStream.close();
+            
+        } catch (Exception ex) {
+            Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Error file copping");
+        } finally {
+            try {
+                if( outStream !=null) outStream.close();               
+            } catch (IOException ex) {
+                Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+    }
+    
     public Graph loadGraph(Component c) {
         JFileChooser jFileChooser = new JFileChooser();
         int openShowDialog = jFileChooser.showOpenDialog(c);
 
         selectedFile = jFileChooser.getSelectedFile();
-        if(selectedFile==null) return null;
+        if (selectedFile == null) {
+            return null;
+        }
         File inputFile = new File(selectedFile.getAbsolutePath());
         int x, y;
 
