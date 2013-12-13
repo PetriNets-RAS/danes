@@ -22,4 +22,8 @@ public class VerticalMagneticLine extends MagneticLine{
         super.g2d.drawLine(super.x, super.y, super.x, height);
     }
     
+    public int getX(){
+        return super.x;
+    }
+    
 }

@@ -22,4 +22,8 @@ public class HorizontalMagneticLine extends MagneticLine{
         super.g2d.drawLine(super.x, super.y, width, super.y);
     }
     
+   public int getY(){
+        return super.y;
+    }
+    
 }

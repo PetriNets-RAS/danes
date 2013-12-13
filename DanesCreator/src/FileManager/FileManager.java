@@ -7,12 +7,15 @@ package FileManager;
 import Core.Graph;
 import Core.PetriNet;
 import Core.PrecedenceGraph;
+import GUI.MagneticLine;
+import GUI.View.DiagramPanel;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -29,6 +32,7 @@ public class FileManager {
     private File selectedFile;
     private String selectedFileName;
     private String selectedFilePath;
+    private ArrayList<MagneticLine> listOfMagneticLines;
 
     public FileManager() {
     }
@@ -46,6 +50,7 @@ public class FileManager {
             } else {
                 fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
             }
+            listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
             int showOpenDialog = fileChooser.showOpenDialog(c);
             setSelectedFile(fileChooser.getSelectedFile());
             if (selectedFile == null) {
@@ -72,6 +77,7 @@ public class FileManager {
 
     public void saveGraphAs(Graph graph, Component c) {
         this.graph = graph;
+        listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
         JFileChooser fileChooser = new JFileChooser();
         if (graph instanceof PetriNet) {
             fileChooser.setAcceptAllFileFilterUsed(false);
@@ -114,12 +120,12 @@ public class FileManager {
                 if ("Danes PetriNet files".equals(ff.getDescription())) {
                     setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
                     temp.delete();
-                    newXML.createPetriXML(this.graph, getSelectedFile(), false);
+                    newXML.createPetriXML(this.graph, getSelectedFile(), false,listOfMagneticLines);
                 } else if ("CoBA PetriNet files".equals(ff.getDescription())) {
                     sufix = ".pn2";
                     setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
                     temp.delete();
-                    newXML.createPetriXML(this.graph, getSelectedFile(), true);
+                    newXML.createPetriXML(this.graph, getSelectedFile(), true,listOfMagneticLines);
                 } else {
                     System.out.println("UKLADAM CPN");
                     sufix = ".cpn";

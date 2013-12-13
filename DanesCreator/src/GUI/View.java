@@ -1319,6 +1319,10 @@ public class View extends javax.swing.JFrame {
             });
             this.magneticLines = new ArrayList<MagneticLine>();
         }
+        
+        public ArrayList<MagneticLine> getMagneticLines(){
+            return magneticLines;
+        }
 
         @Override
         public void paint(Graphics g) {

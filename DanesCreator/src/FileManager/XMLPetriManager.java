@@ -9,6 +9,9 @@ import Core.PetriNet;
 import Core.Place;
 import Core.Resource;
 import Core.Transition;
+import GUI.HorizontalMagneticLine;
+import GUI.MagneticLine;
+import GUI.VerticalMagneticLine;
 import StateSpace.State;
 import java.awt.Color;
 import java.awt.Point;
@@ -67,7 +70,7 @@ public class XMLPetriManager {
 
     }
 
-    public boolean createPetriXML(Core.Graph g, File outputFile, boolean coba) {
+    public boolean createPetriXML(Core.Graph g, File outputFile, boolean coba, ArrayList<MagneticLine> listOfMagneticLines) {
         try {
             cobaFile = coba;
             PetriNet pn = (PetriNet) g;
@@ -88,6 +91,8 @@ public class XMLPetriManager {
             rootElement.appendChild(places);
             rootElement.appendChild(transitions);
             rootElement.appendChild(edges);
+            appendMagneticLines(doc, listOfMagneticLines, rootElement);
+
             if (pn.getStates() != null) {
                 Element states = getStatesElement(pn.getStates(), doc);
                 rootElement.appendChild(states);
@@ -123,6 +128,8 @@ public class XMLPetriManager {
             NodeList titleList = doc.getElementsByTagName("title");
             String petriNetName = titleList.item(0).getTextContent();
             PetriNet pn = new PetriNet(petriNetName);
+            ArrayList<Integer> listOfHorizontalMagneticLines = getHorizontalMagneticLines(doc);
+            ArrayList<Integer> listOfVerticalMagneticLines = getVerticalMagneticLines(doc);
 
             this.getResourcesFromXML(doc, pn);
             this.getPlacesFromXML(doc, pn);
@@ -134,6 +141,34 @@ public class XMLPetriManager {
             Logger.getLogger(XMLPetriManager.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    private ArrayList<Integer> getHorizontalMagneticLines(Document doc) {
+        ArrayList<Integer> listOfHorizontalMagneticLines = new ArrayList<Integer>();
+        NodeList resourcesList = doc.getElementsByTagName("hMagneticLine");
+        for (int i = 0; i < resourcesList.getLength(); i++) {
+            Node nNode = resourcesList.item(i);
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element eElement = (Element) nNode;
+                int y = Integer.parseInt(eElement.getAttribute("y"));
+                listOfHorizontalMagneticLines.add(y);
+            }
+        }
+        return listOfHorizontalMagneticLines;
+    }
+
+    private ArrayList<Integer> getVerticalMagneticLines(Document doc) {
+        ArrayList<Integer> listOfVerticalMagneticLines = new ArrayList<Integer>();
+        NodeList resourcesList = doc.getElementsByTagName("hMagneticLine");
+        for (int i = 0; i < resourcesList.getLength(); i++) {
+            Node nNode = resourcesList.item(i);
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element eElement = (Element) nNode;
+                int x = Integer.parseInt(eElement.getAttribute("x"));
+                listOfVerticalMagneticLines.add(x);
+            }
+        }
+        return listOfVerticalMagneticLines;
     }
 
     private void getResourcesFromXML(Document doc, PetriNet pn) {
@@ -244,9 +279,9 @@ public class XMLPetriManager {
                         a = new Arc("ARC" + i, r, t);
                     }
                 }
-                
+
                 a.setCapacity(power);
-                
+
                 if (eElement.getAttribute("fontSize") != "") {
                     a.setFontSize(Integer.parseInt(eElement.getAttribute("fontSize")));
                 } else {
@@ -466,11 +501,11 @@ public class XMLPetriManager {
                 }
                 if (cobaFile) {
                     /*
-                    X1.setValue(tranform(a.getOutElement().getX()) + "");
-                    Y1.setValue(tranform(a.getOutElement().getY()) + "");
-                    X2.setValue(tranform(a.getInElement().getX()) + "");
-                    Y2.setValue(tranform(a.getInElement().getY()) + "");
-                    */
+                     X1.setValue(tranform(a.getOutElement().getX()) + "");
+                     Y1.setValue(tranform(a.getOutElement().getY()) + "");
+                     X2.setValue(tranform(a.getInElement().getX()) + "");
+                     Y2.setValue(tranform(a.getInElement().getY()) + "");
+                     */
                     Point tempPoint = setCoBAPoint(a.getOutElement().getX(), a.getOutElement().getY());
                     X1.setValue(tempPoint.x + "");
                     Y1.setValue(tempPoint.y + "");
@@ -856,5 +891,21 @@ public class XMLPetriManager {
             resources.appendChild(resource);
         }
         return resources;
+    }
+
+    public void appendMagneticLines(Document doc, ArrayList<MagneticLine> listOfMagneticLines, Element appendElement) {
+        for (MagneticLine ml : listOfMagneticLines) {
+            if (ml instanceof VerticalMagneticLine) {
+                VerticalMagneticLine vml = (VerticalMagneticLine) ml;
+                Element vMagneticLine = doc.createElement("vMagneticLine");
+                vMagneticLine.setAttribute("x", vml.getX() + "");
+                appendElement.appendChild(vMagneticLine);
+            } else {
+                HorizontalMagneticLine hml = (HorizontalMagneticLine) ml;
+                Element hMagneticLine = doc.createElement("hMagneticLine");
+                hMagneticLine.setAttribute("y", hml.getY() + "");
+                appendElement.appendChild(hMagneticLine);
+            }
+        }
     }
 }
