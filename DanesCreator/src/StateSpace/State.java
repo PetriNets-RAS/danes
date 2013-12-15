@@ -95,30 +95,25 @@ public class State {
             stateName.append(";");
         }
         //Append for resources
+        int inc = 0;
         for (int i = 0; i < pn.getListOfResources().size(); i++) {
             int[] process = getCount(this.placeMarkings.get(i + pn.getListOfPlaces().size()), pn.getListOfResources().get(i));
             if (this.placeMarkings.get(i + pn.getListOfPlaces().size()).get(0) != 0) {
                 //add free resources
+                inc++;
                 stateName.append(this.placeMarkings.get(i + pn.getListOfPlaces().size()).get(0)).append("`(");
                 stateName.append(pn.getListOfResources().get(i).getName()).append(",0)");
-                //add "++" if som resources are used
-//                if(process.length >0 && isNull(process,0)){
-//                    stateName.append("++");
-//                }
-
-//                if (process.length <= 0 || isNull(process, 0)) {
-//                } else {
-//                    stateName.append("++");
-//                }
-
-
             }
 
             //add used resources
+            
             for (int k = 0; k < process.length; k++) {
                 if (process[k] != 0) {
-
-                    stateName.append("++").append(process[k]).append("`(").append(pn.getListOfResources().get(i).getName()).append(",").append((k + 1)).append(")");
+                    if (inc != 0) {
+                        stateName.append("++");
+                    }
+                    inc++;
+                    stateName.append(process[k]).append("`(").append(pn.getListOfResources().get(i).getName()).append(",").append((k + 1)).append(")");
 //                    if (isNull(process, k)) {
 //                        stateName.append("++");
 //                    }

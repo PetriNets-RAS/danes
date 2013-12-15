@@ -94,7 +94,6 @@ public class View extends javax.swing.JFrame {
     private static final int CUSTOM_ARROW_CURSOR = 4;
     private static final int CUSTOM_HAND_CURSOR = 5;
     private static final int CUSTOM_MOVE_CURSOR = 6;
-    
     private Graph graph;
     private DiagramPanel diagramPanel;
     private Controller controller;
@@ -105,7 +104,7 @@ public class View extends javax.swing.JFrame {
     private AffineTransform oldTransform;
     private int lastMouseClickX, lastMouseClickY;
     private DefaultListModel listModel = new DefaultListModel();
-    private Cursor ellipseCursor,transitionCursor,arcCursor,resCursor,handCursor,moveHandCursor;
+    private Cursor ellipseCursor, transitionCursor, arcCursor, resCursor, handCursor, moveHandCursor;
     private PopUpMenu popMenu;
     private FileManager fileManager;
     private ShortcutsManager shortcutsManager;
@@ -115,7 +114,7 @@ public class View extends javax.swing.JFrame {
    
 
     public View(PetriNet pa_petriNet, Controller pa_controller) {
-        super();        
+        super();
         //this.setLocationRelativeTo(null);
         this.graph = pa_petriNet;
         this.controller = pa_controller;
@@ -131,18 +130,19 @@ public class View extends javax.swing.JFrame {
         }
         setLocation(windowX, windowY);
         initComponents();
-        Toolkit toolkit = Toolkit.getDefaultToolkit();      
-        Point cursorHotSpot = new Point(0,0);
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        Point cursorHotSpot = new Point(0, 0);
         this.ellipseCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_place.png"), cursorHotSpot, "ellipse_cursor");
         this.resCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_res.png"), cursorHotSpot, "res_cursor");
         this.transitionCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_trans.png"), cursorHotSpot, "trans_cursor");
         this.arcCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_arrow.png"), cursorHotSpot, "arrow_cursor");
-        this.moveHandCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\move_hand.png"), cursorHotSpot,"move_cursor");
+        this.moveHandCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\move_hand.png"), cursorHotSpot, "move_cursor");
         this.handCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand.png"), cursorHotSpot, "hand_cursor");
-        
+
         this.fileManager = new FileManager();
+
         this.shortcutsManager = new ShortcutsManager();
-        
+
         about = new AboutUs(this, rootPaneCheckingEnabled);
         String IconPath = "Images\\icon.png";
         BufferedImage icon = null;
@@ -178,40 +178,39 @@ public class View extends javax.swing.JFrame {
         setTitle("DANES Creator");
         //setSize(800, 600); 
         setVisible(true);
-        
+
         /*
-        KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        manager.addKeyEventDispatcher(new ViewKeyEventDispatcher());
-        */
-        
+         KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+         manager.addKeyEventDispatcher(new ViewKeyEventDispatcher());
+         */
+
         this.updateComponentList();
     }
     /* Class for keyMapping */
 
     /*
-    private class ViewKeyEventDispatcher implements KeyEventDispatcher {
+     private class ViewKeyEventDispatcher implements KeyEventDispatcher {
 
-        @Override
-        public boolean dispatchKeyEvent(KeyEvent e) {
-            if (diagramPanel != null) {
-                if (KeyEvent.VK_CONTROL == e.getKeyCode()) {
-                    if (e.getID() == KeyEvent.KEY_PRESSED) {
-                        diagramPanel.isCTRLdown = true;
-                    } else if (e.getID() == KeyEvent.KEY_RELEASED) {
-                        diagramPanel.isCTRLdown = false;
-                    } else if (e.getID() == KeyEvent.KEY_TYPED) {
-                        //diagramPanel.isCTRLdown=true;
-                    }
-                }
-                if(KeyEvent.VK_ESCAPE == e.getKeyCode()){
-                    resetForm();
-                }
-            }
-            return false;
-        }
-    }
-    */
-    
+     @Override
+     public boolean dispatchKeyEvent(KeyEvent e) {
+     if (diagramPanel != null) {
+     if (KeyEvent.VK_CONTROL == e.getKeyCode()) {
+     if (e.getID() == KeyEvent.KEY_PRESSED) {
+     diagramPanel.isCTRLdown = true;
+     } else if (e.getID() == KeyEvent.KEY_RELEASED) {
+     diagramPanel.isCTRLdown = false;
+     } else if (e.getID() == KeyEvent.KEY_TYPED) {
+     //diagramPanel.isCTRLdown=true;
+     }
+     }
+     if(KeyEvent.VK_ESCAPE == e.getKeyCode()){
+     resetForm();
+     }
+     }
+     return false;
+     }
+     }
+     */
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -744,7 +743,7 @@ public class View extends javax.swing.JFrame {
         this.fileManager.saveGraphAs(graph, this);
         this.getInfoAboutFile(this.fileManager.getSelectedFile());
     }//GEN-LAST:event_saveAsItemActionPerformed
-    
+
     private void getInfoAboutFile(File file) {
         selectedFileName = this.fileManager.getSelectedFileName();
         selectedFilePath = this.fileManager.getSelectedFilePath();
@@ -772,7 +771,7 @@ public class View extends javax.swing.JFrame {
         this.getDiagramPanel().setFocusable(true);
         this.getDiagramPanel().requestFocusInWindow();
         this.diagramScrollPane.setFocusable(false);
-        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750,4750));
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
         sideMenu.setVisible(true);
         // hide side menu
         propertiesMenu.setVisible(false);
@@ -819,38 +818,8 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_lineButtonActionPerformed
 
     private void loadItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadItemActionPerformed
-        // TODO add your handling code here:
-        /*
-        JFileChooser jFileChooser = new JFileChooser();
-        int openShowDialog = jFileChooser.showOpenDialog(this);
-
-        selectedFile = jFileChooser.getSelectedFile();
-        if (selectedFile != null) {
-            File inputFile = new File(selectedFile.getAbsolutePath());
-
-            int x, y;
-
-        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))
-                || "pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
-            XMLPetriManager loader = new XMLPetriManager();
-            boolean cobaFile = false;
-            if ("pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
-                cobaFile = true;
-            }
-            PetriNet p = loader.getPetriNetFromXML(inputFile, cobaFile);
-            graph = p;
-            x = p.getListOfPlaces().get(0).getX();
-            y = p.getListOfPlaces().get(0).getY();
-        } else {
-            XMLPrecedenceManager loader = new XMLPrecedenceManager();
-            PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
-            graph = pg;
-            x = pg.getListOfNodes().get(0).getX();
-            y = pg.getListOfNodes().get(0).getY();
-        }
-        getInfoAboutFile(inputFile);
-        */ 
         graph = this.fileManager.loadGraph(this);
+        if (graph==null) return ;
         getInfoAboutFile(this.fileManager.getSelectedFile());
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
@@ -858,11 +827,10 @@ public class View extends javax.swing.JFrame {
         diagramScrollPane.setViewportView(this.getDiagramPanel());
         int x = 0;
         int y = 0;
-        if(graph instanceof PetriNet){
+        if (graph instanceof PetriNet) {
             x = ((PetriNet) graph).getListOfPlaces().get(0).getX();
             y = ((PetriNet) graph).getListOfPlaces().get(0).getY();
-        }
-        else if(graph instanceof PrecedenceGraph){
+        } else if (graph instanceof PrecedenceGraph) {
             x = ((PrecedenceGraph) graph).getListOfNodes().get(0).getX();
             y = ((PrecedenceGraph) graph).getListOfNodes().get(0).getY();
         }
@@ -871,13 +839,13 @@ public class View extends javax.swing.JFrame {
             y = 0;
         }
 
-            diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x - 50, y - 50));
+        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(x - 50, y - 50));
 
-            sideMenu.setVisible(true);
-            // hide side menu
-            propertiesMenu.setVisible(false);
+        sideMenu.setVisible(true);
+        // hide side menu
+        propertiesMenu.setVisible(false);
 
-            /* Show zoom buttos */
+        /* Show zoom buttos */
 //        btnZoomIn.setVisible(true);
 //        btnZoomOut.setVisible(true);
 //        btnZoomReset.setVisible(true);
@@ -893,72 +861,19 @@ public class View extends javax.swing.JFrame {
             deleteBendButton.setVisible(true);
             bendButton.setVisible(true);
 
-            ///
-            getInfoAboutModel(graph);
-        
+        ///
+        getInfoAboutModel(graph);
+
     }//GEN-LAST:event_loadItemActionPerformed
 
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
-        // TODO add your handling code here:
-        /*
-        XMLPetriManager newXML = new XMLPetriManager();
-        if (selectedFile == null) {
-            JFileChooser fileChooser = new JFileChooser();
-            int showOpenDialog = fileChooser.showSaveDialog(this);
-            selectedFile = fileChooser.getSelectedFile();
-            if (!selectedFile.exists()) {
-                selectedFile = new File(selectedFile.getAbsolutePath());
-                try {
-                    selectedFile.createNewFile();
-                } catch (IOException e) {
-                    System.out.print("Chyba pri praci so suborom");
-                }
-            }
-            if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
-                return;
-            }
-            checkAndSave(graph, selectedFile);
-            //newXML.createPetriXML(g, selectedFile);
-        } else {
-            //newXML.createPetriXML(g, new File(selectedFile.getAbsolutePath()));
-            checkAndSave(graph, selectedFile);
-        }*/
         this.fileManager.saveGraph(graph, this);
         getInfoAboutFile(this.fileManager.getSelectedFile());
-        
+
     }//GEN-LAST:event_saveItemActionPerformed
 
-    private void checkAndSave(Graph g, File selectFile) {
-        String sufix;
-        if (g instanceof PetriNet) {
-            sufix = ".dpn";
-            XMLPetriManager newXML = new XMLPetriManager();
-
-            if ((selectedFile.getName().length() < 5) || (!"dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
-                File temp = selectedFile;
-                selectedFile = new File(selectedFile.getAbsolutePath() + sufix);
-                temp.delete();
-            }
-
-            newXML.createPetriXML(g, selectedFile);
-            //System.out.println("UKLADAM PN");
-        } else {
-            sufix = ".dpg";
-
-            XMLPrecedenceManager newXML = new XMLPrecedenceManager();
-            if ((selectedFile.getName().length() < 5) || (!"dpg".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
-                File temp = selectedFile;
-                selectedFile = new File(selectedFile.getAbsolutePath() + sufix);
-                temp.delete();
-            }
-            newXML.createPrecedenceXML(g, selectedFile);
-        }
-        getInfoAboutFile(selectFile);
-    }
-
     private void notesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_notesFocusLost
-        //currentElement.setNote(notes.getText());
-        // System.out.print("notes");
+        
     }//GEN-LAST:event_notesFocusLost
 
     private void resuorceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resuorceButtonActionPerformed
@@ -1347,12 +1262,12 @@ public class View extends javax.swing.JFrame {
         int graphHeight = maxY - minY;
         int maxGraphSize = Math.max(graphHeight, graphWidth);
         int minDiagramSize = Math.min(this.diagramScrollPane.getWidth(), this.diagramScrollPane.getHeight());
-        double diagramSlant = Math.sqrt((minDiagramSize*minDiagramSize)+(minDiagramSize*minDiagramSize));
-        double graphSlant = Math.sqrt((maxGraphSize*maxGraphSize)+(maxGraphSize*maxGraphSize));
-        if(graphSlant > diagramSlant){
-            this.diagramPanel.getScaleRatio()[1] = (diagramSlant/graphSlant) - 0.05;
-            this.diagramPanel.getScaleRatio()[0] = (diagramSlant/graphSlant) - 0.05;
-        }else{
+        double diagramSlant = Math.sqrt((minDiagramSize * minDiagramSize) + (minDiagramSize * minDiagramSize));
+        double graphSlant = Math.sqrt((maxGraphSize * maxGraphSize) + (maxGraphSize * maxGraphSize));
+        if (graphSlant > diagramSlant) {
+            this.diagramPanel.getScaleRatio()[1] = (diagramSlant / graphSlant) - 0.05;
+            this.diagramPanel.getScaleRatio()[0] = (diagramSlant / graphSlant) - 0.05;
+        } else {
             this.diagramPanel.getScaleRatio()[1] = 1;
             this.diagramPanel.getScaleRatio()[0] = 1;
         }
@@ -1512,12 +1427,13 @@ public class View extends javax.swing.JFrame {
             // Click listener, drag listener
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
-            addMouseWheelListener(new DiagramMouseWheelAdapter(this,diagramScrollPane));
-            addKeyListener(new DiagramKeyAdapter(this,shortcutsManager));
+            addMouseWheelListener(new DiagramMouseWheelAdapter(this, diagramScrollPane));
+            addKeyListener(new DiagramKeyAdapter(this, shortcutsManager));
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(10000, 10000));
             setBackground(new Color(generalSettingsManager.getBackgroundColor()));
             setBackground(Color.WHITE);
+
             notes.addKeyListener(new KeyAdapter() {
                 public void keyReleased(KeyEvent event) {
                     String tempNote = notes.getText();
@@ -1548,15 +1464,15 @@ public class View extends javax.swing.JFrame {
         public void saveGraph(){
             fileManager.saveGraph(getGraph(), this);
         }
-        
-        public void saveGraphAs(){
+
+        public void saveGraphAs() {
             fileManager.saveGraphAs(getGraph(), this);
         }
-        
-        public void loadGraph(){
+
+        public void loadGraph() {
             setGraph(fileManager.loadGraph(this));
         }
-        
+
         public void drawBuble() {
             if (getBubbleElement() != null && cursorButton.isSelected() && draggedElement == null && draggedObject == null) {
                 int width = 0;
@@ -1578,7 +1494,6 @@ public class View extends javax.swing.JFrame {
             }
         }
 
-        
         public void drawPlace(int column, int row, Color c1, Color c2, int width, int height, String name, int fontSize) {
             // Place / Ring
             g2d.setColor(c2);
@@ -2515,11 +2430,11 @@ public class View extends javax.swing.JFrame {
                 }
             }
 
-            if (selectedElements.size()>1) {
+            if (selectedElements.size() > 1) {
                 loadMultipleProperties(selectedElements);
                 //propertiesMenu.setVisible(true);
             }
-            
+
             if (selectedElements.isEmpty()) {
                 propertiesMenu.setVisible(false);
             }
@@ -2533,7 +2448,7 @@ public class View extends javax.swing.JFrame {
             Element e = null;
             setSelectedMagneticLine(null);
             Object o = controller.getLocationElement(x, y);
-            if(!this.isIsCTRLdown()){
+            if (!this.isIsCTRLdown()) {
                 selectedElements.clear();
             }
             if (o instanceof Element) {
@@ -2572,10 +2487,10 @@ public class View extends javax.swing.JFrame {
                    &&!bendButton.isSelected()&&!deleteBendButton.isSelected()){
                     int scrollPositionX = diagramScrollPane.getViewport().getViewPosition().x;
                     int scrollPositionY = diagramScrollPane.getViewport().getViewPosition().y;
-                    int offsetX = (this.mouseAdapter.getX() - origX+scrollPositionX);
-                    int offsetY = (this.mouseAdapter.getY() - origY+scrollPositionY);
-                    if(offsetY > 0 && offsetX > 0){
-                        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX,offsetY));
+                    int offsetX = (this.mouseAdapter.getX() - origX + scrollPositionX);
+                    int offsetY = (this.mouseAdapter.getY() - origY + scrollPositionY);
+                    if (offsetY > 0 && offsetX > 0) {
+                        diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX, offsetY));
                     }
                 }
                 return;
@@ -2670,6 +2585,7 @@ public class View extends javax.swing.JFrame {
             notes.setText(currentElement.getNote());
 
         }
+
         private void loadMultipleProperties(ArrayList<Element> currentElements) {
             generalProperties.loadMultipleProperties(currentElements, graph, this);
             //notes.setText(currentElement.getNote());
@@ -2767,14 +2683,14 @@ public class View extends javax.swing.JFrame {
             g2d.scale(getScaleRatio()[0], getScaleRatio()[1]);
             g2d.setFont(oldfont);
         } // Function end
-        
-        public void copySelectedElements(){
+
+        public void copySelectedElements() {
             copiedElements.clear();
             copiedElements.addAll(selectedElements);
             repaint();
         }
-        
-        public void pasteSelectedElements(int x,int y){
+
+        public void pasteSelectedElements(int x, int y) {
             selectedElements.clear();
             if(graph instanceof PetriNet){
                 for (Element element : copiedElements) {
@@ -2913,77 +2829,76 @@ public class View extends javax.swing.JFrame {
             updateComponentList();
             repaint();
         }
-        
-        public void deleteSelectedElements(){
+
+        public void deleteSelectedElements() {
             for (Element element : selectedElements) {
-                    // Place
-                    if (element instanceof Place) {
-                        ((PetriNet) getGraph()).deletePlace(((Place) element).getName());
-                    }
-                    // Transition
-                    if (element instanceof Transition) {
-                        ((PetriNet) getGraph()).deleteTransition(((Transition) element).getName());
-                    }
-                    // Node
-                    if (element instanceof Node) {
-                        ((PrecedenceGraph) getGraph()).deleteNode(((Node) element).getName());
-                    }
-                    // Place
-                    if (element instanceof Resource) {
-                        ((PetriNet) getGraph()).deleteResource(((Resource) element).getName());
-                    }
-                    if (element instanceof Arc) {
-                        ((PetriNet) getGraph()).deleteArc(((Arc)element).getName());
-                    }
+                // Place
+                if (element instanceof Place) {
+                    ((PetriNet) getGraph()).deletePlace(((Place) element).getName());
                 }
-                selectedElements.clear();
-                updateComponentList();
-                resetForm();
-                repaint();
+                // Transition
+                if (element instanceof Transition) {
+                    ((PetriNet) getGraph()).deleteTransition(((Transition) element).getName());
+                }
+                // Node
+                if (element instanceof Node) {
+                    ((PrecedenceGraph) getGraph()).deleteNode(((Node) element).getName());
+                }
+                // Place
+                if (element instanceof Resource) {
+                    ((PetriNet) getGraph()).deleteResource(((Resource) element).getName());
+                }
+                if (element instanceof Arc) {
+                    ((PetriNet) getGraph()).deleteArc(((Arc) element).getName());
+                }
+            }
+            selectedElements.clear();
+            updateComponentList();
+            resetForm();
+            repaint();
         }
-        
-        public void setDiagramCursor(){
+
+        public void setDiagramCursor() {
             setCustomCursor();
         }
 
-        public PopUpMenu getPopUpMenu(){
+        public PopUpMenu getPopUpMenu() {
             return getPopMenu();
         }
-        
-        public void updateComponentListFromDiagram(){
+
+        public void updateComponentListFromDiagram() {
             updateComponentList();
         }
-        
-        public void setEllipseButtonSelected(Boolean selected){
+
+        public void setEllipseButtonSelected(Boolean selected) {
             disableButtons();
             ellipseButton.setSelected(selected);
             this.setDiagramCursor();
         }
-        
-        public void setTransitionButtonSelected(Boolean selected){
+
+        public void setTransitionButtonSelected(Boolean selected) {
             disableButtons();
             rectangleButton.setSelected(selected);
             this.setDiagramCursor();
         }
-        
-        public void setResourceButtonSelected(Boolean selected){
+
+        public void setResourceButtonSelected(Boolean selected) {
             disableButtons();
             resuorceButton.setSelected(selected);
             this.setDiagramCursor();
         }
-        
-        public void setArcButtonSelected(Boolean selected){
+
+        public void setArcButtonSelected(Boolean selected) {
             disableButtons();
             lineButton.setSelected(selected);
             this.setDiagramCursor();
         }
-        
+
         public void setCursorButtonSelected(Boolean selected) {
             disableButtons();
             cursorButton.setSelected(selected);
             this.setDiagramCursor();
         }
-
 
         /**
          * @return the graph
@@ -3012,16 +2927,16 @@ public class View extends javax.swing.JFrame {
         public void setScaleRatio(double[] scaleRatio) {
             this.scaleRatio = scaleRatio;
         }
-        
-        public void setMoveHandCursor(){
+
+        public void setMoveHandCursor() {
             this.setCursor(moveHandCursor);
         }
-        
-        public void setHandCursor(){
+
+        public void setHandCursor() {
             this.setCursor(handCursor);
         }
-        
-        public void resetAllButtons(){
+
+        public void resetAllButtons() {
             resetForm();
         }
 
@@ -3081,7 +2996,7 @@ public class View extends javax.swing.JFrame {
             this.selectedMagneticLine = selectedMagneticLine;
         }
     }
-    
+
     private void resetForm() {
         this.disableButtons();
         cursorButton.setSelected(true);
@@ -3090,11 +3005,11 @@ public class View extends javax.swing.JFrame {
         this.revalidate();
         this.repaint();
     }
-    
+
     /**
-     * 
+     *
      * @param evt button or toggleButton
-     * 
+     *
      */
     public void toggleButtons(java.awt.event.ActionEvent evt){
         selectedButtonTemp = (JToggleButton)evt.getSource();
@@ -3117,11 +3032,11 @@ public class View extends javax.swing.JFrame {
         */ 
         this.setCustomCursor();
     }
-    
+
     /**
      * Set custom cursors to diagramPanel
      */
-    public void setCustomCursor(){
+    public void setCustomCursor() {
         if (this.ellipseButton.isSelected()) {
             this.getDiagramPanel().setCursor(this.ellipseCursor);
         } 
@@ -3144,15 +3059,14 @@ public class View extends javax.swing.JFrame {
             this.getDiagramPanel().setCursor(this.handCursor);
         }
     }
-    
-    
+
     /**
      * Disable all buttons in buttonsPanel and toolBar
      */
-    public void disableButtons(){
+    public void disableButtons() {
         for (Component button : this.buttonsPanel.getComponents()) {
-            if(button instanceof JToggleButton){
-                ((JToggleButton)button).setSelected(false);
+            if (button instanceof JToggleButton) {
+                ((JToggleButton) button).setSelected(false);
             }
         }
         for (Component button : this.toolBar.getComponents()) {
