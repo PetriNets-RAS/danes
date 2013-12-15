@@ -4,6 +4,8 @@
  */
 package Core;
 
+import ConfigManagers.GeneralSettingsManager;
+import GUI.GeneralSettings;
 import java.awt.Color;
 
 /**
@@ -19,12 +21,17 @@ public class Element{
     private Color color2=   new Color(255,255,255);
     private int x=-1;
     private int y=-1;
-    private int fontSize=16;    
+    private int fontSize=16;
+    private GeneralSettingsManager generalSettingsManager;
      /**
      * @Class constructor.
      */
     public Element(String paName){
         this.name=paName;
+        this.generalSettingsManager = new GeneralSettingsManager();
+        this.color = new Color(this.generalSettingsManager.getElementColor1());
+        this.color2 = new Color(this.generalSettingsManager.getElementColor2());
+        this.fontSize = this.generalSettingsManager.getFontSize();
     }
 
     /**

@@ -6,6 +6,7 @@ package GUI;
 
 import Core.AbsPlace;
 import Core.Arc;
+import Core.ComplexElement;
 import Core.Element;
 import Core.Graph;
 import Core.Node;
@@ -1002,4 +1003,46 @@ public class Controller {
             // Arc is nothing //
         }
     }
+
+    public MagneticLine getLocationMagneticLine(int x, int y){
+        int offset = 15;
+        MagneticLine magneticLine = null;
+        for (MagneticLine magnet : this.graph.getMagneticLines()) {
+            if(magnet instanceof HorizontalMagneticLine){
+                if(magnet.y1 >= (y-offset) && magnet.y1 <= (y+offset)){
+                    return magnet;
+                }
+            }
+            else if(magnet instanceof VerticalMagneticLine){
+                if(magnet.x1 >= (x-offset) && magnet.x1 <= (x+offset)){
+                    return magnet;
+                }
+            }
+        }
+        return magneticLine; 
+    }
+    
+    public void setElementsToMagneticLine(MagneticLine magneticLine){
+        ArrayList<ComplexElement> complexElements = new ArrayList<ComplexElement>();
+        if(this.graph instanceof PetriNet){
+            PetriNet petri = (PetriNet)this.graph;
+            for (Place element : petri.getListOfPlaces()) {
+                complexElements.add(element);
+            }
+            for (Resource element : petri.getListOfResources()) {
+                complexElements.add(element);
+            }
+            for (Transition element : petri.getListOfTransitions()) {
+                complexElements.add(element);
+            }
+        }else if(this.graph instanceof PrecedenceGraph){
+            PrecedenceGraph precedence = (PrecedenceGraph)this.graph;
+            for (Node element : precedence.getListOfNodes()) {
+                complexElements.add(element);
+            }
+        }
+        
+        magneticLine.addElementsToMagneticLine(complexElements);
+    }
+        
 }

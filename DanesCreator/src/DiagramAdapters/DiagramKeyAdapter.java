@@ -5,6 +5,7 @@
 package DiagramAdapters;
 
 import ConfigManagers.ShortcutsManager;
+import GUI.Controller;
 import GUI.View.DiagramPanel;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -35,6 +36,11 @@ public class DiagramKeyAdapter extends KeyAdapter {//implements KeyListener{
         }
         if(ke.getKeyCode() == KeyEvent.VK_DELETE){
             this.diagramPanel.deleteSelectedElements();
+            if(this.diagramPanel.getSelectedMagneticLine() != null){
+                this.diagramPanel.getSelectedMagneticLine().unConnectElementsFromMagneticLine();
+                this.diagramPanel.getGraph().getMagneticLines().remove(this.diagramPanel.getSelectedMagneticLine());
+                this.diagramPanel.setSelectedMagneticLine(null);
+            }
         }
 
         if(ke.getKeyCode() == KeyEvent.VK_ESCAPE){

@@ -25,6 +25,7 @@ public class PetriNet extends Graph implements Cloneable{
      * @Class constructor.
      */
     public PetriNet(String paName) {
+        super();
         this.name = paName;
         this.listOfPlaces = new ArrayList<Place>();
         this.listOfArcs = new ArrayList<Arc>();

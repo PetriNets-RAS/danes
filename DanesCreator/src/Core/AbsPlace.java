@@ -10,12 +10,10 @@ import java.util.ArrayList;
  *
  * @author Atarin
  */
-public abstract class AbsPlace extends Element{
+public abstract class AbsPlace extends ComplexElement{
     private int marking;
     private boolean start;
     private boolean end;
-    private int width=-1;
-    private int height=-1;
     //private int tokens;
     private ArrayList<Transition> listOfInTransitions;
     private ArrayList<Transition> listOfOutTransitions;
@@ -58,48 +56,6 @@ public abstract class AbsPlace extends Element{
     public void setMarking(int initialMarking) {
         this.marking = initialMarking;
     }
-
-    /**
-     * @return the width
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * @param width the width to set
-     */
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    /**
-     * @return the height
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * @param height the height to set
-     */
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    /**
-     * @return the tokens
-//     */
-//    public int getTokens() {
-//        return tokens;
-//    }
-//
-//    /**
-//     * @param tokens the tokens to set
-//     */
-//    public void setTokens(int tokens) {
-//        this.tokens = tokens;
-//    }
 
     /**
      * @return the listOfInTransitions
@@ -161,8 +117,6 @@ public abstract class AbsPlace extends Element{
    @Override
    public void setName(String name) {
         super.setName(name);
-        this.width=-1;
-        this.height=-1;    
     }        
 
     /**

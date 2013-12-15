@@ -4,11 +4,13 @@
  */
 package GUI;
 
+import ConfigManagers.GeneralSettingsManager;
 import ConfigManagers.ShortcutsManager;
 import DiagramAdapters.DiagramMouseWheelAdapter;
 import DiagramAdapters.DiagramMouseAdapter;
 import Core.AbsPlace;
 import Core.Arc;
+import Core.ComplexElement;
 import Core.Element;
 import Core.Graph;
 import Core.Node;
@@ -70,6 +72,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -106,6 +109,9 @@ public class View extends javax.swing.JFrame {
     private PopUpMenu popMenu;
     private FileManager fileManager;
     private ShortcutsManager shortcutsManager;
+    private GeneralSettingsManager generalSettingsManager;
+    private AbstractButton selectedButton;
+    private AbstractButton selectedButtonTemp;
    
 
     public View(PetriNet pa_petriNet, Controller pa_controller) {
@@ -114,6 +120,16 @@ public class View extends javax.swing.JFrame {
         this.graph = pa_petriNet;
         this.controller = pa_controller;
         this.diagramPanel = null;
+        
+        this.generalSettingsManager = new GeneralSettingsManager();
+        int width = this.generalSettingsManager.getWindowWidth();
+        int height = this.generalSettingsManager.getWindowHeight();
+        int windowX = this.generalSettingsManager.getWindowX();
+        int windowY = this.generalSettingsManager.getWindowY();
+        if(width != 0 && height != 0){
+            setPreferredSize(new Dimension(width,height));
+        }
+        setLocation(windowX, windowY);
         initComponents();
         Toolkit toolkit = Toolkit.getDefaultToolkit();      
         Point cursorHotSpot = new Point(0,0);
@@ -154,6 +170,7 @@ public class View extends javax.swing.JFrame {
         zoomInButton.setVisible(false);
         zoomOutButton.setVisible(false);
         resetZoomButton.setVisible(false);
+        zoomAllButton.setVisible(false);
         bendButton.setVisible(false);
         deleteBendButton.setVisible(false);
 
@@ -230,8 +247,9 @@ public class View extends javax.swing.JFrame {
         zoomInButton = new javax.swing.JButton();
         zoomOutButton = new javax.swing.JButton();
         resetZoomButton = new javax.swing.JButton();
-        bendButton = new javax.swing.JButton();
-        deleteBendButton = new javax.swing.JButton();
+        zoomAllButton = new javax.swing.JButton();
+        bendButton = new javax.swing.JToggleButton();
+        deleteBendButton = new javax.swing.JToggleButton();
         topMenu = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newPetriNet = new javax.swing.JMenuItem();
@@ -239,6 +257,7 @@ public class View extends javax.swing.JFrame {
         saveItem = new javax.swing.JMenuItem();
         saveAsItem = new javax.swing.JMenuItem();
         loadItem = new javax.swing.JMenuItem();
+        settingsItem = new javax.swing.JMenuItem();
         exitItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         convert = new javax.swing.JMenuItem();
@@ -249,6 +268,11 @@ public class View extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);
@@ -548,9 +572,18 @@ public class View extends javax.swing.JFrame {
         });
         toolBar.add(resetZoomButton);
 
+        zoomAllButton.setText("zoomAll");
+        zoomAllButton.setFocusable(false);
+        zoomAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        zoomAllButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        zoomAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomAllButtonActionPerformed(evt);
+            }
+        });
+        toolBar.add(zoomAllButton);
+
         bendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/bendLine.png"))); // NOI18N
-        bendButton.setToolTipText("Bend line");
-        bendButton.setActionCommand("BendButton");
         bendButton.setFocusable(false);
         bendButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         bendButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -562,7 +595,6 @@ public class View extends javax.swing.JFrame {
         toolBar.add(bendButton);
 
         deleteBendButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/DeleteLineBend.png"))); // NOI18N
-        deleteBendButton.setToolTipText("Delete bend on line");
         deleteBendButton.setFocusable(false);
         deleteBendButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         deleteBendButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -614,6 +646,14 @@ public class View extends javax.swing.JFrame {
             }
         });
         fileMenu.add(loadItem);
+
+        settingsItem.setText("Settings");
+        settingsItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                settingsItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(settingsItem);
 
         exitItem.setText("Exit");
         exitItem.addActionListener(new java.awt.event.ActionListener() {
@@ -677,7 +717,7 @@ public class View extends javax.swing.JFrame {
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(diagramScrollPane)))
+                        .addComponent(diagramScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(sideMenu, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -727,10 +767,10 @@ public class View extends javax.swing.JFrame {
         graph = p;
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
-        this.setPopMenu(new PopUpMenu(diagramPanel));
-        diagramScrollPane.setViewportView(this.diagramPanel);    
-        this.diagramPanel.setFocusable(true);
-        this.diagramPanel.requestFocusInWindow();
+        this.setPopMenu(new PopUpMenu(getDiagramPanel()));
+        diagramScrollPane.setViewportView(this.getDiagramPanel());    
+        this.getDiagramPanel().setFocusable(true);
+        this.getDiagramPanel().requestFocusInWindow();
         this.diagramScrollPane.setFocusable(false);
         diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750,4750));
         sideMenu.setVisible(true);
@@ -749,6 +789,7 @@ public class View extends javax.swing.JFrame {
         zoomInButton.setVisible(true);
         zoomOutButton.setVisible(true);
         resetZoomButton.setVisible(true);
+        zoomAllButton.setVisible(true);
         rectangleButton.setVisible(true);
         resuorceButton.setVisible(true);
         cursorButton.setSelected(true);
@@ -761,6 +802,7 @@ public class View extends javax.swing.JFrame {
 
     private void aboutUsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_aboutUsMouseClicked
         //AboutUs about = new AboutUs(this, rootPaneCheckingEnabled);
+        about.setLocationRelativeTo(this);
         about.setVisible(true);
     }//GEN-LAST:event_aboutUsMouseClicked
 
@@ -812,8 +854,8 @@ public class View extends javax.swing.JFrame {
         getInfoAboutFile(this.fileManager.getSelectedFile());
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
-        this.setPopMenu(new PopUpMenu(diagramPanel));
-        diagramScrollPane.setViewportView(this.diagramPanel);
+        this.setPopMenu(new PopUpMenu(getDiagramPanel()));
+        diagramScrollPane.setViewportView(this.getDiagramPanel());
         int x = 0;
         int y = 0;
         if(graph instanceof PetriNet){
@@ -847,6 +889,7 @@ public class View extends javax.swing.JFrame {
             zoomOutButton.setVisible(true);
             zoomInButton.setVisible(true);
             resetZoomButton.setVisible(true);
+            zoomAllButton.setVisible(true);
             deleteBendButton.setVisible(true);
             bendButton.setVisible(true);
 
@@ -928,8 +971,8 @@ public class View extends javax.swing.JFrame {
         graph = pg;
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
-        this.setPopMenu(new PopUpMenu(diagramPanel));
-        diagramScrollPane.setViewportView(this.diagramPanel);
+        this.setPopMenu(new PopUpMenu(getDiagramPanel()));
+        diagramScrollPane.setViewportView(this.getDiagramPanel());
         diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
         sideMenu.setVisible(true);
         // hide side menu
@@ -942,6 +985,7 @@ public class View extends javax.swing.JFrame {
         zoomOutButton.setVisible(true);
         zoomInButton.setVisible(true);
         resetZoomButton.setVisible(true);
+        zoomAllButton.setVisible(true);
         cursorButton.setSelected(true);
         bendButton.setVisible(true);
         deleteBendButton.setVisible(true);
@@ -958,9 +1002,9 @@ public class View extends javax.swing.JFrame {
             PetriNet converted = pg.changePrecedenceGraphToPN();
             graph = converted;
             controller.setModel(converted);
-            this.setPopMenu(new PopUpMenu(diagramPanel));
+            this.setPopMenu(new PopUpMenu(getDiagramPanel()));
             this.diagramPanel = new DiagramPanel(converted);
-            diagramScrollPane.setViewportView(this.diagramPanel);
+            diagramScrollPane.setViewportView(this.getDiagramPanel());
             diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(4750, 4750));
             sideMenu.setVisible(true);
             // hide side menu
@@ -1002,22 +1046,22 @@ public class View extends javax.swing.JFrame {
     }//GEN-LAST:event_formKeyPressed
 
     private void alignTopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alignTopButtonActionPerformed
-        controller.alignTop(diagramPanel.selectedElements);
+        controller.alignTop(getDiagramPanel().selectedElements);
         repaint();
     }//GEN-LAST:event_alignTopButtonActionPerformed
 
     private void alignBottomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alignBottomButtonActionPerformed
-        controller.alignBottom(diagramPanel.selectedElements);
+        controller.alignBottom(getDiagramPanel().selectedElements);
         repaint();
     }//GEN-LAST:event_alignBottomButtonActionPerformed
 
     private void alignLeftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alignLeftButtonActionPerformed
-        controller.alignLeft(diagramPanel.selectedElements);
+        controller.alignLeft(getDiagramPanel().selectedElements);
         repaint();
     }//GEN-LAST:event_alignLeftButtonActionPerformed
 
     private void alignRightButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_alignRightButtonActionPerformed
-        controller.alignRight(diagramPanel.selectedElements);
+        controller.alignRight(getDiagramPanel().selectedElements);
         repaint();
     }//GEN-LAST:event_alignRightButtonActionPerformed
 
@@ -1062,10 +1106,10 @@ public class View extends javax.swing.JFrame {
         }
         int graphWidth = maxX - minX;
         int graphHeight = maxY - minY;
-        int w = (int) (((diagramScrollPane.getWidth()/2)-(graphWidth/2))/diagramPanel.getScaleRatio()[0]);
-        int h = (int) (((diagramScrollPane.getHeight()/2)-(graphHeight/2))/diagramPanel.getScaleRatio()[1]);
-        int newX = (int) ((minX-w)*this.diagramPanel.getScaleRatio()[0]);
-        int newY = (int) ((minY-h)*this.diagramPanel.getScaleRatio()[1]);
+        int w = (int) (((diagramScrollPane.getWidth()/2)-(graphWidth/2))/getDiagramPanel().getScaleRatio()[0]);
+        int h = (int) (((diagramScrollPane.getHeight()/2)-(graphHeight/2))/getDiagramPanel().getScaleRatio()[1]);
+        int newX = (int) ((minX-w)*this.getDiagramPanel().getScaleRatio()[0]);
+        int newY = (int) ((minY-h)*this.getDiagramPanel().getScaleRatio()[1]);
         this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX,newY));
         repaint();
     }//GEN-LAST:event_zoomInButtonActionPerformed
@@ -1073,8 +1117,8 @@ public class View extends javax.swing.JFrame {
     private void zoomOutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutButtonActionPerformed
         diagramPanel.getScaleRatio()[0] -= 0.25;
         diagramPanel.getScaleRatio()[1] -= 0.25;
-        diagramPanel.getScaleRatio()[0] = Math.max(0.3, diagramPanel.getScaleRatio()[0]);
-        diagramPanel.getScaleRatio()[1] = Math.max(0.3, diagramPanel.getScaleRatio()[1]);
+        diagramPanel.getScaleRatio()[0] = Math.max(0.3, getDiagramPanel().getScaleRatio()[0]);
+        diagramPanel.getScaleRatio()[1] = Math.max(0.3, getDiagramPanel().getScaleRatio()[1]);
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
         int maxX = 0;
@@ -1114,15 +1158,150 @@ public class View extends javax.swing.JFrame {
         }
         int graphWidth = maxX - minX;
         int graphHeight = maxY - minY;
-        int w = (int) (((this.diagramScrollPane.getWidth()/2)-(graphWidth/2))/this.diagramPanel.getScaleRatio()[0]);
-        int h = (int) (((this.diagramScrollPane.getHeight()/2)-(graphHeight/2))/this.diagramPanel.getScaleRatio()[1]);
-        int newX = (int) ((minX-w-50/this.diagramPanel.getScaleRatio()[0])*this.diagramPanel.getScaleRatio()[0]);
-        int newY = (int) ((minY-h-50/this.diagramPanel.getScaleRatio()[0])*this.diagramPanel.getScaleRatio()[1]);
+        int w = (int) (((this.diagramScrollPane.getWidth()/2)-(graphWidth/2))/this.getDiagramPanel().getScaleRatio()[0]);
+        int h = (int) (((this.diagramScrollPane.getHeight()/2)-(graphHeight/2))/this.getDiagramPanel().getScaleRatio()[1]);
+        int newX = (int) ((minX-w-50/this.getDiagramPanel().getScaleRatio()[0])*this.getDiagramPanel().getScaleRatio()[0]);
+        int newY = (int) ((minY-h-50/this.getDiagramPanel().getScaleRatio()[0])*this.getDiagramPanel().getScaleRatio()[1]);
         this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX,newY));
         repaint();
     }//GEN-LAST:event_zoomOutButtonActionPerformed
 
     private void resetZoomButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetZoomButtonActionPerformed
+        diagramPanel.getScaleRatio()[0] = 1;
+        diagramPanel.getScaleRatio()[1] = 1;
+        diagramPanel.getScaleRatio()[0] = Math.max(0.3, getDiagramPanel().getScaleRatio()[0]);
+        diagramPanel.getScaleRatio()[1] = Math.max(0.3, getDiagramPanel().getScaleRatio()[1]);
+        int minX = Integer.MAX_VALUE;
+        int minY = Integer.MAX_VALUE;
+        int maxX = 0;
+        int maxY = 0;
+        Element e = null;
+        Element e2 = null;
+        ArrayList<Element> elements = new ArrayList<Element>();
+        if (this.graph instanceof PetriNet) {
+            PetriNet pn = (PetriNet) this.graph;
+            elements = new ArrayList<Element>();
+            elements.addAll(pn.getListOfArcs());
+            elements.addAll(pn.getListOfPlaces());
+            elements.addAll(pn.getListOfResources());
+            elements.addAll(pn.getListOfTransitions());
+        }
+        if (this.graph instanceof PrecedenceGraph) {
+            PrecedenceGraph pg = (PrecedenceGraph) this.graph;
+            elements = new ArrayList<Element>();
+            elements.addAll(pg.getListOfArcs());
+            elements.addAll(pg.getListOfNodes());
+        }
+        for (Element element : elements) {
+            if (minX > element.getX()) {
+                minX = element.getX();
+                e = element;
+            }
+            if (minY > element.getY()) {
+                minY = element.getY();
+                e2 = element;
+            }
+            if (maxX < element.getX()) {
+                maxX = element.getX();
+            }
+            if (maxY < element.getY()) {
+                maxY = element.getY();
+            }
+        }
+        int graphWidth = maxX - minX;
+        int graphHeight = maxY - minY;
+        int w = (int) (((this.diagramScrollPane.getWidth()/2)-(graphWidth/2))/this.getDiagramPanel().getScaleRatio()[0]);
+        int h = (int) (((this.diagramScrollPane.getHeight()/2)-(graphHeight/2))/this.getDiagramPanel().getScaleRatio()[1]);
+        int newX = (int) ((minX-w-50/this.getDiagramPanel().getScaleRatio()[0])*this.getDiagramPanel().getScaleRatio()[0]);
+        int newY = (int) ((minY-h-50/this.getDiagramPanel().getScaleRatio()[0])*this.getDiagramPanel().getScaleRatio()[1]);
+        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(newX,newY));
+        repaint();
+    }//GEN-LAST:event_resetZoomButtonActionPerformed
+
+    private void cursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorButtonActionPerformed
+        this.toggleButtons(evt);
+    }//GEN-LAST:event_cursorButtonActionPerformed
+
+    private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {
+    }
+
+    private void updateComponentList() {
+        ArrayList<Element> elements = new ArrayList<Element>();
+        if (this.graph instanceof PetriNet) {
+            PetriNet pn = (PetriNet) this.graph;
+            elements = new ArrayList<Element>();
+            elements.addAll(pn.getListOfArcs());
+            elements.addAll(pn.getListOfPlaces());
+            elements.addAll(pn.getListOfResources());
+            elements.addAll(pn.getListOfTransitions());
+        }
+        if (this.graph instanceof PrecedenceGraph) {
+            PrecedenceGraph pg = (PrecedenceGraph) this.graph;
+            elements = new ArrayList<Element>();
+            elements.addAll(pg.getListOfArcs());
+            elements.addAll(pg.getListOfNodes());
+        }
+        //ArrayList<String> componentsName = new ArrayList<String>();
+        this.listModel.removeAllElements();
+        for (Element element : elements) {
+            //componentsName.add(element.getName());
+            this.listModel.addElement(element);
+        }
+
+        this.componentList.removeAll();
+        this.componentList.setModel(this.listModel);
+    }
+
+    private void diagramScrollPaneMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseMoved
+    }//GEN-LAST:event_diagramScrollPaneMouseMoved
+
+    private void notesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyPressed
+    }//GEN-LAST:event_notesKeyPressed
+
+    private void notesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyReleased
+    }//GEN-LAST:event_notesKeyReleased
+
+    private void diagramScrollPaneKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_diagramScrollPaneKeyPressed
+
+    }//GEN-LAST:event_diagramScrollPaneKeyPressed
+
+    private void componentListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_componentListValueChanged
+        if(this.componentList.getSelectedValuesList().isEmpty())return;
+        this.getDiagramPanel().selectedElements.clear();
+        ArrayList<Element> elements = (ArrayList<Element>) this.componentList.getSelectedValuesList();
+        for (Element element : elements) {
+            this.getDiagramPanel().selectedElements.add(element);
+        }
+        this.getDiagramPanel().repaint();
+    }//GEN-LAST:event_componentListValueChanged
+
+    private void componentListKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_componentListKeyReleased
+        if(evt.getKeyCode() == KeyEvent.VK_C && evt.isControlDown()){
+            this.getDiagramPanel().copySelectedElements();
+        }
+        if(evt.getKeyCode() == KeyEvent.VK_V && evt.isControlDown()){
+            this.getDiagramPanel().pasteSelectedElements(0, 0);
+        }
+        if(evt.getKeyCode() == KeyEvent.VK_DELETE){
+            this.getDiagramPanel().deleteSelectedElements();
+        }
+    }//GEN-LAST:event_componentListKeyReleased
+
+    private void shorcutConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shorcutConfigActionPerformed
+        ShortcutConfig shortcutConfig = new ShortcutConfig(this, true);
+        shortcutConfig.setLocationRelativeTo(this);
+        shortcutConfig.setVisible(true);
+    }//GEN-LAST:event_shorcutConfigActionPerformed
+
+    private void horizontalMagnetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalMagnetButtonActionPerformed
+        this.toggleButtons(evt);
+    }//GEN-LAST:event_horizontalMagnetButtonActionPerformed
+
+    private void verticalMagnetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalMagnetButtonActionPerformed
+        this.toggleButtons(evt);
+    }//GEN-LAST:event_verticalMagnetButtonActionPerformed
+
+    private void zoomAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomAllButtonActionPerformed
         int minX = Integer.MAX_VALUE;
         int minY = Integer.MAX_VALUE;
         int maxX = 0;
@@ -1177,43 +1356,31 @@ public class View extends javax.swing.JFrame {
             this.diagramPanel.getScaleRatio()[1] = 1;
             this.diagramPanel.getScaleRatio()[0] = 1;
         }
-        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point((int)(minX*this.diagramPanel.getScaleRatio()[0]),(int)(minY*this.diagramPanel.getScaleRatio()[1])));
-        repaint();
-    }//GEN-LAST:event_resetZoomButtonActionPerformed
+        this.diagramScrollPane.getViewport().setViewPosition(new java.awt.Point((int)(minX*this.getDiagramPanel().getScaleRatio()[0]),(int)(minY*this.getDiagramPanel().getScaleRatio()[1])));
+        repaint();        
+    }//GEN-LAST:event_zoomAllButtonActionPerformed
 
-    private void cursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorButtonActionPerformed
-        this.toggleButtons(evt);
-    }//GEN-LAST:event_cursorButtonActionPerformed
-
-    private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {
-    }
-
-    private void updateComponentList() {
-        ArrayList<Element> elements = new ArrayList<Element>();
-        if (this.graph instanceof PetriNet) {
-            PetriNet pn = (PetriNet) this.graph;
-            elements = new ArrayList<Element>();
-            elements.addAll(pn.getListOfArcs());
-            elements.addAll(pn.getListOfPlaces());
-            elements.addAll(pn.getListOfResources());
-            elements.addAll(pn.getListOfTransitions());
+    private void settingsItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_settingsItemActionPerformed
+        GeneralSettings generalSettings = new GeneralSettings(this, true, this.generalSettingsManager);
+        generalSettings.setLocationRelativeTo(this);
+        generalSettings.setVisible(true);
+        if(diagramPanel != null){
+            if(this.diagramPanel.getBackground().getRGB() != this.generalSettingsManager.getBackgroundColor()){
+                this.diagramPanel.setBackground(new Color(this.generalSettingsManager.getBackgroundColor()));
+                this.diagramPanel.repaint();
+            }
         }
-        if (this.graph instanceof PrecedenceGraph) {
-            PrecedenceGraph pg = (PrecedenceGraph) this.graph;
-            elements = new ArrayList<Element>();
-            elements.addAll(pg.getListOfArcs());
-            elements.addAll(pg.getListOfNodes());
-        }
-        //ArrayList<String> componentsName = new ArrayList<String>();
-        this.listModel.removeAllElements();
-        for (Element element : elements) {
-            //componentsName.add(element.getName());
-            this.listModel.addElement(element);
-        }
+    }//GEN-LAST:event_settingsItemActionPerformed
 
-        this.componentList.removeAll();
-        this.componentList.setModel(this.listModel);
-    }
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        Dimension dimension = getSize();
+        Point location = getLocationOnScreen();
+        this.generalSettingsManager.setWindowHeight(dimension.height);
+        this.generalSettingsManager.setWindowWidth(dimension.width);
+        this.generalSettingsManager.setWindowX(location.x);
+        this.generalSettingsManager.setWindowY(location.y);
+        this.generalSettingsManager.writeConfig();
+    }//GEN-LAST:event_formWindowClosing
 
     private void bendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bendButtonActionPerformed
         this.toggleButtons(evt);
@@ -1223,55 +1390,6 @@ public class View extends javax.swing.JFrame {
         this.toggleButtons(evt);
     }//GEN-LAST:event_deleteBendButtonActionPerformed
 
-    private void diagramScrollPaneMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_diagramScrollPaneMouseMoved
-    }//GEN-LAST:event_diagramScrollPaneMouseMoved
-
-    private void notesKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyPressed
-    }//GEN-LAST:event_notesKeyPressed
-
-    private void notesKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_notesKeyReleased
-    }//GEN-LAST:event_notesKeyReleased
-
-    private void diagramScrollPaneKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_diagramScrollPaneKeyPressed
-
-    }//GEN-LAST:event_diagramScrollPaneKeyPressed
-
-    private void componentListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_componentListValueChanged
-        if(this.componentList.getSelectedValuesList().isEmpty())return;
-        this.diagramPanel.selectedElements.clear();
-        ArrayList<Element> elements = (ArrayList<Element>) this.componentList.getSelectedValuesList();
-        for (Element element : elements) {
-            this.diagramPanel.selectedElements.add(element);
-        }
-        this.diagramPanel.repaint();
-    }//GEN-LAST:event_componentListValueChanged
-
-    private void componentListKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_componentListKeyReleased
-        if(evt.getKeyCode() == KeyEvent.VK_C && evt.isControlDown()){
-            this.diagramPanel.copySelectedElements();
-        }
-        if(evt.getKeyCode() == KeyEvent.VK_V && evt.isControlDown()){
-            this.diagramPanel.pasteSelectedElements(0, 0);
-        }
-        if(evt.getKeyCode() == KeyEvent.VK_DELETE){
-            this.diagramPanel.deleteSelectedElements();
-        }
-    }//GEN-LAST:event_componentListKeyReleased
-
-    private void shorcutConfigActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shorcutConfigActionPerformed
-        ShortcutConfig shortcutConfig = new ShortcutConfig(this, true);
-        shortcutConfig.setLocationRelativeTo(this);
-        shortcutConfig.setVisible(true);
-    }//GEN-LAST:event_shorcutConfigActionPerformed
-
-    private void horizontalMagnetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_horizontalMagnetButtonActionPerformed
-        this.toggleButtons(evt);
-    }//GEN-LAST:event_horizontalMagnetButtonActionPerformed
-
-    private void verticalMagnetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verticalMagnetButtonActionPerformed
-        this.toggleButtons(evt);
-    }//GEN-LAST:event_verticalMagnetButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
@@ -1279,13 +1397,13 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JButton alignRightButton;
     private javax.swing.JButton alignTopButton;
     private javax.swing.JLabel backgroundImageLabel;
-    private javax.swing.JButton bendButton;
+    private javax.swing.JToggleButton bendButton;
     private javax.swing.JPanel buttonsPanel;
     private javax.swing.JList componentList;
     private javax.swing.JMenuItem convert;
     private javax.swing.JMenuItem create_state_diagram;
     private javax.swing.JButton cursorButton;
-    private javax.swing.JButton deleteBendButton;
+    private javax.swing.JToggleButton deleteBendButton;
     private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenu;
     private javax.swing.JToggleButton ellipseButton;
@@ -1308,11 +1426,13 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JToggleButton resuorceButton;
     private javax.swing.JMenuItem saveAsItem;
     private javax.swing.JMenuItem saveItem;
+    private javax.swing.JMenuItem settingsItem;
     private javax.swing.JMenuItem shorcutConfig;
     private javax.swing.JPanel sideMenu;
     private javax.swing.JToolBar toolBar;
     private javax.swing.JMenuBar topMenu;
     private javax.swing.JToggleButton verticalMagnetButton;
+    private javax.swing.JButton zoomAllButton;
     private javax.swing.JButton zoomInButton;
     private javax.swing.JButton zoomOutButton;
     // End of variables declaration//GEN-END:variables
@@ -1345,6 +1465,13 @@ public class View extends javax.swing.JFrame {
         this.popMenu = popMenu;
     }
 
+    /**
+     * @return the diagramPanel
+     */
+    public DiagramPanel getDiagramPanel() {
+        return diagramPanel;
+    }
+
     public class DiagramPanel extends javax.swing.JPanel {
 
         private DiagramMouseAdapter mouseAdapter;
@@ -1362,11 +1489,13 @@ public class View extends javax.swing.JFrame {
         private Element bubbleElement;
         HashMap<Element,Element> places = new HashMap<Element, Element>();
         HashMap<Element,Element> transitions = new HashMap<Element, Element>();
+        HashMap<Element,Element> nodes = new HashMap<Element, Element>();
         ArrayList<PairValue<Element,Element,Arc>> inToOutElement = new ArrayList<PairValue<Element, Element,Arc>>();
         PairValue<Element,Element,Arc> pair;
         int offset = 50;
         private Timer timer;
-        private ArrayList<MagneticLine> magneticLines;
+        //magnetic lines
+        private MagneticLine selectedMagneticLine;
 
         /**
          * Creates new form GraphPanel
@@ -1379,7 +1508,7 @@ public class View extends javax.swing.JFrame {
             this.draggedElement = null;
             this.selectedElements = new ArrayList<Element>();
             this.copiedElements = new ArrayList<Element>();
-            this.mouseAdapter = new DiagramMouseAdapter(this,diagramScrollPane,controller);
+            this.mouseAdapter = new DiagramMouseAdapter(this,diagramScrollPane);
             // Click listener, drag listener
             addMouseListener(mouseAdapter);
             addMouseMotionListener(mouseAdapter);
@@ -1387,15 +1516,14 @@ public class View extends javax.swing.JFrame {
             addKeyListener(new DiagramKeyAdapter(this,shortcutsManager));
             // Max sirka,vyska = 1000x1000
             setPreferredSize(new Dimension(10000, 10000));
+            setBackground(new Color(generalSettingsManager.getBackgroundColor()));
             setBackground(Color.WHITE);
-            
             notes.addKeyListener(new KeyAdapter() {
                 public void keyReleased(KeyEvent event) {
                     String tempNote = notes.getText();
                     selectedElements.get(0).setNote(tempNote);
                 }
             });
-            this.magneticLines = new ArrayList<MagneticLine>();
         }
 
         @Override
@@ -1404,15 +1532,19 @@ public class View extends javax.swing.JFrame {
             this.g2d = (Graphics2D) g;
             //g2d.scale(scaleRatio[0], scaleRatio[1]);
             g2d.setStroke(new BasicStroke(3));
+            drawMagneticLines();
             autosetWidthHeight();
             drawGraph();
             drawDraggedObject();
             drawSelectedElements();
             drawBuble();
-            drawMagneticLines();
-            this.repaint();
+            
         }
 
+        public Controller getDiagramController(){
+            return controller;
+        }
+        
         public void saveGraph(){
             fileManager.saveGraph(getGraph(), this);
         }
@@ -2252,19 +2384,20 @@ public class View extends javax.swing.JFrame {
         }
         
         public void drawMagneticLines(){
-            for (MagneticLine magneticLine : this.magneticLines) {
-                magneticLine.drawMagneticLine(this.getWidth());
-                /*
-                if(magneticLine instanceof HorizontalMagneticLine){
-                    g2d.drawLine(magneticLine.x, magneticLine.y, this.getWidth(), magneticLine.y);
+            Stroke oldStroke = g2d.getStroke();
+            for (MagneticLine magneticLine : graph.getMagneticLines()) {
+                if(getSelectedMagneticLine() == magneticLine){
+                    this.g2d.setColor(new Color(81, 22, 22));
+                    this.g2d.setStroke(new BasicStroke(2.5f));
+                }else{
+                    this.g2d.setColor(new Color(183, 152, 152));
+                    this.g2d.setStroke(new BasicStroke(0.7f));
                 }
-                if(magneticLine instanceof VerticalMagneticLine){
-                    g2d.drawLine(magneticLine.x, magneticLine.y, magneticLine.x, this.getHeight());
-                }
-                */ 
-                
+                this.g2d.drawLine((int)(magneticLine.x1*getScaleRatio()[0]), (int)(magneticLine.y1*getScaleRatio()[1]), (int)(magneticLine.x2*getScaleRatio()[0]), (int)(magneticLine.y2*getScaleRatio()[1]));   
+                this.g2d.setStroke(oldStroke);
             }
         }
+        
 
         public void mouseLeftClick(int x, int y) {
             // Select 1 element
@@ -2275,8 +2408,10 @@ public class View extends javax.swing.JFrame {
             /* If CTRL is pressed, dont clear list, just add item */
             if (isIsCTRLdown() == false) {
                 selectedElements.clear();
+                setSelectedMagneticLine(null);
             }
             Element e = null;
+            
             Object o = controller.getLocationElement(x, y);
             if (o instanceof Element) {
                 e = (Element) o;
@@ -2330,16 +2465,24 @@ public class View extends javax.swing.JFrame {
                 if (rectangleButton.isSelected()) {
                     controller.addTransition("T", x - 43, y - 19);
                 }
-                //vertical magnetic line
-                if (verticalMagnetButton.isSelected()) {
-                    this.magneticLines.add(new VerticalMagneticLine(this.g2d, x));
-                }
-                // horizontal magnetic line
-                if (horizontalMagnetButton.isSelected()) {
-                    this.magneticLines.add(new HorizontalMagneticLine(this.g2d,y));
-                }
-            }
 
+                setSelectedMagneticLine(controller.getLocationMagneticLine(x, y));
+                if(getSelectedMagneticLine() == null){
+                    //vertical magnetic line
+                    if (verticalMagnetButton.isSelected()) {
+                        VerticalMagneticLine verticalMagnet = new VerticalMagneticLine((int)(x), this.getHeight());
+                        graph.getMagneticLines().add(verticalMagnet);
+                        controller.setElementsToMagneticLine(verticalMagnet);
+                    }
+                    // horizontal magnetic line
+                    if (horizontalMagnetButton.isSelected()) {
+                        HorizontalMagneticLine horizontalMagnet = new HorizontalMagneticLine((int)(y),this.getWidth());
+                        graph.getMagneticLines().add(horizontalMagnet);
+                        controller.setElementsToMagneticLine(horizontalMagnet);
+                    }
+                }
+                
+            }
             // Dragging preparation & create new arc
             //else 
             if (selectedElements.size() == 1) {
@@ -2388,6 +2531,7 @@ public class View extends javax.swing.JFrame {
             x = (int) (x / getScaleRatio()[0]);
             y = (int) (y / getScaleRatio()[1]);
             Element e = null;
+            setSelectedMagneticLine(null);
             Object o = controller.getLocationElement(x, y);
             if(!this.isIsCTRLdown()){
                 selectedElements.clear();
@@ -2407,6 +2551,7 @@ public class View extends javax.swing.JFrame {
             } else {
                 propertiesMenu.setVisible(false);
             }
+            setSelectedMagneticLine(controller.getLocationMagneticLine(x, y));
             // Create RED shadow line indicating deletion of arc        
             //controller.deleteElement(x, y);
             //controller.deleteArc(x, y);
@@ -2422,7 +2567,7 @@ public class View extends javax.swing.JFrame {
             y = (int) (y / getScaleRatio()[1]);
 
             // None element or arc
-            if (draggedObject == null && draggedElement == null) {
+            if (draggedObject == null && draggedElement == null && getSelectedMagneticLine() == null) {
                 if(!ellipseButton.isSelected()&&!rectangleButton.isSelected()&&!resuorceButton.isSelected()&&!lineButton.isSelected()
                    &&!bendButton.isSelected()&&!deleteBendButton.isSelected()){
                     int scrollPositionX = diagramScrollPane.getViewport().getViewPosition().x;
@@ -2459,6 +2604,31 @@ public class View extends javax.swing.JFrame {
                 clickedY = y;
                 draggedObject = p;
             }
+            
+            if (getSelectedMagneticLine() != null) {
+                if(getSelectedMagneticLine() instanceof HorizontalMagneticLine){
+                    selectedMagneticLine.y1 = y;
+                    selectedMagneticLine.y2 = y;
+                    for (ComplexElement complexElement : getSelectedMagneticLine().getConnectedElemenets()) {
+                        int halfHeight =(int)(complexElement.getHeight()/2);
+                        int length = getSelectedMagneticLine().y1 - halfHeight;
+                        complexElement.setY(length);
+                    }
+                    clickedX = x;
+                    clickedY = y;
+                }
+                else if(getSelectedMagneticLine() instanceof VerticalMagneticLine){
+                    selectedMagneticLine.x1 = x;
+                    selectedMagneticLine.x2 = x;
+                    for (ComplexElement complexElement : getSelectedMagneticLine().getConnectedElemenets()) {
+                        int halfWidth =(int)(complexElement.getWidth()/2);
+                        int length = getSelectedMagneticLine().x1 - halfWidth;
+                        complexElement.setX(length);
+                    }
+                    clickedX = x;
+                    clickedY = y;
+                }
+            }
             repaint();
         }
 
@@ -2481,6 +2651,15 @@ public class View extends javax.swing.JFrame {
                 controller.addArc("Arc", x_old, y_old, x_new, y_new);
             }
 
+            /*
+            if (this.selectedMagneticLine != null) {
+                controller.setElementsToMagneticLine(selectedMagneticLine);
+            }
+            */ 
+            for (MagneticLine magneticLine : graph.getMagneticLines()) {
+                controller.setElementsToMagneticLine(magneticLine);
+            }
+            
             draggedObject = null;
             draggedElement = null;
             repaint();
@@ -2597,80 +2776,132 @@ public class View extends javax.swing.JFrame {
         
         public void pasteSelectedElements(int x,int y){
             selectedElements.clear();
-            for (Element element : copiedElements) {
-                if(element instanceof Place){
-                    Place place = new Place("P"+(((PetriNet)getGraph()).getListOfPlaces().size()+1));
-                    place.setX(element.getX()+offset);
-                    place.setY(element.getY()+offset);
-                    place.setColor(element.getColor());
-                    place.setColor2(element.getColor2());
-                    ((PetriNet) getGraph()).addPlace(place);
-                    places.put(element, place);
-                    selectedElements.add(place);
+            if(graph instanceof PetriNet){
+                for (Element element : copiedElements) {
+                    int index = 1;
+                    if(element instanceof Place){
+                        Place place;
+                        do{
+                            place = new Place("P"+(((PetriNet)getGraph()).getListOfPlaces().size()+index));
+                            place.setX(element.getX()+offset);
+                            place.setY(element.getY()+offset);
+                            place.setColor(element.getColor());
+                            place.setColor2(element.getColor2());
+                            index++;
+                        }while (!((PetriNet) graph).addPlace(place));
+                        places.put(element, place);
+                        selectedElements.add(place);  
+                    }
+                    if(element instanceof Resource){
+                        Resource resource;
+                        do{
+                            resource = new Resource("R"+(((PetriNet)getGraph()).getListOfResources().size()+index));
+                            resource.setX(element.getX()+offset);
+                            resource.setY(element.getY()+offset);
+                            resource.setColor(element.getColor());
+                            resource.setColor2(element.getColor2());
+                            index++;
+                        }while (!((PetriNet) getGraph()).addResource(resource));
+                        places.put(element, resource);
+                        selectedElements.add(resource);
+                    }
+                    if(element instanceof Transition){
+                        Transition transition;
+                        do{
+                            transition = new Transition("T"+(((PetriNet)getGraph()).getListOfTransitions().size()+index));
+                            transition.setX(element.getX()+offset);
+                            transition.setY(element.getY()+offset);
+                            transition.setColor(element.getColor());
+                            transition.setColor2(element.getColor2());
+                            index++;
+                        }while (!((PetriNet) getGraph()).addTransition(transition));
+                        transitions.put(element, transition);
+                        selectedElements.add(transition);
+                    }
                 }
-                if(element instanceof Resource){
-                    Resource resource = new Resource("R"+(((PetriNet)getGraph()).getListOfResources().size()+1));
-                    resource.setX(element.getX()+offset);
-                    resource.setY(element.getY()+offset);
-                    resource.setColor(element.getColor());
-                    resource.setColor2(element.getColor2());
-                    ((PetriNet) getGraph()).addResource(resource);
-                    places.put(element, resource);
-                    selectedElements.add(resource);
-                }
-                if(element instanceof Transition){
-                    Transition transition = new Transition("T"+(((PetriNet)getGraph()).getListOfTransitions().size()+1));
-                    transition.setX(element.getX()+offset);
-                    transition.setY(element.getY()+offset);
-                    transition.setColor(element.getColor());
-                    transition.setColor2(element.getColor2());
-                    ((PetriNet) getGraph()).addTransition(transition);
-                    transitions.put(element, transition);
-                    selectedElements.add(transition);
-                }
-            }
-            // nastavim dvojice medzi, kotrymi maju byt vztahy
-            for (Element placeElement : places.keySet()) {
-                AbsPlace place = (AbsPlace) placeElement;
-                for (Element transitionElement : transitions.keySet()) {
-                    if(place.getListOfInTransitions().size()>0){
-                        for (Transition inTrans : place.getListOfInTransitions()) {
-                            if(inTrans == transitionElement){            
-                                for (Arc arc : inTrans.getListOfOutArcs()) {
-                                    for (Arc arc2 : place.getListOfInArcs()) {
-                                        if(arc == arc2){
-                                            pair = new PairValue<Element, Element,Arc>(transitions.get(transitionElement), places.get(placeElement),arc);    
+                // nastavim dvojice medzi, kotrymi maju byt vztahy
+                for (Element placeElement : places.keySet()) {
+                    AbsPlace place = (AbsPlace) placeElement;
+                    for (Element transitionElement : transitions.keySet()) {
+                        if(place.getListOfInTransitions().size()>0){
+                            for (Transition inTrans : place.getListOfInTransitions()) {
+                                if(inTrans == transitionElement){            
+                                    for (Arc arc : inTrans.getListOfOutArcs()) {
+                                        for (Arc arc2 : place.getListOfInArcs()) {
+                                            if(arc == arc2){
+                                                pair = new PairValue<Element, Element,Arc>(transitions.get(transitionElement), places.get(placeElement),arc);    
+                                            }
                                         }
                                     }
+                                    inToOutElement.add(pair);
                                 }
-                                inToOutElement.add(pair);
+                            }
+                        }
+                        if(place.getListOfOutTransitions().size()>0){
+                            for (Transition outTrans : place.getListOfOutTransitions()) {
+                                if(outTrans == transitionElement){
+                                    for (Arc arc : outTrans.getListOfInArcs()) {
+                                        for (Arc arc2 : place.getListOfOutArcs()) {
+                                            if(arc == arc2){
+                                                pair = new PairValue<Element, Element, Arc>(places.get(placeElement),transitions.get(transitionElement),arc);    
+                                            }
+                                        }
+                                    }
+                                    inToOutElement.add(pair);
+                                }
                             }
                         }
                     }
-                    if(place.getListOfOutTransitions().size()>0){
-                        for (Transition outTrans : place.getListOfOutTransitions()) {
-                            if(outTrans == transitionElement){
-                                for (Arc arc : outTrans.getListOfInArcs()) {
-                                    for (Arc arc2 : place.getListOfOutArcs()) {
-                                        if(arc == arc2){
-                                            pair = new PairValue<Element, Element, Arc>(places.get(placeElement),transitions.get(transitionElement),arc);    
-                                        }
-                                    }
-                                }
-                                inToOutElement.add(pair);
-                            }
-                        }
+                }
+            }else{
+                for (Element element : copiedElements) {
+                    int index = 1;
+                    Node node;
+                    if(element instanceof Node){
+                        do{
+                            node = new Node("node"+(((PrecedenceGraph)getGraph()).getListOfNodes().size()+index));
+                            node.setX(element.getX()+offset);
+                            node.setY(element.getY()+offset);
+                            node.setColor(element.getColor());
+                            node.setColor2(element.getColor2());
+                            index++;
+                        }while (!((PrecedenceGraph) getGraph()).addNode(node));
+                        nodes.put(element, node);
+                        selectedElements.add(node);
+                    }
+                }
+                for (Element element : nodes.keySet()) {
+                    for (Element outArc : ((Node)element).getListOfOutArcs()) {
+                        Element inElement = nodes.get(((Arc)outArc).getInElement());
+                        pair = new PairValue<Element, Element, Arc>(nodes.get(element), inElement, (Arc)outArc);
+                        inToOutElement.add(pair);
                     }
                 }
             }
+            
             // Vytvorim nove vztahy
             for (PairValue<Element, Element, Arc> pairsElement : inToOutElement) {
-                Arc arc = new Arc("Arc"+(((PetriNet)getGraph()).getListOfArcs().size()+1), pairsElement.getLeft(), pairsElement.getRight());
-                arc.setColor(pairsElement.getData().getColor());
-                arc.setColor2(pairsElement.getData().getColor2());
-                arc.setCapacity(pairsElement.getData().getCapacity());
-                arc.setFontSize(pairsElement.getData().getFontSize());
-                ((PetriNet) getGraph()).addArc(arc);
+                int index = 1;
+                Arc arc = null;
+                if(graph instanceof PetriNet){
+                    do{
+                        arc = new Arc("Arc"+(((PetriNet)getGraph()).getListOfArcs().size()+index), pairsElement.getLeft(), pairsElement.getRight());
+                        arc.setColor(pairsElement.getData().getColor());
+                        arc.setColor2(pairsElement.getData().getColor2());
+                        arc.setCapacity(pairsElement.getData().getCapacity());
+                        arc.setFontSize(pairsElement.getData().getFontSize());
+                        index++;
+                    }while (!((PetriNet) getGraph()).addArc(arc));
+                }else{
+                    do{
+                        arc = new Arc("Arc"+(((PrecedenceGraph)getGraph()).getListOfArcs().size()+index), pairsElement.getLeft(), pairsElement.getRight());
+                        arc.setColor(pairsElement.getData().getColor());
+                        arc.setColor2(pairsElement.getData().getColor2());
+                        arc.setCapacity(pairsElement.getData().getCapacity());
+                        arc.setFontSize(pairsElement.getData().getFontSize());
+                        index++;
+                    }while (!((PrecedenceGraph) getGraph()).addArc(arc));
+                }
                 selectedElements.add(arc);
             }
 
@@ -2835,13 +3066,27 @@ public class View extends javax.swing.JFrame {
         public void setTimer(Timer timer) {
             this.timer = timer;
         }
+
+        /**
+         * @return the selectedMagneticLine
+         */
+        public MagneticLine getSelectedMagneticLine() {
+            return selectedMagneticLine;
+        }
+
+        /**
+         * @param selectedMagneticLine the selectedMagneticLine to set
+         */
+        public void setSelectedMagneticLine(MagneticLine selectedMagneticLine) {
+            this.selectedMagneticLine = selectedMagneticLine;
+        }
     }
     
     private void resetForm() {
         this.disableButtons();
         cursorButton.setSelected(true);
         propertiesMenu.setVisible(false);
-        this.diagramPanel.setCursor(this.handCursor);
+        this.getDiagramPanel().setCursor(this.handCursor);
         this.revalidate();
         this.repaint();
     }
@@ -2852,13 +3097,24 @@ public class View extends javax.swing.JFrame {
      * 
      */
     public void toggleButtons(java.awt.event.ActionEvent evt){
+        selectedButtonTemp = (JToggleButton)evt.getSource();
         this.disableButtons();
         if(evt.getSource() instanceof JToggleButton){
-            ((JToggleButton)evt.getSource()).setSelected(true);
+            if(selectedButton != selectedButtonTemp){
+                ((JToggleButton)evt.getSource()).setSelected(true);
+                selectedButton = ((JToggleButton)evt.getSource());
+            }else{
+                selectedButton = null;
+            }
         }
+        /*
         if(evt.getSource() instanceof JButton){
-            ((JButton)evt.getSource()).setSelected(true);
+            if (((JButton)evt.getSource()) != selectedButton){
+                ((JButton)evt.getSource()).setSelected(true);
+            }
+            selectedButton = ((JButton)evt.getSource());          
         }
+        */ 
         this.setCustomCursor();
     }
     
@@ -2867,25 +3123,25 @@ public class View extends javax.swing.JFrame {
      */
     public void setCustomCursor(){
         if (this.ellipseButton.isSelected()) {
-            this.diagramPanel.setCursor(this.ellipseCursor);
+            this.getDiagramPanel().setCursor(this.ellipseCursor);
         } 
         else if ((this.resuorceButton.isSelected())) {
-            this.diagramPanel.setCursor(this.resCursor);
+            this.getDiagramPanel().setCursor(this.resCursor);
         }
         else if ((this.rectangleButton.isSelected())) {
-            this.diagramPanel.setCursor(this.transitionCursor);
+            this.getDiagramPanel().setCursor(this.transitionCursor);
         }
         else if ((this.lineButton.isSelected())) {
-            this.diagramPanel.setCursor(this.arcCursor);
+            this.getDiagramPanel().setCursor(this.arcCursor);
         }
         else if ((this.bendButton.isSelected())) {
-            this.diagramPanel.setCursor(this.handCursor);
+            this.getDiagramPanel().setCursor(this.handCursor);
         }
         else if ((this.deleteBendButton.isSelected())) {
-            this.diagramPanel.setCursor(this.handCursor);
+            this.getDiagramPanel().setCursor(this.handCursor);
         }
         else {
-            this.diagramPanel.setCursor(this.handCursor);
+            this.getDiagramPanel().setCursor(this.handCursor);
         }
     }
     
@@ -2900,11 +3156,21 @@ public class View extends javax.swing.JFrame {
             }
         }
         for (Component button : this.toolBar.getComponents()) {
+            if(button instanceof JToggleButton){
+                ((JToggleButton)button).setSelected(false);
+            }
+        }
+        /*
+        for (Component button : this.toolBar.getComponents()) {
             if(button instanceof JButton){
+                if (selectedButton != null && !selectedButton.isSelected()){
+                    selectedButton = null;
+                }
                 ((JButton)button).setFocusCycleRoot(false);
                 ((JButton)button).setFocusPainted(false);
                 ((JButton)button).setSelected(false);
             }
         }
+        */ 
     }
 }

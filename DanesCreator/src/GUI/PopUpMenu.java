@@ -16,8 +16,9 @@ import javax.swing.KeyStroke;
  * @author MISO
  */
 public class PopUpMenu extends JPopupMenu {
-    JMenuItem copyItem,pasteItem,deleteItem,saveItem,saveAsItem,loadItem;
-    DiagramPanel diagramPanel;
+    private JMenuItem copyItem,pasteItem,deleteItem,saveItem,saveAsItem,loadItem;
+    private DiagramPanel diagramPanel;
+    
     public PopUpMenu(DiagramPanel pPanel){
         this.diagramPanel = pPanel;
         saveItem = new JMenuItem("Save");
@@ -83,6 +84,11 @@ public class PopUpMenu extends JPopupMenu {
     }
     private void deleteClicked(ActionEvent evt) {
         diagramPanel.deleteSelectedElements();
+        if(this.diagramPanel.getSelectedMagneticLine() != null){
+            this.diagramPanel.getSelectedMagneticLine().unConnectElementsFromMagneticLine();
+            this.diagramPanel.getGraph().getMagneticLines().remove(this.diagramPanel.getSelectedMagneticLine());
+            this.diagramPanel.setSelectedMagneticLine(null);
+        }
     }
     private void saveClicked(ActionEvent evt) {
         diagramPanel.saveGraph();

@@ -12,10 +12,9 @@ import java.util.HashSet;
  *
  * @author Michal Skovajsa
  */
-public class Transition extends Element {
+public class Transition extends ComplexElement {
 
-    private int width=-1;
-    private int height=-1;
+
     private ArrayList<AbsPlace> listOfInPlaces;
     private ArrayList<AbsPlace> listOfOutPlaces;
     private ArrayList<Arc> listOfInArcs;
@@ -32,33 +31,7 @@ public class Transition extends Element {
         listOfOutPlaces=new ArrayList<AbsPlace>();
     }
 
-    /**
-     * @return the width
-     */
-    public int getWidth() {
-        return width;
-    }
 
-    /**
-     * @param width the width to set
-     */
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    /**
-     * @return the height
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * @param height the height to set
-     */
-    public void setHeight(int height) {
-        this.height = height;
-    }
 
     /**
      * @return the listOfInPlaces
@@ -106,8 +79,6 @@ public class Transition extends Element {
    @Override
    public void setName(String name) {
         super.setName(name);
-        this.width=-1;
-        this.height=-1;   
     }    
    
    /* Check if transition is active */

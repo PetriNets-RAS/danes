@@ -10,14 +10,12 @@ import java.util.ArrayList;
  *
  * @author Michal Skovajsa
  */
-public class Node extends Element{
+public class Node extends ComplexElement{
     
     private ArrayList<Node> listOfInNodes;
     private ArrayList<Node> listOfOutNodes;
     private ArrayList<Arc> listOfInArcs;
     private ArrayList<Arc> listOfOutArcs;
-    private int width;
-    private int height;
     private int capacity;
     
     /**
@@ -29,8 +27,8 @@ public class Node extends Element{
         listOfOutArcs=new ArrayList<Arc>();
         listOfInNodes=new ArrayList<Node>();
         listOfOutNodes=new ArrayList<Node>();
-        this.width=70;
-        this.height=43;
+        super.setWidth(70);
+        super.setHeight(43);
     }
 
     /**
@@ -61,33 +59,6 @@ public class Node extends Element{
         return listOfOutArcs;
     }
 
-    /**
-     * @return the width
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * @param width the width to set
-     */
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    /**
-     * @return the height
-     */
-    public int getHeight() {
-        return height;
-    }
-
-    /**
-     * @param height the height to set
-     */
-    public void setHeight(int height) {
-        this.height = height;
-    }
 
     /**
      * @return the capacity
@@ -102,13 +73,5 @@ public class Node extends Element{
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
-    
-   /* Autosize */
-   @Override
-   public void setName(String name) {
-        super.setName(name);
-        this.width=-1;
-        this.height=-1;
-    }  
    
 }

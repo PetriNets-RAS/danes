@@ -21,8 +21,8 @@ public class PrecedenceGraph extends Graph {
      * @Class constructor
      */
     public PrecedenceGraph(String paName) {
+        super();
         this.name = paName;
-
         this.listOfArcs = new ArrayList<Arc>();
         this.listOfNodes = new ArrayList<Node>();
     }

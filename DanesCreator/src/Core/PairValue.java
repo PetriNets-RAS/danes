@@ -30,5 +30,12 @@ public class PairValue<L,R,Data> {
     PairValue pairo = (PairValue) o;
     return this.left.equals(pairo.getLeft()) &&
            this.right.equals(pairo.getRight());
-  }    
+  }
+
+    @Override
+    public String toString() {
+        return super.toString(); //To change body of generated methods, choose Tools | Templates.
+    }
+  
+  
 }

@@ -30,10 +30,10 @@ public class DiagramMouseAdapter extends MouseAdapter{
      *
      * @param pDiagramPanel
      */
-    public DiagramMouseAdapter(DiagramPanel pDiagramPanel, JScrollPane pDiagramScrollPane, Controller pController) {
+    public DiagramMouseAdapter(DiagramPanel pDiagramPanel, JScrollPane pDiagramScrollPane) {
         this.diagramPanel = pDiagramPanel;
         this.diagramScrollPane = pDiagramScrollPane;
-        this.controller = pController;
+        this.controller = this.diagramPanel.getDiagramController();
     }
     @Override
     public void mousePressed(MouseEvent e) {
