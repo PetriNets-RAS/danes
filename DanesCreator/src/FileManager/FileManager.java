@@ -50,7 +50,6 @@ public class FileManager {
             } else {
                 fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
             }
-            listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
             int showOpenDialog = fileChooser.showOpenDialog(c);
             setSelectedFile(fileChooser.getSelectedFile());
             if (selectedFile == null) {
@@ -77,7 +76,6 @@ public class FileManager {
 
     public void saveGraphAs(Graph graph, Component c) {
         this.graph = graph;
-        listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
         JFileChooser fileChooser = new JFileChooser();
         if (graph instanceof PetriNet) {
             fileChooser.setAcceptAllFileFilterUsed(false);
@@ -120,12 +118,12 @@ public class FileManager {
                 if ("Danes PetriNet files".equals(ff.getDescription())) {
                     setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
                     temp.delete();
-                    newXML.createPetriXML(this.graph, getSelectedFile(), false,listOfMagneticLines);
+                    newXML.createPetriXML(this.graph, getSelectedFile(), false);
                 } else if ("CoBA PetriNet files".equals(ff.getDescription())) {
                     sufix = ".pn2";
                     setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
                     temp.delete();
-                    newXML.createPetriXML(this.graph, getSelectedFile(), true,listOfMagneticLines);
+                    newXML.createPetriXML(this.graph, getSelectedFile(), true);
                 } else {
                     System.out.println("UKLADAM CPN");
                     sufix = ".cpn";

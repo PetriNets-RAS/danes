@@ -5,8 +5,12 @@
 package FileManager;
 
 import Core.Arc;
+import Core.Graph;
 import Core.Place;
 import Core.PrecedenceGraph;
+import GUI.HorizontalMagneticLine;
+import GUI.MagneticLine;
+import GUI.VerticalMagneticLine;
 import java.awt.Color;
 import java.awt.Point;
 import java.io.File;
@@ -64,6 +68,7 @@ public class XMLPrecedenceManager {
             Element edges = getEdgesElement(pg.getListOfArcs(), doc);
             rootElement.appendChild(places);
             rootElement.appendChild(edges);
+            appendMagneticLines(doc, g.getMagneticLines(), rootElement);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
@@ -91,6 +96,8 @@ public class XMLPrecedenceManager {
             String petriNetName = titleList.item(0).getTextContent();
             PrecedenceGraph pg = new PrecedenceGraph(petriNetName);
 
+            getHorizontalMagneticLines(doc, pg);
+            getVerticalMagneticLines(doc, pg);
             this.getNodesFromXML(doc, pg);
             this.getArcsFromXML(doc, pg);
 
@@ -98,6 +105,48 @@ public class XMLPrecedenceManager {
         } catch (Exception ex) {
             Logger.getLogger(XMLPetriManager.class.getName()).log(Level.SEVERE, null, ex);
             return null;
+        }
+    }
+
+    private void getHorizontalMagneticLines(Document doc, Graph pn) {
+        ArrayList<Integer> listOfHorizontalMagneticLines = new ArrayList<Integer>();
+        NodeList resourcesList = doc.getElementsByTagName("hMagneticLine");
+        for (int i = 0; i < resourcesList.getLength(); i++) {
+            Node nNode = resourcesList.item(i);
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element eElement = (Element) nNode;
+                int y = Integer.parseInt(eElement.getAttribute("y"));
+                pn.getMagneticLines().add(new HorizontalMagneticLine(y, 10000));
+            }
+        }
+    }
+
+    private void getVerticalMagneticLines(Document doc, Graph pn) {
+        ArrayList<Integer> listOfVerticalMagneticLines = new ArrayList<Integer>();
+        NodeList resourcesList = doc.getElementsByTagName("vMagneticLine");
+        for (int i = 0; i < resourcesList.getLength(); i++) {
+            Node nNode = resourcesList.item(i);
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element eElement = (Element) nNode;
+                int x = Integer.parseInt(eElement.getAttribute("x"));
+                pn.getMagneticLines().add(new VerticalMagneticLine(x, 10000));
+            }
+        }
+    }
+
+    public void appendMagneticLines(Document doc, ArrayList<MagneticLine> listOfMagneticLines, Element appendElement) {
+        for (MagneticLine ml : listOfMagneticLines) {
+            if (ml instanceof VerticalMagneticLine) {
+                VerticalMagneticLine vml = (VerticalMagneticLine) ml;
+                Element vMagneticLine = doc.createElement("vMagneticLine");
+                vMagneticLine.setAttribute("x", vml.getX() + "");
+                appendElement.appendChild(vMagneticLine);
+            } else {
+                HorizontalMagneticLine hml = (HorizontalMagneticLine) ml;
+                Element hMagneticLine = doc.createElement("hMagneticLine");
+                hMagneticLine.setAttribute("y", hml.getY() + "");
+                appendElement.appendChild(hMagneticLine);
+            }
         }
     }
 
