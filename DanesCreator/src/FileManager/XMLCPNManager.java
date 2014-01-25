@@ -524,7 +524,7 @@ public class XMLCPNManager {
             this.getTransitionsFromCPN(doc, pn);
             this.getArcsFromCPN(doc, pn);
             findResource(pn);
-
+            
             if (minX < 0 || minY < 0) {
                 reMoveElements(pn, minX, maxY);
             }
@@ -647,20 +647,20 @@ public class XMLCPNManager {
 
     public void reMoveElements(PetriNet pn, int x, int y) {
         for (Place p : pn.getListOfPlaces()) {
-            p.setX(p.getX() + x + 30);
+            p.setX(p.getX() + Math.abs(x) + 30);
             p.setY(y - p.getY() + 30);
         }
         for (Transition t : pn.getListOfTransitions()) {
-            t.setX(t.getX() + x + 30);
+            t.setX(t.getX() + Math.abs(x) + 30);
             t.setY(y - t.getY() + 30);
         }
         for (Resource r : pn.getListOfResources()) {
-            r.setX(r.getX() + x + 30);
+            r.setX(r.getX() + Math.abs(x) + 30);
             r.setY(y - r.getY() + 30);
         }
         for (Arc a : pn.getListOfArcs()) {
             for (Point p : a.getBendPoints()) {
-                p.setLocation(p.x + x + 30, y - p.y + 30);
+                p.setLocation(p.x + Math.abs(x) + 30, y - p.y + 30);
             }
         }
     }
