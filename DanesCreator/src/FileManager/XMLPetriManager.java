@@ -98,7 +98,7 @@ public class XMLPetriManager {
                 Element states = getStatesElement(pn.getStates(), doc);
                 rootElement.appendChild(states);
             }
-
+                //koment 
             Element prof = getProfElement(this.resProf, doc);
 
             rootElement.appendChild(prof);
