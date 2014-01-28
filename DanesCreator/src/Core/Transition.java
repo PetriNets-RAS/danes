@@ -4,6 +4,7 @@
  */
 package Core;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -29,6 +30,10 @@ public class Transition extends ComplexElement {
         listOfOutArcs=new ArrayList<Arc>();
         listOfInPlaces=new ArrayList<AbsPlace>();
         listOfOutPlaces=new ArrayList<AbsPlace>();
+        super.color = new Color(super.generalSettingsManager.getTransitionCol2());
+        super.color2 = new Color(super.generalSettingsManager.getTransitionCol1());
+        super.height = super.generalSettingsManager.getTransitionHeight();
+        super.width = super.generalSettingsManager.getTransitionWidth();
     }
 
 

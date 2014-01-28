@@ -49,6 +49,11 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="loadItemActionPerformed"/>
               </Events>
             </MenuItem>
+            <Menu class="javax.swing.JMenu" name="recentFilesMenu">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Recent files"/>
+              </Properties>
+            </Menu>
             <MenuItem class="javax.swing.JMenuItem" name="settingsItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Settings"/>

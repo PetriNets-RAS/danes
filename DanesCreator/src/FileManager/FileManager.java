@@ -33,26 +33,30 @@ public class FileManager {
     private String selectedFileName;
     private String selectedFilePath;
     private ArrayList<MagneticLine> listOfMagneticLines;
-
+    private ArrayList<String> bufferRecentFiles;
+    private JFileChooser jFileChooser;
+    
     public FileManager() {
+        this.bufferRecentFiles = new ArrayList<String>();
+        this.jFileChooser = new JFileChooser();
     }
 
     public void saveGraph(Graph graph, Component c) {
         this.graph = graph;
         XMLPetriManager newXML = new XMLPetriManager();
         if (getSelectedFile() == null) {
-            JFileChooser fileChooser = new JFileChooser();
+            jFileChooser = new JFileChooser();
             if (graph instanceof PetriNet) {
-                fileChooser.setAcceptAllFileFilterUsed(false);
-                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Danes PetriNet files", "dpn"));
-                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CoBA PetriNet files", "pn2"));
-                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CPN Tools PetriNet files", "cpn"));
+                jFileChooser.setAcceptAllFileFilterUsed(false);
+                jFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Danes PetriNet files", "dpn"));
+                jFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CoBA PetriNet files", "pn2"));
+                jFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("CPN Tools PetriNet files", "cpn"));
             } else {
-                fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
+                jFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
             }
-            listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
-            int showOpenDialog = fileChooser.showOpenDialog(c);
-            setSelectedFile(fileChooser.getSelectedFile());
+            //listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
+            int showOpenDialog = jFileChooser.showOpenDialog(c);
+            setSelectedFile(jFileChooser.getSelectedFile());
             if (selectedFile == null) {
                 return;
             }
@@ -77,7 +81,7 @@ public class FileManager {
 
     public void saveGraphAs(Graph graph, Component c) {
         this.graph = graph;
-        listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
+        //listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
         JFileChooser fileChooser = new JFileChooser();
         if (graph instanceof PetriNet) {
             fileChooser.setAcceptAllFileFilterUsed(false);
@@ -192,8 +196,9 @@ public class FileManager {
         
     }
     
+    //load Graph from JChooser
     public Graph loadGraph(Component c) {
-        JFileChooser jFileChooser = new JFileChooser();
+        
         int openShowDialog = jFileChooser.showOpenDialog(c);
 
         selectedFile = jFileChooser.getSelectedFile();
@@ -228,6 +233,46 @@ public class FileManager {
             x = pg.getListOfNodes().get(0).getX();
             y = pg.getListOfNodes().get(0).getY();
         }
+        this.bufferRecentFiles.add(selectedFile.getAbsolutePath());
+        getInfoAboutFile(inputFile);
+        return this.graph;
+    }
+    
+    // load graph from recent files
+    public Graph loadGraph(File file){
+        selectedFile = file;
+        if (selectedFile == null) {
+            return null;
+        }
+        File inputFile = new File(selectedFile.getAbsolutePath());
+        int x, y;
+
+        if ("dpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))
+                || "pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+            XMLPetriManager loader = new XMLPetriManager();
+            boolean cobaFile = false;
+            if ("pn2".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+                cobaFile = true;
+            }
+            PetriNet p = loader.getPetriNetFromXML(inputFile, cobaFile);
+            this.graph = p;
+            x = p.getListOfPlaces().get(0).getX();
+            y = p.getListOfPlaces().get(0).getY();
+        } else if ("cpn".equals(inputFile.getName().substring(inputFile.getName().length() - 3))) {
+            XMLCPNManager loader = new XMLCPNManager();
+            PetriNet p = loader.getPetriNetFromCPN(inputFile);
+            this.graph = p;
+            x = p.getListOfPlaces().get(0).getX();
+            y = p.getListOfPlaces().get(0).getY();
+
+        } else {
+            XMLPrecedenceManager loader = new XMLPrecedenceManager();
+            PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
+            this.graph = pg;
+            x = pg.getListOfNodes().get(0).getX();
+            y = pg.getListOfNodes().get(0).getY();
+        }
+        this.bufferRecentFiles.add(selectedFile.getAbsolutePath());
         getInfoAboutFile(inputFile);
         return this.graph;
     }
@@ -278,4 +323,14 @@ public class FileManager {
     public void setSelectedFilePath(String selectedFilePath) {
         this.selectedFilePath = selectedFilePath;
     }
+
+    public ArrayList<String> getBufferRecentFiles() {
+        return bufferRecentFiles;
+    }
+
+    public void setBufferRecentFiles(ArrayList<String> bufferRecentFiles) {
+        this.bufferRecentFiles = bufferRecentFiles;
+    }
+    
+    
 }
