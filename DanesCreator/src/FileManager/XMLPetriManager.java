@@ -91,8 +91,8 @@ public class XMLPetriManager {
             rootElement.appendChild(places);
             rootElement.appendChild(transitions);
             rootElement.appendChild(edges);
-// MISO TOMKA             
-            //appendMagneticLines(doc, listOfMagneticLines, rootElement);
+            
+            appendMagneticLines(doc, listOfMagneticLines, rootElement);
 
             if (pn.getStates() != null) {
                 Element states = getStatesElement(pn.getStates(), doc);
@@ -893,7 +893,7 @@ public class XMLPetriManager {
         }
         return resources;
     }
-    /*
+    
     public void appendMagneticLines(Document doc, ArrayList<MagneticLine> listOfMagneticLines, Element appendElement) {
         for (MagneticLine ml : listOfMagneticLines) {
             if (ml instanceof VerticalMagneticLine) {
@@ -909,5 +909,5 @@ public class XMLPetriManager {
             }
         }
     }
-    */ 
+     
 }
