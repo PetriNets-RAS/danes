@@ -155,7 +155,7 @@ public class GeneralSettings extends javax.swing.JDialog {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "General", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, new java.awt.Color(0, 0, 0)));
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel3.setText("Background");
+        jLabel3.setText("background");
 
         backgrLabel.setBackground(new java.awt.Color(255, 255, 102));
         backgrLabel.setOpaque(true);
@@ -166,7 +166,7 @@ public class GeneralSettings extends javax.swing.JDialog {
         });
 
         jLabel4.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
-        jLabel4.setText("Font size");
+        jLabel4.setText("font size");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
