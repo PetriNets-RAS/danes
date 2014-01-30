@@ -25,6 +25,10 @@ public class HorizontalMagneticLine extends MagneticLine{
         super.y1 = pY;
         super.y2 = pY;
     }
+    
+    public int getY(){
+        return super.y1;
+    }
 
     
     @Override

@@ -70,7 +70,7 @@ public class XMLPetriManager {
 
     }
 
-    public boolean createPetriXML(Core.Graph g, File outputFile, boolean coba, ArrayList<MagneticLine> listOfMagneticLines) {
+    public boolean createPetriXML(Core.Graph g, File outputFile, boolean coba) {
         try {
             cobaFile = coba;
             PetriNet pn = (PetriNet) g;
@@ -91,8 +91,7 @@ public class XMLPetriManager {
             rootElement.appendChild(places);
             rootElement.appendChild(transitions);
             rootElement.appendChild(edges);
-            
-            appendMagneticLines(doc, listOfMagneticLines, rootElement);
+            appendMagneticLines(doc, g.getMagneticLines(), rootElement);
 
             if (pn.getStates() != null) {
                 Element states = getStatesElement(pn.getStates(), doc);
@@ -129,8 +128,8 @@ public class XMLPetriManager {
             NodeList titleList = doc.getElementsByTagName("title");
             String petriNetName = titleList.item(0).getTextContent();
             PetriNet pn = new PetriNet(petriNetName);
-            ArrayList<Integer> listOfHorizontalMagneticLines = getHorizontalMagneticLines(doc);
-            ArrayList<Integer> listOfVerticalMagneticLines = getVerticalMagneticLines(doc);
+            getHorizontalMagneticLines(doc,pn);            
+            getVerticalMagneticLines(doc,pn);
 
             this.getResourcesFromXML(doc, pn);
             this.getPlacesFromXML(doc, pn);
@@ -144,7 +143,7 @@ public class XMLPetriManager {
         }
     }
 
-    private ArrayList<Integer> getHorizontalMagneticLines(Document doc) {
+    private void getHorizontalMagneticLines(Document doc,PetriNet pn) {
         ArrayList<Integer> listOfHorizontalMagneticLines = new ArrayList<Integer>();
         NodeList resourcesList = doc.getElementsByTagName("hMagneticLine");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -152,24 +151,22 @@ public class XMLPetriManager {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) nNode;
                 int y = Integer.parseInt(eElement.getAttribute("y"));
-                listOfHorizontalMagneticLines.add(y);
+                pn.getMagneticLines().add(new HorizontalMagneticLine(y, 10000));
             }
         }
-        return listOfHorizontalMagneticLines;
     }
 
-    private ArrayList<Integer> getVerticalMagneticLines(Document doc) {
+    private void getVerticalMagneticLines(Document doc,PetriNet pn) {
         ArrayList<Integer> listOfVerticalMagneticLines = new ArrayList<Integer>();
-        NodeList resourcesList = doc.getElementsByTagName("hMagneticLine");
+        NodeList resourcesList = doc.getElementsByTagName("vMagneticLine");
         for (int i = 0; i < resourcesList.getLength(); i++) {
             Node nNode = resourcesList.item(i);
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element eElement = (Element) nNode;
                 int x = Integer.parseInt(eElement.getAttribute("x"));
-                listOfVerticalMagneticLines.add(x);
+                pn.getMagneticLines().add(new VerticalMagneticLine(x, 10000));
             }
         }
-        return listOfVerticalMagneticLines;
     }
 
     private void getResourcesFromXML(Document doc, PetriNet pn) {

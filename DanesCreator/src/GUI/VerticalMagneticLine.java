@@ -18,6 +18,9 @@ public class VerticalMagneticLine extends MagneticLine{
         super.y1 = 0;
         super.x1 = pX;
     }
+    public int getX(){
+        return super.x1;
+    }
     
     public VerticalMagneticLine(int pX,int pHeight){
         super.x1 = pX;

@@ -6,6 +6,7 @@ package FileManager;
 
 import Core.Graph;
 import Core.PetriNet;
+import Core.Place;
 import Core.PrecedenceGraph;
 import GUI.MagneticLine;
 import GUI.View.DiagramPanel;
@@ -54,9 +55,8 @@ public class FileManager {
             } else {
                 jFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
             }
-            //listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
-            int showOpenDialog = jFileChooser.showOpenDialog(c);
-            setSelectedFile(jFileChooser.getSelectedFile());
+            int showOpenDialog = fileChooser.showOpenDialog(c);
+            setSelectedFile(fileChooser.getSelectedFile());
             if (selectedFile == null) {
                 return;
             }
@@ -74,6 +74,7 @@ public class FileManager {
             }
             checkAndSave(getSelectedFile(), null);
         } else {
+            System.out.println("ukladam subor");
             checkAndSave(getSelectedFile(), null);
         }
         getInfoAboutFile(getSelectedFile());
@@ -81,7 +82,6 @@ public class FileManager {
 
     public void saveGraphAs(Graph graph, Component c) {
         this.graph = graph;
-        //listOfMagneticLines=((DiagramPanel) c).getMagneticLines();
         JFileChooser fileChooser = new JFileChooser();
         if (graph instanceof PetriNet) {
             fileChooser.setAcceptAllFileFilterUsed(false);
@@ -117,37 +117,50 @@ public class FileManager {
     private void checkAndSave(File selectFile, FileFilter ff) {
         String sufix;
         if (this.graph instanceof PetriNet) {
-            sufix = ".dpn";
+            String fileName = selectFile.getAbsolutePath();
             XMLPetriManager newXML = new XMLPetriManager();
-            if ((getSelectedFile().getName().length() < 5) || (!"dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
-                File temp = getSelectedFile();
-                if ("Danes PetriNet files".equals(ff.getDescription())) {
-                    setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
-                    temp.delete();
-                    newXML.createPetriXML(this.graph, getSelectedFile(), false,listOfMagneticLines);
-                } else if ("CoBA PetriNet files".equals(ff.getDescription())) {
-                    sufix = ".pn2";
-                    setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
-                    temp.delete();
-                    newXML.createPetriXML(this.graph, getSelectedFile(), true,listOfMagneticLines);
-                } else {
-                    System.out.println("UKLADAM CPN");
-                    sufix = ".cpn";
-                    setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
-                    //add copy of clean 
-                    createCleanCPNNetTo(getSelectedFile());
-                    
-                    
-                    temp.delete();
-                    XMLCPNManager cpnm = new XMLCPNManager();
-                    cpnm.createPetriXML(this.graph, getSelectedFile());
+
+            File temp = getSelectedFile();
+            if ((ff != null && "Danes PetriNet files".equals(ff.getDescription()))
+                    || ("dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3))
+                    || "cpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3))
+                    || "pn2".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3)))) {
+
+                System.out.println("pripona:" + selectedFile.getName().substring(selectedFile.getName().length() - 3));
+                if ("dpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3))) {
+                    fileName = fileName.replace(".dpn", "");
                 }
-
-
+                if ("cpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3))) {
+                    fileName = fileName.replace(".cpn", "");
+                }
+                if ("pn2".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3))) {
+                    fileName = fileName.replace(".pn2", "");
+                }
+                sufix = ".dpn";
+                setSelectedFile(new File(fileName + sufix));
+                temp.delete();
+                newXML.createPetriXML(this.graph, getSelectedFile(), false);
+            } else if (ff != null && "CoBA PetriNet files".equals(ff.getDescription())) {
+                if ("pn2".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3))) {
+                    fileName = fileName.replace(".pn2", "");
+                }
+                sufix = ".pn2";
+                //setSelectedFile(new File(getSelectedFile().getAbsolutePath() + sufix));
+                setSelectedFile(new File(fileName + sufix));
+                temp.delete();
+                newXML.createPetriXML(this.graph, getSelectedFile(), true);
+            } else if (ff != null && "CPN Tools PetriNet files".equals(ff.getDescription())) {
+                if ("cpn".equals(selectedFile.getName().substring(selectedFile.getName().length() - 3))) {
+                    fileName = fileName.replace(".cpn", "");
+                }
+                sufix = ".cpn";
+                setSelectedFile(new File(fileName + sufix));
+                //add copy of clean 
+                createCleanCPNNetTo(getSelectedFile());
+                temp.delete();
+                XMLCPNManager cpnm = new XMLCPNManager();
+                cpnm.createPetriXML(this.graph, getSelectedFile());
             }
-
-
-            //System.out.println("UKLADAM PN");
         } else {
             sufix = ".dpg";
 
@@ -162,41 +175,42 @@ public class FileManager {
         getInfoAboutFile(selectFile);
     }
 
-    public void createCleanCPNNetTo(File destination){
-    	FileOutputStream outStream = null;
+    public void createCleanCPNNetTo(File destination) {
+        FileOutputStream outStream = null;
         FileInputStream inStream = null;
         try {
-            File cleanNet=new File("cleanCPNNet.xml");
+            File cleanNet = new File("cleanCPNNet.xml");
             System.out.println(cleanNet.getAbsolutePath());
-            
+
             inStream = new FileInputStream(cleanNet);
             outStream = new FileOutputStream(destination);
             byte[] buffer = new byte[1024];
- 
-    	    int length;
-    	    //copy the file content in bytes 
-    	    while ((length = inStream.read(buffer)) > 0){
- 
-    	    	outStream.write(buffer, 0, length);
- 
-    	    }
-    	    inStream.close();
-    	    outStream.close();
-            
+
+            int length;
+            //copy the file content in bytes 
+            while ((length = inStream.read(buffer)) > 0) {
+
+                outStream.write(buffer, 0, length);
+
+            }
+            inStream.close();
+            outStream.close();
+
         } catch (Exception ex) {
             Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println("Error file copping");
         } finally {
             try {
-                if( outStream !=null) outStream.close();               
+                if (outStream != null) {
+                    outStream.close();
+                }
             } catch (IOException ex) {
                 Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
     }
-    
-    //load Graph from JChooser
+
     public Graph loadGraph(Component c) {
         
         int openShowDialog = jFileChooser.showOpenDialog(c);
@@ -225,7 +239,6 @@ public class FileManager {
             this.graph = p;
             x = p.getListOfPlaces().get(0).getX();
             y = p.getListOfPlaces().get(0).getY();
-
         } else {
             XMLPrecedenceManager loader = new XMLPrecedenceManager();
             PrecedenceGraph pg = loader.getPrecedenceFromXML(inputFile);
