@@ -55,8 +55,8 @@ public class FileManager {
             } else {
                 jFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
             }
-            int showOpenDialog = fileChooser.showOpenDialog(c);
-            setSelectedFile(fileChooser.getSelectedFile());
+            int showOpenDialog = jFileChooser.showOpenDialog(c);
+            setSelectedFile(jFileChooser.getSelectedFile());
             if (selectedFile == null) {
                 return;
             }
