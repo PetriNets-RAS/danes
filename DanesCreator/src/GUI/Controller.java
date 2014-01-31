@@ -4,6 +4,7 @@
  */
 package GUI;
 
+import ConfigManagers.GeneralSettingsManager;
 import Core.AbsPlace;
 import Core.Arc;
 import Core.ComplexElement;
@@ -25,13 +26,22 @@ import java.util.ArrayList;
  * @author marek
  */
 public class Controller {
-
+    private GeneralSettingsManager settigns; 
     private Graph graph;
-    //private View        mainFrame;
 
+    //private View        mainFrame;
+    public void setSettigns(GeneralSettingsManager settigns) {
+        this.settigns = settigns;
+    }
+
+    
+    
+    
     public Controller(Graph pa_graph) {
+        //this.settigns = new GeneralSettingsManager();
         this.graph = pa_graph;
     }
+   
 
     public boolean isLocationEmpty(int x, int y) {
         if (getLocationElement(x, y) != null) {
@@ -88,7 +98,7 @@ public class Controller {
                 // Generate text name until it is unique
                 int _offset = 1;
                 do {
-                    place = new Place("P" + (((PetriNet) graph).getListOfPlaces().size() + _offset));
+                    place = new Place(this.settigns.getPlacePref() + (((PetriNet) graph).getListOfPlaces().size() + _offset));
                     place.setX(x);
                     place.setY(y);
                     _offset++;
@@ -116,7 +126,7 @@ public class Controller {
                 // Generate text name until it is unique
                 int _offset = 1;
                 do {
-                    resource = new Resource("R" + (((PetriNet) graph).getListOfResources().size() + _offset));
+                    resource = new Resource(this.settigns.getResourcePref() + (((PetriNet) graph).getListOfResources().size() + _offset));
                     resource.setX(x);
                     resource.setY(y);
                     _offset++;
@@ -146,7 +156,7 @@ public class Controller {
                 // Generate text name until it is unique
                 int _offset = 1;
                 do {
-                    transition = new Transition("T" + (((PetriNet) graph).getListOfTransitions().size() + _offset));
+                    transition = new Transition(this.settigns.getTransitionPref() + (((PetriNet) graph).getListOfTransitions().size() + _offset));
                     transition.setX(x);
                     transition.setY(y);
                     _offset++;
@@ -182,7 +192,7 @@ public class Controller {
                 int _offset = 1;
                 do {
                     int prefix = (((PetriNet) graph).getListOfArcs().size() + _offset);
-                    arc = new Arc("Arc" + prefix, out, in);
+                    arc = new Arc(this.settigns.getArcPref() + prefix, out, in);
 
                     if (!log.checkArc(arc, graph)) {
                         break;
@@ -204,7 +214,7 @@ public class Controller {
                 int _offset = 1;
                 do {
                     int prefix = (((PrecedenceGraph) graph).getListOfArcs().size() + _offset);
-                    arc = new Arc("Arc" + prefix, out, in);
+                    arc = new Arc(this.settigns.getArcPref() + prefix, out, in);
                     if (!log.checkArc(arc, graph)) {
                         break;
                     }
@@ -431,7 +441,7 @@ public class Controller {
                 int _offset = 1;
                 do {
                     int prefix = (((PrecedenceGraph) graph).getListOfArcs().size() + _offset);
-                    node = new Node("Node" + prefix);
+                    node = new Node(this.settigns.getNodePref() + prefix);
                     node.setX(x);
                     node.setY(y);
                     _offset++;

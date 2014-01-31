@@ -4,6 +4,7 @@
  */
 package Core;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -27,8 +28,10 @@ public class Node extends ComplexElement{
         listOfOutArcs=new ArrayList<Arc>();
         listOfInNodes=new ArrayList<Node>();
         listOfOutNodes=new ArrayList<Node>();
-        super.setWidth(70);
-        super.setHeight(43);
+        super.setWidth(super.generalSettingsManager.getNodeWidth());
+        super.setHeight(super.generalSettingsManager.getNodeHeight());
+        super.color = new Color(super.generalSettingsManager.getNodeCol2());
+        super.color2 = new Color(super.generalSettingsManager.getNodeCol1());
     }
 
     /**

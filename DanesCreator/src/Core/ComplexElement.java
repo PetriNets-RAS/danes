@@ -9,8 +9,8 @@ package Core;
  * @author MISO
  */
 public class ComplexElement extends Element{
-    private int width=-1;
-    private int height=-1;
+    protected int width=-1;
+    protected int height=-1;
     private boolean connectedToHorizontalMagnet;
     private boolean connectedToVerticalMagnet;
 

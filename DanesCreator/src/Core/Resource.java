@@ -4,6 +4,7 @@
  */
 package Core;
 
+import java.awt.Color;
 import java.util.ArrayList;
 
 /**
@@ -16,7 +17,11 @@ public class Resource extends AbsPlace {
 
     public Resource(String paName) {
         super(paName);
+        super.color = new Color(super.generalSettingsManager.getResourceCol2());
+        super.color2 = new Color(super.generalSettingsManager.getResourceCol1());
         procesMarkings = new ArrayList<Integer>();
+        super.height = super.generalSettingsManager.getResourceHeight();
+        super.width = super.generalSettingsManager.getResourceWidth();
     }
 
     /**

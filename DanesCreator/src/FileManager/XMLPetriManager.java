@@ -97,7 +97,7 @@ public class XMLPetriManager {
                 Element states = getStatesElement(pn.getStates(), doc);
                 rootElement.appendChild(states);
             }
-
+            
             Element prof = getProfElement(this.resProf, doc);
 
             rootElement.appendChild(prof);
@@ -890,20 +890,21 @@ public class XMLPetriManager {
         }
         return resources;
     }
-
+    
     public void appendMagneticLines(Document doc, ArrayList<MagneticLine> listOfMagneticLines, Element appendElement) {
         for (MagneticLine ml : listOfMagneticLines) {
             if (ml instanceof VerticalMagneticLine) {
                 VerticalMagneticLine vml = (VerticalMagneticLine) ml;
                 Element vMagneticLine = doc.createElement("vMagneticLine");
-                vMagneticLine.setAttribute("x", vml.getX() + "");
+                //vMagneticLine.setAttribute("x", vml.getX() + "");
                 appendElement.appendChild(vMagneticLine);
             } else {
                 HorizontalMagneticLine hml = (HorizontalMagneticLine) ml;
                 Element hMagneticLine = doc.createElement("hMagneticLine");
-                hMagneticLine.setAttribute("y", hml.getY() + "");
+                //hMagneticLine.setAttribute("y", hml.getY() + "");
                 appendElement.appendChild(hMagneticLine);
             }
         }
     }
+     
 }

@@ -21,6 +21,7 @@ import Core.PrecedenceGraph;
 import Core.Resource;
 import Core.Transition;
 import DiagramAdapters.DiagramKeyAdapter;
+import DiagramAdapters.RecentFileActionListener;
 import FileManager.XMLCPNManager;
 import FileManager.XMLPetriManager;
 import FileManager.XMLPrecedenceManager;
@@ -68,6 +69,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import FileManager.FileManager;
 import java.awt.Component;
+import java.awt.MenuItem;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -118,9 +121,11 @@ public class View extends javax.swing.JFrame {
         //this.setLocationRelativeTo(null);
         this.graph = pa_petriNet;
         this.controller = pa_controller;
+        
         this.diagramPanel = null;
         
         this.generalSettingsManager = new GeneralSettingsManager();
+        this.controller.setSettigns(generalSettingsManager);
         int width = this.generalSettingsManager.getWindowWidth();
         int height = this.generalSettingsManager.getWindowHeight();
         int windowX = this.generalSettingsManager.getWindowX();
@@ -130,6 +135,17 @@ public class View extends javax.swing.JFrame {
         }
         setLocation(windowX, windowY);
         initComponents();
+        for (int i = 0; i < this.generalSettingsManager.getRecentFiles().length; i++) {
+            if(!this.generalSettingsManager.getRecentFiles()[i].equals("")){
+                File recentFile = new File(this.generalSettingsManager.getRecentFiles()[i]);
+                if(recentFile.exists()){
+                    JMenuItem recentMenuItem = new JMenuItem(recentFile.getName());
+                    recentMenuItem.addActionListener(new RecentFileActionListener(this,recentFile));
+                    this.recentFilesMenu.add(recentMenuItem);
+                }
+            }
+        }
+        
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         Point cursorHotSpot = new Point(0, 0);
         this.ellipseCursor = toolkit.createCustomCursor(toolkit.getImage("Images\\hand_with_place.png"), cursorHotSpot, "ellipse_cursor");
@@ -256,6 +272,7 @@ public class View extends javax.swing.JFrame {
         saveItem = new javax.swing.JMenuItem();
         saveAsItem = new javax.swing.JMenuItem();
         loadItem = new javax.swing.JMenuItem();
+        recentFilesMenu = new javax.swing.JMenu();
         settingsItem = new javax.swing.JMenuItem();
         exitItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
@@ -646,6 +663,9 @@ public class View extends javax.swing.JFrame {
         });
         fileMenu.add(loadItem);
 
+        recentFilesMenu.setText("Recent files");
+        fileMenu.add(recentFilesMenu);
+
         settingsItem.setText("Settings");
         settingsItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -819,8 +839,17 @@ public class View extends javax.swing.JFrame {
 
     private void loadItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loadItemActionPerformed
         graph = this.fileManager.loadGraph(this);
-        if (graph==null) return ;
+        int j = 0;
+        for (int i = this.fileManager.getBufferRecentFiles().size()-1; i >= Math.max(0,this.fileManager.getBufferRecentFiles().size()-5); i--) {
+            this.generalSettingsManager.getRecentFiles()[j] = this.fileManager.getBufferRecentFiles().get(i);
+            j++;
+        }
         getInfoAboutFile(this.fileManager.getSelectedFile());
+        drawLoadGraph(graph);
+    }//GEN-LAST:event_loadItemActionPerformed
+
+    public void drawLoadGraph(Graph graph){
+        if (graph==null) return ;
         controller.setModel(graph);
         this.diagramPanel = new DiagramPanel(graph);
         this.setPopMenu(new PopUpMenu(getDiagramPanel()));
@@ -863,9 +892,8 @@ public class View extends javax.swing.JFrame {
 
         ///
         getInfoAboutModel(graph);
-
-    }//GEN-LAST:event_loadItemActionPerformed
-
+    }
+    
     private void saveItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveItemActionPerformed
         this.fileManager.saveGraph(graph, this);
         getInfoAboutFile(this.fileManager.getSelectedFile());
@@ -1295,6 +1323,7 @@ public class View extends javax.swing.JFrame {
         this.generalSettingsManager.setWindowX(location.x);
         this.generalSettingsManager.setWindowY(location.y);
         this.generalSettingsManager.writeConfig();
+        this.generalSettingsManager.writeRecentFile();
     }//GEN-LAST:event_formWindowClosing
 
     private void bendButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bendButtonActionPerformed
@@ -1336,6 +1365,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JTextArea notes;
     private javax.swing.JPanel propertiesMenu;
     private javax.swing.JTabbedPane propertiesTab;
+    private javax.swing.JMenu recentFilesMenu;
     private javax.swing.JToggleButton rectangleButton;
     private javax.swing.JButton resetZoomButton;
     private javax.swing.JToggleButton resuorceButton;
@@ -3087,4 +3117,14 @@ public class View extends javax.swing.JFrame {
         }
         */ 
     }
+
+    public FileManager getFileManager() {
+        return fileManager;
+    }
+
+    public void setFileManager(FileManager fileManager) {
+        this.fileManager = fileManager;
+    }
+    
+    
 }

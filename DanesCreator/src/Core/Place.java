@@ -4,6 +4,8 @@
  */
 package Core;
 
+import java.awt.Color;
+
 
 /**
  *
@@ -19,6 +21,10 @@ public class Place extends AbsPlace {
      */
     public Place(String paName){       
         super(paName);
+        super.color = new Color(super.generalSettingsManager.getPlaceCol2());
+        super.color2 = new Color(super.generalSettingsManager.getPlaceCol1());
+        super.height = super.generalSettingsManager.getPlaceHeight();
+        super.width = super.generalSettingsManager.getPlaceWidth();
         start=false;
         end=false;
         this.markings = new Marking(this);

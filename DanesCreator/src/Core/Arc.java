@@ -4,6 +4,7 @@
  */
 package Core;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -47,6 +48,9 @@ public class Arc extends Element {
             this.setX(((Resource) paOutElement).getWidth() / 2 + paOutElement.getX());
             this.setY(((Resource) paOutElement).getHeight() / 2 + paOutElement.getY());
         }
+        
+        super.color = new Color(super.generalSettingsManager.getArcCol2());
+        super.color2 = new Color(super.generalSettingsManager.getArcCol1());
     }
 
     /**
