@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Resource extends AbsPlace {
 
     private ArrayList<Integer> procesMarkings;
+    private int[] process;
 
     public Resource(String paName) {
         super(paName);
@@ -50,6 +51,20 @@ public class Resource extends AbsPlace {
                 break;
             }
         }
+    }
+
+    /**
+     * @return the process
+     */
+    public int[] getProcess() {
+        return process;
+    }
+
+    /**
+     * @param process the process to set
+     */
+    public void setProcess(int[] process) {
+        this.process = process;
     }
     
 

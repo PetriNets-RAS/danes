@@ -45,6 +45,8 @@ public class XMLPetriManager {
     private Document doc;
     private ArrayList<String> resProf;
     private boolean cobaFile;
+    private int maxWidth;
+    private int maxHeight;
 
     public XMLPetriManager() {
         resProf = new ArrayList<String>();
@@ -64,9 +66,39 @@ public class XMLPetriManager {
     }
 
     public Point setCoBAPoint(int x, int y) {
-        //x = (x * 60) + 20;
-        //y = (y * 38) + 20;
-        return new Point((x - 20) / 60, (y - 20) / 60);
+        return new Point((x - 20) / (maxWidth + 5), (y - 20) / (maxHeight + 2));
+
+    }
+
+    private void setMaxWidthHeight(PetriNet pn) {
+        int maxW = 0;
+        int maxH = 0;
+        for (Resource r : pn.getListOfResources()) {
+            if (r.getWidth() > maxW) {
+                maxW = r.getWidth();
+            }
+            if (r.getHeight() > maxH) {
+                maxH = r.getHeight();
+            }
+        }
+        for (Place p : pn.getListOfPlaces()) {
+            if (p.getWidth() > maxW) {
+                maxW = p.getWidth();
+            }
+            if (p.getHeight() > maxH) {
+                maxH = p.getHeight();
+            }
+        }
+        for (Transition t : pn.getListOfTransitions()) {
+            if (t.getWidth() > maxW) {
+                maxW = t.getWidth();
+            }
+            if (t.getHeight() > maxH) {
+                maxH = t.getHeight();
+            }
+        }
+        maxHeight = maxH;
+        maxWidth = maxW;
 
     }
 
@@ -74,6 +106,7 @@ public class XMLPetriManager {
         try {
             cobaFile = coba;
             PetriNet pn = (PetriNet) g;
+            setMaxWidthHeight(pn);
             doc = (Document) docBuilder.newDocument();
             Element rootElement = doc.createElement("process");
             doc.appendChild(rootElement);
@@ -97,7 +130,7 @@ public class XMLPetriManager {
                 Element states = getStatesElement(pn.getStates(), doc);
                 rootElement.appendChild(states);
             }
-            
+
             Element prof = getProfElement(this.resProf, doc);
 
             rootElement.appendChild(prof);
@@ -128,8 +161,8 @@ public class XMLPetriManager {
             NodeList titleList = doc.getElementsByTagName("title");
             String petriNetName = titleList.item(0).getTextContent();
             PetriNet pn = new PetriNet(petriNetName);
-            getHorizontalMagneticLines(doc,pn);            
-            getVerticalMagneticLines(doc,pn);
+            getHorizontalMagneticLines(doc, pn);
+            getVerticalMagneticLines(doc, pn);
 
             this.getResourcesFromXML(doc, pn);
             this.getPlacesFromXML(doc, pn);
@@ -143,7 +176,7 @@ public class XMLPetriManager {
         }
     }
 
-    private void getHorizontalMagneticLines(Document doc,PetriNet pn) {
+    private void getHorizontalMagneticLines(Document doc, PetriNet pn) {
         ArrayList<Integer> listOfHorizontalMagneticLines = new ArrayList<Integer>();
         NodeList resourcesList = doc.getElementsByTagName("hMagneticLine");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -156,7 +189,7 @@ public class XMLPetriManager {
         }
     }
 
-    private void getVerticalMagneticLines(Document doc,PetriNet pn) {
+    private void getVerticalMagneticLines(Document doc, PetriNet pn) {
         ArrayList<Integer> listOfVerticalMagneticLines = new ArrayList<Integer>();
         NodeList resourcesList = doc.getElementsByTagName("vMagneticLine");
         for (int i = 0; i < resourcesList.getLength(); i++) {
@@ -306,6 +339,10 @@ public class XMLPetriManager {
                         Element pElement = (Element) pNode;
                         int x = Integer.parseInt(pElement.getAttribute("x"));
                         int y = Integer.parseInt(pElement.getAttribute("y"));
+                        if (cobaFile) {
+                            x = (x * 60) + 20;
+                            y = (y * 38) + 20;
+                        }
                         Point newPoint = new Point(x, y);
                         a.getBendPoints().add(newPoint);
                     }
@@ -890,21 +927,20 @@ public class XMLPetriManager {
         }
         return resources;
     }
-    
+
     public void appendMagneticLines(Document doc, ArrayList<MagneticLine> listOfMagneticLines, Element appendElement) {
         for (MagneticLine ml : listOfMagneticLines) {
             if (ml instanceof VerticalMagneticLine) {
                 VerticalMagneticLine vml = (VerticalMagneticLine) ml;
                 Element vMagneticLine = doc.createElement("vMagneticLine");
-                //vMagneticLine.setAttribute("x", vml.getX() + "");
+                vMagneticLine.setAttribute("x", vml.getX() + "");
                 appendElement.appendChild(vMagneticLine);
             } else {
                 HorizontalMagneticLine hml = (HorizontalMagneticLine) ml;
                 Element hMagneticLine = doc.createElement("hMagneticLine");
-                //hMagneticLine.setAttribute("y", hml.getY() + "");
+                hMagneticLine.setAttribute("y", hml.getY() + "");
                 appendElement.appendChild(hMagneticLine);
             }
         }
     }
-     
 }

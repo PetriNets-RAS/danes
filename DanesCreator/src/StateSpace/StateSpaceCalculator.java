@@ -98,10 +98,9 @@ public class StateSpaceCalculator {
 //        System.out.println("***********************************************");
         /* Write results and revert back original net markings */
         result=_stateSpace.levelOrder();
-//        for(State s : result){
-//            System.out.println(result.size());
-//            System.out.println(s);
-//        }
+        for(State s : result){
+            System.out.println(s);
+        }
         _net.setState(firstState);
         
         //_net.setState(_intialState);

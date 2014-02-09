@@ -16,7 +16,7 @@ public class Element{
     
     /* Defaul vaules */
     protected String name="unset";
-    private String note="unset";
+    private String note="";
     protected Color color =   new Color(10,10,10);
     protected Color color2=   new Color(255,255,255);
     private int x=-1;

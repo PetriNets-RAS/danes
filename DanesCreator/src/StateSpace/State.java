@@ -98,6 +98,7 @@ public class State {
         int inc = 0;
         for (int i = 0; i < pn.getListOfResources().size(); i++) {
             int[] process = getCount(this.placeMarkings.get(i + pn.getListOfPlaces().size()), pn.getListOfResources().get(i));
+            pn.getListOfResources().get(i).setProcess(process);
             if (this.placeMarkings.get(i + pn.getListOfPlaces().size()).get(0) != 0) {
                 //add free resources
                 inc++;

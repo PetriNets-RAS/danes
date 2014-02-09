@@ -47,6 +47,7 @@ public class FileManager {
         XMLPetriManager newXML = new XMLPetriManager();
         if (getSelectedFile() == null) {
             jFileChooser = new JFileChooser();
+            
             if (graph instanceof PetriNet) {
                 jFileChooser.setAcceptAllFileFilterUsed(false);
                 jFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Danes PetriNet files", "dpn"));
@@ -55,7 +56,7 @@ public class FileManager {
             } else {
                 jFileChooser.addChoosableFileFilter(new FileNameExtensionFilter("PrecedenceGraph", "dpg"));
             }
-            int showOpenDialog = jFileChooser.showOpenDialog(c);
+            int showOpenDialog = jFileChooser.showSaveDialog(c);
             setSelectedFile(jFileChooser.getSelectedFile());
             if (selectedFile == null) {
                 return;
@@ -72,7 +73,7 @@ public class FileManager {
             if (showOpenDialog != JFileChooser.APPROVE_OPTION) {
                 return;
             }
-            checkAndSave(getSelectedFile(), null);
+            checkAndSave(getSelectedFile(), jFileChooser.getFileFilter());
         } else {
             System.out.println("ukladam subor");
             checkAndSave(getSelectedFile(), null);

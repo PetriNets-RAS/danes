@@ -68,6 +68,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 import FileManager.FileManager;
+import GUI.RASCheckerWindow.RASCheckerWindow;
+import GUI.RASCheckerWindow.RASCheckerWindow;
 import java.awt.Component;
 import java.awt.MenuItem;
 import java.util.LinkedList;
@@ -80,6 +82,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JToggleButton;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 //import sun.org.mozilla.javascript.internal.xmlimpl.XML;
 
 /**
@@ -201,6 +205,8 @@ public class View extends javax.swing.JFrame {
          */
 
         this.updateComponentList();
+        
+        
     }
     /* Class for keyMapping */
 
@@ -248,10 +254,10 @@ public class View extends javax.swing.JFrame {
         rectangleButton = new javax.swing.JToggleButton();
         lineButton = new javax.swing.JToggleButton();
         resuorceButton = new javax.swing.JToggleButton();
-        cursorButton = new javax.swing.JButton();
         horizontalMagnetButton = new javax.swing.JToggleButton();
         verticalMagnetButton = new javax.swing.JToggleButton();
         modelInfo = new javax.swing.JLabel();
+        curButton = new javax.swing.JToggleButton();
         diagramScrollPane = new javax.swing.JScrollPane();
         backgroundImageLabel = new javax.swing.JLabel();
         toolBar = new javax.swing.JToolBar();
@@ -279,6 +285,7 @@ public class View extends javax.swing.JFrame {
         convert = new javax.swing.JMenuItem();
         export = new javax.swing.JMenuItem();
         create_state_diagram = new javax.swing.JMenuItem();
+        RASMenuItem = new javax.swing.JMenuItem();
         shorcutConfig = new javax.swing.JMenuItem();
         aboutUs = new javax.swing.JMenu();
 
@@ -398,14 +405,6 @@ public class View extends javax.swing.JFrame {
             }
         });
 
-        cursorButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cursor.png"))); // NOI18N
-        cursorButton.setToolTipText("Free move");
-        cursorButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cursorButtonActionPerformed(evt);
-            }
-        });
-
         horizontalMagnetButton.setText("horizont");
         horizontalMagnetButton.setToolTipText("Add horizontal megnetic line");
         horizontalMagnetButton.addActionListener(new java.awt.event.ActionListener() {
@@ -422,6 +421,14 @@ public class View extends javax.swing.JFrame {
             }
         });
 
+        curButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/cursor.png"))); // NOI18N
+        curButton.setToolTipText("Free Move");
+        curButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                curButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout buttonsPanelLayout = new javax.swing.GroupLayout(buttonsPanel);
         buttonsPanel.setLayout(buttonsPanelLayout);
         buttonsPanelLayout.setHorizontalGroup(
@@ -432,7 +439,12 @@ public class View extends javax.swing.JFrame {
                     .addGroup(buttonsPanelLayout.createSequentialGroup()
                         .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(buttonsPanelLayout.createSequentialGroup()
-                                .addComponent(cursorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(58, 58, 58)
+                                .addComponent(horizontalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(verticalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(buttonsPanelLayout.createSequentialGroup()
+                                .addComponent(curButton, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(buttonsPanelLayout.createSequentialGroup()
@@ -440,15 +452,9 @@ public class View extends javax.swing.JFrame {
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(buttonsPanelLayout.createSequentialGroup()
-                                        .addGap(2, 2, 2)
                                         .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(resuorceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                            .addGroup(buttonsPanelLayout.createSequentialGroup()
-                                .addGap(58, 58, 58)
-                                .addComponent(horizontalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(verticalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addComponent(resuorceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addGap(0, 12, Short.MAX_VALUE))
                     .addGroup(buttonsPanelLayout.createSequentialGroup()
                         .addComponent(modelInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -461,13 +467,13 @@ public class View extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lineButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cursorButton)
-                    .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(rectangleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(curButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ellipseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(resuorceButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(8, 8, 8)
                 .addGroup(buttonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(verticalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(horizontalMagnetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -588,7 +594,8 @@ public class View extends javax.swing.JFrame {
         });
         toolBar.add(resetZoomButton);
 
-        zoomAllButton.setText("zoomAll");
+        zoomAllButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/zoom_all.png"))); // NOI18N
+        zoomAllButton.setToolTipText("");
         zoomAllButton.setFocusable(false);
         zoomAllButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         zoomAllButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -705,6 +712,14 @@ public class View extends javax.swing.JFrame {
         });
         editMenu.add(create_state_diagram);
 
+        RASMenuItem.setText("RAS Checker");
+        RASMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RASMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(RASMenuItem);
+
         shorcutConfig.setText("Shortcut config");
         shorcutConfig.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -811,7 +826,8 @@ public class View extends javax.swing.JFrame {
         zoomAllButton.setVisible(true);
         rectangleButton.setVisible(true);
         resuorceButton.setVisible(true);
-        cursorButton.setSelected(true);
+        //cursorButton.setSelected(true);
+        curButton.setVisible(true);
         bendButton.setVisible(true);
         deleteBendButton.setVisible(true);
 
@@ -846,6 +862,7 @@ public class View extends javax.swing.JFrame {
         }
         getInfoAboutFile(this.fileManager.getSelectedFile());
         drawLoadGraph(graph);
+        curButton.setSelected(true);
     }//GEN-LAST:event_loadItemActionPerformed
 
     public void drawLoadGraph(Graph graph){
@@ -929,7 +946,8 @@ public class View extends javax.swing.JFrame {
         zoomInButton.setVisible(true);
         resetZoomButton.setVisible(true);
         zoomAllButton.setVisible(true);
-        cursorButton.setSelected(true);
+        //cursorButton.setSelected(true);
+        curButton.setSelected(true);
         bendButton.setVisible(true);
         deleteBendButton.setVisible(true);
 
@@ -979,6 +997,11 @@ public class View extends javax.swing.JFrame {
             StateSpaceCalculator ssCalc = new StateSpaceCalculator(ssPetriNet);
             ssCalc.calculateStateSpace();
             ssPetriNet.setStates(ssCalc.getResult());
+            StatesOutputDialog sod = new StatesOutputDialog(this, true);
+            sod.setStates(ssCalc.getResult());
+            sod.setVisible(true);
+            
+            
         }
     }//GEN-LAST:event_create_state_diagramActionPerformed
 
@@ -1161,10 +1184,6 @@ public class View extends javax.swing.JFrame {
         repaint();
     }//GEN-LAST:event_resetZoomButtonActionPerformed
 
-    private void cursorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cursorButtonActionPerformed
-        this.toggleButtons(evt);
-    }//GEN-LAST:event_cursorButtonActionPerformed
-
     private void diagramScrollPaneMouseDragged(java.awt.event.MouseEvent evt) {
     }
 
@@ -1211,9 +1230,16 @@ public class View extends javax.swing.JFrame {
     private void componentListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_componentListValueChanged
         if(this.componentList.getSelectedValuesList().isEmpty())return;
         this.getDiagramPanel().selectedElements.clear();
-        ArrayList<Element> elements = (ArrayList<Element>) this.componentList.getSelectedValuesList();
+        ArrayList<Element> elements = (ArrayList<Element>) this.componentList.getSelectedValuesList();             
         for (Element element : elements) {
             this.getDiagramPanel().selectedElements.add(element);
+        }
+        if(elements.size()==1){
+            diagramPanel.loadElementProperties(elements.get(0));
+            propertiesMenu.setVisible(true);
+        }else{
+            diagramPanel.loadMultipleProperties(elements);
+            propertiesMenu.setVisible(true);
         }
         this.getDiagramPanel().repaint();
     }//GEN-LAST:event_componentListValueChanged
@@ -1334,7 +1360,17 @@ public class View extends javax.swing.JFrame {
         this.toggleButtons(evt);
     }//GEN-LAST:event_deleteBendButtonActionPerformed
 
+    private void curButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_curButtonActionPerformed
+        this.toggleButtons(evt);
+    }//GEN-LAST:event_curButtonActionPerformed
+
+    private void RASMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RASMenuItemActionPerformed
+        RASCheckerWindow rasWin = new RASCheckerWindow(this,true,(PetriNet)this.graph);
+        rasWin.setVisible(true);
+    }//GEN-LAST:event_RASMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem RASMenuItem;
     private javax.swing.JMenu aboutUs;
     private javax.swing.JButton alignBottomButton;
     private javax.swing.JButton alignLeftButton;
@@ -1346,7 +1382,7 @@ public class View extends javax.swing.JFrame {
     private javax.swing.JList componentList;
     private javax.swing.JMenuItem convert;
     private javax.swing.JMenuItem create_state_diagram;
-    private javax.swing.JButton cursorButton;
+    private javax.swing.JToggleButton curButton;
     private javax.swing.JToggleButton deleteBendButton;
     private javax.swing.JScrollPane diagramScrollPane;
     private javax.swing.JMenu editMenu;
@@ -1504,7 +1540,7 @@ public class View extends javax.swing.JFrame {
         }
 
         public void drawBuble() {
-            if (getBubbleElement() != null && cursorButton.isSelected() && draggedElement == null && draggedObject == null) {
+            if (getBubbleElement() != null && curButton.isSelected() && draggedElement == null && draggedObject == null) {
                 int width = 0;
                 int height = 0;
                 if (getBubbleElement() instanceof AbsPlace) {
@@ -2519,9 +2555,9 @@ public class View extends javax.swing.JFrame {
                     int scrollPositionY = diagramScrollPane.getViewport().getViewPosition().y;
                     int offsetX = (this.mouseAdapter.getX() - origX + scrollPositionX);
                     int offsetY = (this.mouseAdapter.getY() - origY + scrollPositionY);
-                    if (offsetY > 0 && offsetX > 0) {
+                    if(offsetY<=0)offsetY=1;
+                    if(offsetX<=0)offsetX=1;
                         diagramScrollPane.getViewport().setViewPosition(new java.awt.Point(offsetX, offsetY));
-                    }
                 }
                 return;
             }
@@ -2924,12 +2960,6 @@ public class View extends javax.swing.JFrame {
             this.setDiagramCursor();
         }
 
-        public void setCursorButtonSelected(Boolean selected) {
-            disableButtons();
-            cursorButton.setSelected(selected);
-            this.setDiagramCursor();
-        }
-
         /**
          * @return the graph
          */
@@ -3029,7 +3059,8 @@ public class View extends javax.swing.JFrame {
 
     private void resetForm() {
         this.disableButtons();
-        cursorButton.setSelected(true);
+        curButton.setSelected(true);
+        //cursorButton.setSelected(true);
         propertiesMenu.setVisible(false);
         this.getDiagramPanel().setCursor(this.handCursor);
         this.revalidate();

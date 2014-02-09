@@ -292,6 +292,8 @@ public class PropertiesMenu extends javax.swing.JPanel {
             }
         });
 
+        capacitySpiner.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(1), Integer.valueOf(0), null, Integer.valueOf(1)));
+
         javax.swing.GroupLayout specificLayout = new javax.swing.GroupLayout(specific);
         specific.setLayout(specificLayout);
         specificLayout.setHorizontalGroup(
